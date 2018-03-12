@@ -1,18 +1,21 @@
 package com.example.codytseng.nctue4
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.old_e3_fragment.*
+import fr.arnaudguyon.xmltojsonlib.XmlToJson
+
 
 /**
  * Created by CodyTseng on 3/12/2018.
@@ -37,7 +40,11 @@ class OldE3Fragment : Fragment() {
         val stringRequest = object : StringRequest(Request.Method.POST, url,
                 Response.Listener<String> { response ->
                     // Display the first 500 characters of the response string.
-                    old_e3_textview.text = response
+                    val xmlToJson = XmlToJson.Builder(response).build().toJson()
+                    val studentName = xmlToJson!!.getJSONObject("AccountData").getString("Name")
+                    old_e3_textview.text = studentName
+                    prefs.edit().putString("student_name", studentName).commit()
+                    activity.findViewById<NavigationView>(R.id.nav_view).getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
                 },
                 Response.ErrorListener { old_e3_textview.text = "That didn't work!" }) {
             override fun getParams(): Map<String, String> {
@@ -47,7 +54,6 @@ class OldE3Fragment : Fragment() {
                 return params
             }
         }
-//        // Add the request to the RequestQueue.
         queue.add(stringRequest)
 
     }
