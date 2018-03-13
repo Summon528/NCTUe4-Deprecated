@@ -17,24 +17,27 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    private var currentFragment = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
         nav_view.setNavigationItemSelectedListener(this)
+        updateNavDrawerData()
+        switchFragment(0)
+    }
+
+    private fun updateNavDrawerData() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val studentName = prefs.getString("studentName", "Banana")
         val studentEmail = prefs.getString("studentEmail", "Banana@guava.com")
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = studentEmail
-        switchFragment(0)
     }
 
     override fun onBackPressed() {
@@ -63,26 +66,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == 1) {
+        if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = data!!.getStringExtra("studentName");
-                nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = data!!.getStringExtra("studentEmail");
+                updateNavDrawerData()
+                switchFragment(currentFragment)
             }
         }
     }
 
     private fun switchFragment(id: Int) {
+
         val fragment = when (id) {
             R.id.nav_home -> {
+                currentFragment = id
                 HomeFragment()
             }
             R.id.nav_starred_courses -> {
+                currentFragment = id
                 StarredCoursesE3Fragment()
             }
             R.id.nav_old_e3 -> {
+                currentFragment = id
                 OldE3Fragment()
             }
             R.id.nav_new_e3 -> {
+                currentFragment = id
                 NewE3Fragment()
             }
             R.id.nav_switch_account -> {
@@ -95,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         if (fragment != null) {
-            supportFragmentManager.beginTransaction().replace(R.id.main_container, fragment).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.main_container, fragment, "main_fragment").commit()
         }
     }
 

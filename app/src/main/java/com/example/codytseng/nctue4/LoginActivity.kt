@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import com.example.codytseng.nctue4.utility.OldE3Connect
 import com.example.codytseng.nctue4.utility.OldE3Interface
 import kotlinx.android.synthetic.main.activity_login.*
@@ -24,7 +25,7 @@ class LoginActivity : AppCompatActivity() {
             val studentId = student_id.text.toString()
             val studentPassword = student_password.text.toString()
             val service = OldE3Connect()
-            service.loginSetup(studentId, studentPassword, this) { status, response ->
+            service.getLoginTicket(studentId, studentPassword) { status, response ->
                 when (status) {
                     OldE3Interface.Status.SUCCESS -> {
                         val prefsEditor = prefs.edit()
@@ -35,9 +36,8 @@ class LoginActivity : AppCompatActivity() {
                         prefsEditor.commit()
                         login_progressbar.visibility = View.GONE;
                         val intent = Intent()
-                        intent.putExtra("studentName", response!!.first);
-                        intent.putExtra("studentEmail", response!!.second);
                         setResult(Activity.RESULT_OK, intent);
+                        Toast.makeText(this@LoginActivity,getString(R.string.login_success),Toast.LENGTH_SHORT).show()
                         finish()
                     }
                     OldE3Interface.Status.WRONG_CREDENTIALS -> {
@@ -52,6 +52,19 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        logout_button.setOnClickListener {
+            val prefsEditor = prefs.edit()
+            prefsEditor.remove("studentId")
+            prefsEditor.remove("studentPassword")
+            prefsEditor.remove("studentName")
+            prefsEditor.remove("studentEmail")
+            prefsEditor.commit()
+            val intent = Intent()
+            setResult(Activity.RESULT_OK, intent);
+            Toast.makeText(this@LoginActivity,getString(R.string.logout_success),Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 }

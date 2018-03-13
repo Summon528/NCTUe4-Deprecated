@@ -1,6 +1,8 @@
 package com.example.codytseng.nctue4.utility
 
 import android.content.Context
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Created by CodyTseng on 3/13/2018.
@@ -12,9 +14,9 @@ interface OldE3Interface {
         SUCCESS, SERVICE_ERROR, WRONG_CREDENTIALS
     }
 
-    fun loginSetup(studentId: String, studentPassWord: String, context: Context,
+    fun getLoginTicket(studentId: String, studentPassword: String,
                    completionHandler: (status: OldE3Interface.Status,
                                        response: Pair<String, String>?) -> Unit)
 
-    fun getLoginTicket(context: Context, completionHandler: (status: OldE3Interface.Status) -> Unit)
+    fun getCourseList(completionHandler: (status: OldE3Interface.Status, response: JSONArray?) -> Unit)
 }
