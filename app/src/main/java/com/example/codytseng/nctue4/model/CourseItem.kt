@@ -1,4 +1,4 @@
-package com.example.codytseng.nctue4
+package com.example.codytseng.nctue4.model
 
 /**
  * Created by CodyTseng on 3/13/2018.

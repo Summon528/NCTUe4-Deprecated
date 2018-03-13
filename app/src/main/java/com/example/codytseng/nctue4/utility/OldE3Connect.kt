@@ -22,7 +22,8 @@ class OldE3Connect : OldE3Interface {
                     val xmlToJson = XmlToJson.Builder(response).build().toJson()
                     completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
                 },
-                Response.ErrorListener {
+                Response.ErrorListener { response ->
+                    Log.d("jizz", response.toString())
                     completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }) {
             override fun getParams(): Map<String, String> {
@@ -66,6 +67,20 @@ class OldE3Connect : OldE3Interface {
             if (status == OldE3Interface.Status.SUCCESS) {
                 completionHandler(status, response!!.getJSONObject("ArrayOfCourseData")
                         .getJSONArray("CourseData"))
+            } else {
+                completionHandler(status, null)
+            }
+        }
+    }
+
+    override fun getAnnouncementList_Login(completionHandler: (status: OldE3Interface.Status, response: JSONArray?) -> Unit) {
+        val params = HashMap<String, String>()
+        params.put("loginTicket", loginTicket)
+        params.put("studentId", accountId)
+        post("/GetAnnouncementList_Login", params) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                completionHandler(status, response!!.getJSONObject("ArrayOfBulletinData")
+                        .getJSONArray("BulletinData"))
             } else {
                 completionHandler(status, null)
             }

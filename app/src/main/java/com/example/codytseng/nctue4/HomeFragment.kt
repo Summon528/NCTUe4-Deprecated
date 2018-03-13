@@ -1,10 +1,22 @@
 package com.example.codytseng.nctue4
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.codytseng.nctue4.model.AnnouncementItem
+import com.example.codytseng.nctue4.model.CourseItem
+import com.example.codytseng.nctue4.utility.OldE3Connect
+import com.example.codytseng.nctue4.utility.OldE3Interface
+import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.old_e3_fragment.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Created by CodyTseng on 3/12/2018.
@@ -14,5 +26,43 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.home_fragment, null)
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val studentId = prefs.getString("studentId", "")
+        val studentPassword = prefs.getString("studentPassword", "")
+        val service = OldE3Connect()
+        service.getLoginTicket(studentId, studentPassword) { status, response ->
+            when (status) {
+                OldE3Interface.Status.SUCCESS -> {
+                    service.getAnnouncementList_Login { status, response ->
+                        when (status) {
+                            OldE3Interface.Status.SUCCESS -> {
+                                updateList(response!!)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fun updateList(data: JSONArray) {
+        val announcementItems = ArrayList<AnnouncementItem>()
+        for (i in 0 until data.length()) {
+            val tmp = data.get(i) as JSONObject
+            announcementItems.add(AnnouncementItem(tmp.getInt("BulType"),
+                    tmp.getString("Caption"),
+                    tmp.getString("Content"),
+                    tmp.getString("BeginDate"),
+                    tmp.getString("EndDate")
+            )
+            )
+        }
+        Log.d("TEST",announcementItems.toString())
+        announcement_login_recycler_view.layoutManager = LinearLayoutManager(context)
+        announcement_login_recycler_view.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        announcement_login_recycler_view.adapter= AnnouncementAdapter(announcementItems)
     }
 }

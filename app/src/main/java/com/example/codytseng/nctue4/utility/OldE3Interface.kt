@@ -19,4 +19,7 @@ interface OldE3Interface {
                                        response: Pair<String, String>?) -> Unit)
 
     fun getCourseList(completionHandler: (status: OldE3Interface.Status, response: JSONArray?) -> Unit)
+
+    fun getAnnouncementList_Login(completionHandler: (status: OldE3Interface.Status, response: JSONArray?) -> Unit)
+
 }

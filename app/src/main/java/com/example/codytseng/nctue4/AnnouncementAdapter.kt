@@ -1,33 +1,38 @@
 package com.example.codytseng.nctue4
 
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.codytseng.nctue4.model.CourseItem
-import kotlinx.android.synthetic.main.course_card.view.*
+import com.example.codytseng.nctue4.model.AnnouncementItem
+import kotlinx.android.synthetic.main.announcement_card.view.*
 
-class CourseAdapter(val myDataset: ArrayList<CourseItem>) :
-        RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
+class AnnouncementAdapter(val myDataset: ArrayList<AnnouncementItem>) :
+        RecyclerView.Adapter<AnnouncementAdapter.ViewHolder>() {
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(course: CourseItem) {
-            view.course_name.text = course.mCourseName
-            view.course_teacher.text = course.mTeacherName
+        fun bind(announcement: AnnouncementItem) {
+            view.announcement_caption.text = announcement.mCaption
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N) {
+                view.announcement_content.text = Html.fromHtml(announcement.mContent)
+            } else {
+                view.announcement_content.text = Html.fromHtml(announcement.mContent, Html.FROM_HTML_MODE_COMPACT)
+            }
         }
     }
 
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): CourseAdapter.ViewHolder {
+                                    viewType: Int): AnnouncementAdapter.ViewHolder {
         // create a new view
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.course_card, parent, false)
+                .inflate(R.layout.announcement_card, parent, false)
         // set the view's size, margins, paddings and layout parameters
         return ViewHolder(view)
     }
