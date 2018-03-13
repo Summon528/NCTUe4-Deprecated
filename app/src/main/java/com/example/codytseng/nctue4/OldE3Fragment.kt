@@ -1,18 +1,12 @@
 package com.example.codytseng.nctue4
 
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import fr.arnaudguyon.xmltojsonlib.XmlToJson
+import com.example.codytseng.nctue4.utility.OldE3Connect
 import kotlinx.android.synthetic.main.old_e3_fragment.*
 
 
@@ -29,31 +23,9 @@ class OldE3Fragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//         Instantiate the RequestQueue.
-        val queue = Volley.newRequestQueue(this.context)
-        val url = "http://e3.nctu.edu.tw/mService/service.asmx/Login"
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val studentId = prefs.getString("studentId", "")
-        val studentPassword = prefs.getString("studentPassword", "")
-        // Request a string response from the provided URL.
-        val stringRequest = object : StringRequest(Request.Method.POST, url,
-                Response.Listener<String> { response ->
-                    // Display the first 500 characters of the response string.
-                    val xmlToJson = XmlToJson.Builder(response).build().toJson()
-                    val studentName = xmlToJson!!.getJSONObject("AccountData").getString("Name")
-                    old_e3_textview.text = studentName
-                    prefs.edit().putString("studentName", studentName).commit()
-                    activity.findViewById<NavigationView>(R.id.nav_view).getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
-                },
-                Response.ErrorListener { old_e3_textview.text = "That didn't work!" }) {
-            override fun getParams(): Map<String, String> {
-                val params = HashMap<String, String>()
-                params.put("account", studentId)
-                params.put("password", studentPassword)
-                return params
-            }
+        val service = OldE3Connect()
+        service.getLoginTicket(context) { response ->
+            old_e3_textview.text = response.toString()
         }
-        queue.add(stringRequest)
-
     }
 }

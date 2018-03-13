@@ -1,5 +1,6 @@
 package com.example.codytseng.nctue4
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -30,7 +31,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val studentName = prefs.getString("studentName", "Banana")
+        val studentEmail = prefs.getString("studentEmail", "Banana@guava.com")
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
+        nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = studentEmail
         switchFragment(0)
     }
 
@@ -58,6 +61,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = data!!.getStringExtra("studentName");
+                nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = data!!.getStringExtra("studentEmail");
+            }
+        }
+    }
+
     private fun switchFragment(id: Int) {
         val fragment = when (id) {
             R.id.nav_home -> {
@@ -73,7 +86,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 NewE3Fragment()
             }
             R.id.nav_switch_account -> {
-                startActivity(Intent(this, LoginActivity::class.java))
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivityForResult(intent, 1)
                 null
             }
             else -> {
