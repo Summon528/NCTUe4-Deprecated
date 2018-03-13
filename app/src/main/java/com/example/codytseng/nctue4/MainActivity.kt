@@ -3,18 +3,15 @@ package com.example.codytseng.nctue4
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -32,7 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val studentName = prefs.getString("student_name", "Banana")
+        val studentName = prefs.getString("studentName", "Banana")
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
         switchFragment(0)
     }
@@ -63,27 +60,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun switchFragment(id: Int) {
         val fragment = when (id) {
-            R.id.nav_camera -> {
+            R.id.nav_home -> {
                 HomeFragment()
             }
-            R.id.nav_gallery -> {
+            R.id.nav_starred_courses -> {
+                StarredCoursesE3Fragment()
+            }
+            R.id.nav_old_e3 -> {
                 OldE3Fragment()
             }
-            R.id.nav_slideshow -> {
-                OldE3Fragment()
+            R.id.nav_new_e3 -> {
+                NewE3Fragment()
             }
-            R.id.nav_manage -> {
-                OldE3Fragment()
-            }
-            R.id.nav_share -> {
-                OldE3Fragment()
-            }
-            R.id.nav_send -> {
-                OldE3Fragment()
-            }
-            R.id.nav_settings -> {
-                val settingsIntent = Intent(this, SettingsActivity::class.java)
-                startActivity(settingsIntent)
+            R.id.nav_switch_account -> {
+                startActivity(Intent(this, LoginActivity::class.java))
                 null
             }
             else -> {
