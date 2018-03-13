@@ -23,6 +23,7 @@ class AnnouncementAdapter(val myDataset: ArrayList<AnnouncementItem>) :
             } else {
                 view.announcement_content.text = Html.fromHtml(announcement.mContent, Html.FROM_HTML_MODE_COMPACT)
             }
+            view.announcement_beginDate.text = announcement.mBeginDate
         }
     }
 
