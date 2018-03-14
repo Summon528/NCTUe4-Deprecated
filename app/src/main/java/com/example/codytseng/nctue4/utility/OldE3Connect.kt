@@ -86,5 +86,20 @@ class OldE3Connect : OldE3Interface {
             }
         }
     }
+
+    override fun getCourseAnn(courseId: String, completionHandler: (status: OldE3Interface.Status, response: JSONObject?) -> Unit) {
+        val params = HashMap<String, String>()
+        params.put("loginTicket", loginTicket)
+        params["courseId"]= courseId
+        params.put("bulType", "1")
+        post("/GetAnnouncementList", params) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                completionHandler(status, response!!)
+            } else {
+                completionHandler(status, null)
+            }
+        }
+
+    }
 }
 

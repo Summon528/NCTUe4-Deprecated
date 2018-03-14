@@ -1,5 +1,6 @@
 package com.example.codytseng.nctue4
 
+import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -54,10 +55,16 @@ class OldE3Fragment : Fragment() {
             val tmp = data.get(i) as JSONObject
             courseItems.add(CourseItem(tmp.getInt("CourseNo"),
                     tmp.getString("CourseName"),
-                    tmp.getString("TeacherName")))
+                    tmp.getString("TeacherName"),
+                    tmp.getString("CourseId")))
         }
         Log.d("TEST",courseItems.toString())
         old_e3_recycler_view.layoutManager = LinearLayoutManager(context)
-        old_e3_recycler_view.adapter= CourseAdapter(courseItems)
+        old_e3_recycler_view.adapter= CourseAdapter(courseItems){
+            val intent = Intent()
+            intent.setClass(activity, CourseActivity::class.java)
+            intent.putExtra("courseId", it.mCourseId)
+            startActivity(intent)
+        }
     }
 }
