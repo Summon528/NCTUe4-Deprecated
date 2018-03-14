@@ -24,7 +24,7 @@ import org.json.JSONObject
 class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener  {
     override fun onRefresh() {
         announcement_refreshLayout.isRefreshing = false
-        getData()
+        announcement_login_recycler_view.adapter.notifyDataSetChanged()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,7 +36,28 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener  {
         announcement_refreshLayout.setOnRefreshListener(this)
         getData()
     }
-    private fun getData() {
+    private fun getData(){
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val studentId = prefs.getString("studentId", "")
+        val studentPassword = prefs.getString("studentPassword", "")
+        val service = OldE3Connect()
+        service.getLoginTicket(studentId, studentPassword) { status, response ->
+            when (status) {
+                OldE3Interface.Status.SUCCESS -> {
+                    service.getCourseList { status, response ->
+                        when (status) {
+                            OldE3Interface.Status.SUCCESS -> {
+                                getAnnouncement(response!!)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun getAnnouncement(courseList: JSONArray) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val studentId = prefs.getString("studentId", "")
         val studentPassword = prefs.getString("studentPassword", "")
@@ -47,30 +68,38 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener  {
                     service.getAnnouncementList_Login { status, response ->
                         when (status) {
                             OldE3Interface.Status.SUCCESS -> {
-                                updateList(response!!)
+                                updateList(response!!, courseList)
                             }
                         }
                     }
                 }
             }
         }
-    }
 
-    fun updateList(data: JSONArray) {
+    }
+    private fun updateList(data: JSONArray, courseList: JSONArray) {
         val announcementItems = ArrayList<AnnouncementItem>()
+        var courseDetail = HashMap<String, String>()
+        for (i in 0 until courseList.length()) {
+            val tmp = courseList.get(i) as JSONObject
+            courseDetail.put(tmp.getString("CourseId"), tmp.getString("CourseName"))
+        }
         for (i in 0 until data.length()) {
             val tmp = data.get(i) as JSONObject
-            announcementItems.add(AnnouncementItem(tmp.getInt("BulType"),
+            announcementItems.add(AnnouncementItem(
+                    tmp.getInt("BulType"),
+                    courseDetail.get(tmp.getString("CourseId"))!!,
                     tmp.getString("Caption"),
                     tmp.getString("Content"),
                     tmp.getString("BeginDate"),
                     tmp.getString("EndDate")
-            )
+                )
             )
         }
         Log.d("TEST",announcementItems.toString())
         announcement_login_recycler_view.layoutManager = LinearLayoutManager(context)
         announcement_login_recycler_view.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         announcement_login_recycler_view.adapter= AnnouncementAdapter(announcementItems)
+
     }
 }

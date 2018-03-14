@@ -17,6 +17,7 @@ class AnnouncementAdapter(val myDataset: ArrayList<AnnouncementItem>) :
     // Each data item is just a string in this case that is shown in a TextView.
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(announcement: AnnouncementItem) {
+            view.announcement_name.text = announcement.mCourseName
             view.announcement_caption.text = announcement.mCaption
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N) {
                 view.announcement_content.text = Html.fromHtml(announcement.mContent)
