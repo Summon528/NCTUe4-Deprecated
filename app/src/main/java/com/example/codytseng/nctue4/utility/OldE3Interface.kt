@@ -23,4 +23,6 @@ interface OldE3Interface {
     fun getAnnouncementList_Login(completionHandler: (status: OldE3Interface.Status, response: JSONArray?) -> Unit)
 
     fun getCourseAnn(courseId : String, completionHandler: (status: Status, response: JSONObject?) -> Unit)
+
+    fun getMaterialDocList(courseId :String, docType:String, completionHandler: (status: Status, response: JSONObject?) -> Unit)
 }

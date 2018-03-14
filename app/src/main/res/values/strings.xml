@@ -27,10 +27,17 @@
     <string name="logout_success">Logout Success</string>
 
     <string name="generic_error">Error</string>
-    <string name="title_activity_course">CourseActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+
+    <!--Course Activity-->
+    <string name="title_activity_course">Course</string>
+    <string name="course_nav_ann">Ann</string>
+    <string name="course_nav_doc">Doc</string>
+    <string name="course_nav_assignment">Assignment</string>
+    <string name="course_nav_score">Score</string>
+    <string name="course_nav_other">Others</string>
+
+    <string name="course_doc_type_handout">Handout</string>
+    <string name="course_doc_type_reference">Reference</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

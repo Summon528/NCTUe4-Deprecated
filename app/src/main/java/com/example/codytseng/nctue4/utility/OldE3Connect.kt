@@ -9,7 +9,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class OldE3Connect : OldE3Interface {
+class OldE3Connect() : OldE3Interface {
     private var loginTicket: String = ""
     private var accountId: String = ""
     private val tag = OldE3Connect::class.java.simpleName
@@ -99,7 +99,22 @@ class OldE3Connect : OldE3Interface {
                 completionHandler(status, null)
             }
         }
+    }
 
+    override fun getMaterialDocList(courseId: String,docType :String, completionHandler: (status: OldE3Interface.Status, response: JSONObject?) -> Unit) {
+        val params = hashMapOf(
+                "loginTicket" to loginTicket,
+                "courseId" to courseId,
+                "docType" to docType
+        )
+        post("/GetMaterialDocList",params){
+            status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                completionHandler(status, response!!)
+            } else {
+                completionHandler(status, null)
+            }
+        }
     }
 }
 

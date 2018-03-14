@@ -5,15 +5,16 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.codytseng.nctue4.CourseActivity">
+    android:orientation="vertical"
+    tools:context="com.example.codytseng.nctue4.course.CourseActivity">
 
     <FrameLayout
+        android:id="@+id/course_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/course_container"></FrameLayout>
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
+        android:id="@+id/course_bottom_nav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="0dp"
