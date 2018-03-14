@@ -37,6 +37,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.codytseng.nctue4.MainActivity" />
         </activity>
+        <activity
+            android:name=".AnnActivity"
+            android:label="@string/title_activity_ann" />
     </application>
 
 </manifest>
