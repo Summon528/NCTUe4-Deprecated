@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:id="@+id/course_item"
     android:layout_margin="8dp"
-    android:clickable="true"
     android:background="?android:attr/selectableItemBackground">
 
 
