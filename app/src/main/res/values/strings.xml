@@ -27,6 +27,7 @@
     <string name="logout_success">Logout Success</string>
 
     <string name="generic_error">Error</string>
+    <string name="title_activity_ann">AnnActivity</string>
     <string name="title_activity_course">CourseActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

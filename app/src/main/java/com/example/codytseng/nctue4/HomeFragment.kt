@@ -1,5 +1,6 @@
 package com.example.codytseng.nctue4
 
+import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -88,6 +89,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener  {
             val tmp = data.get(i) as JSONObject
             announcementItems.add(AnnouncementItem(
                     tmp.getInt("BulType"),
+                    tmp.getString("BulletinId"),
                     courseDetail.get(tmp.getString("CourseId"))!!,
                     tmp.getString("Caption"),
                     tmp.getString("Content"),
@@ -99,7 +101,11 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener  {
         Log.d("TEST",announcementItems.toString())
         announcement_login_recycler_view.layoutManager = LinearLayoutManager(context)
         announcement_login_recycler_view.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
-        announcement_login_recycler_view.adapter= AnnouncementAdapter(announcementItems)
-
+        announcement_login_recycler_view.adapter= AnnouncementAdapter(announcementItems){
+            val intent = Intent()
+            intent.setClass(activity, AnnActivity::class.java)
+            intent.putExtra("annId", it.mBulletinId)
+            startActivity(intent)
+        }
     }
 }

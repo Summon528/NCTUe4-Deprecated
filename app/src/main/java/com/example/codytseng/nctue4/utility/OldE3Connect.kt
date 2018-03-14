@@ -77,7 +77,8 @@ class OldE3Connect : OldE3Interface {
         val params = HashMap<String, String>()
         params.put("loginTicket", loginTicket)
         params.put("studentId", accountId)
-        post("/GetAnnouncementList_Login", params) { status, response ->
+        params.put("ShowCount", "100")
+        post("/GetAnnouncementList_LoginByCountWithAttach", params) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
                 completionHandler(status, response!!.getJSONObject("ArrayOfBulletinData")
                         .getJSONArray("BulletinData"))
@@ -100,6 +101,19 @@ class OldE3Connect : OldE3Interface {
             }
         }
 
+    }
+
+    fun getAnnouncementDetail(bulletinId: String, completionHandler: (status: OldE3Interface.Status, response: JSONObject?) -> Unit) {
+        val params = HashMap<String, String>()
+        params["loginTicket"] = loginTicket
+        params["bulletinId"] = bulletinId
+        post("/GetAnnouncementDetail", params) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                completionHandler(status, response!!.getJSONObject("BulletinData"))
+            } else {
+                completionHandler(status, null)
+            }
+        }
     }
 }
 
