@@ -25,10 +25,12 @@
         </activity>
         <activity
             android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".course.CourseActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_course"
             android:parentActivityName=".MainActivity">
             <meta-data
