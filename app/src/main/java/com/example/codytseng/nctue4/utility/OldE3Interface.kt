@@ -24,5 +24,7 @@ interface OldE3Interface {
 
     fun getCourseAnn(courseId : String, completionHandler: (status: Status, response: JSONObject?) -> Unit)
 
-    fun getMaterialDocList(courseId :String, docType:String, completionHandler: (status: Status, response: JSONObject?) -> Unit)
+    fun getMaterialDocList(courseId :String, docType:String, completionHandler: (status: Status, response: JSONArray?) -> Unit)
+
+    fun getAttachFileList(documentId : String, courseId: String, completionHandler: (status: Status, response: JSONObject?) -> Unit)
 }

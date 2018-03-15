@@ -60,12 +60,14 @@ class OldE3Fragment : Fragment() {
                     tmp.getString("CourseId")))
         }
         Log.d("TEST",courseItems.toString())
-        old_e3_recycler_view.layoutManager = LinearLayoutManager(context)
-        old_e3_recycler_view.adapter= CourseAdapter(courseItems){
-            val intent = Intent()
-            intent.setClass(activity, CourseActivity::class.java)
-            intent.putExtra("courseId", it.mCourseId)
-            startActivity(intent)
+        if(old_e3_recycler_view != null) {
+            old_e3_recycler_view.layoutManager = LinearLayoutManager(context)
+            old_e3_recycler_view.adapter = CourseAdapter(courseItems) {
+                val intent = Intent()
+                intent.setClass(activity, CourseActivity::class.java)
+                intent.putExtra("courseId", it.mCourseId)
+                startActivity(intent)
+            }
         }
     }
 }

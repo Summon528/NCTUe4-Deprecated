@@ -91,7 +91,7 @@ class OldE3Connect() : OldE3Interface {
     override fun getCourseAnn(courseId: String, completionHandler: (status: OldE3Interface.Status, response: JSONObject?) -> Unit) {
         val params = HashMap<String, String>()
         params.put("loginTicket", loginTicket)
-        params["courseId"]= courseId
+        params["courseId"] = courseId
         params.put("bulType", "1")
         post("/GetAnnouncementList", params) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
@@ -102,16 +102,19 @@ class OldE3Connect() : OldE3Interface {
         }
     }
 
-    override fun getMaterialDocList(courseId: String,docType :String, completionHandler: (status: OldE3Interface.Status, response: JSONObject?) -> Unit) {
+    override fun getMaterialDocList(courseId: String, docType: String, completionHandler: (status: OldE3Interface.Status, response: JSONArray?) -> Unit) {
         val params = hashMapOf(
                 "loginTicket" to loginTicket,
                 "courseId" to courseId,
                 "docType" to docType
         )
-        post("/GetMaterialDocList",params){
-            status, response ->
+        post("/GetMaterialDocList", params) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                completionHandler(status, response!!)
+                val arrayOfMaterialDocData = response!!.getJSONObject("ArrayOfMaterialDocData")
+                if (arrayOfMaterialDocData.has("MaterialDocData"))
+                    completionHandler(status, arrayOfMaterialDocData.getJSONArray("MaterialDocData"))
+                else
+                    completionHandler(status, JSONArray())
             } else {
                 completionHandler(status, null)
             }
@@ -125,6 +128,24 @@ class OldE3Connect() : OldE3Interface {
         post("/GetAnnouncementDetail", params) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
                 completionHandler(status, response!!.getJSONObject("BulletinData"))
+            } else {
+                completionHandler(status, null)
+            }
+        }
+    }
+
+    //TODO Handle more than one files
+    override fun getAttachFileList(documentId: String, courseId: String, completionHandler: (status: OldE3Interface.Status, response: JSONObject?) -> Unit) {
+        post("/GetAttachFileList", hashMapOf(
+                "loginTicket" to loginTicket,
+                "resId" to documentId,
+                "metaType" to "10",
+                "courseId" to courseId
+        )) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                Log.d("asd",response.toString())
+                completionHandler(status, response!!.getJSONObject("ArrayOfAttachFileInfoData")
+                        .getJSONObject("AttachFileInfoData"))
             } else {
                 completionHandler(status, null)
             }
