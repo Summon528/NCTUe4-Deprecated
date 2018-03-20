@@ -41,7 +41,6 @@
     <!--Title Activity-->
     <string name="title_activity_ann">公告</string>
     <string name="try_again">再試一次</string>
-    <string name="not_logged_in">尚未登入</string>
     <string name="download_start">開始下載&#8230;</string>
     <string name="download">下載</string>
     <string name="empty_request">這裡空空如也</string>
@@ -49,8 +48,13 @@
     <string name="license">授權訊息</string>
     <string name="font_awesome_license">本程式使用 <a href="https://fontawesome.com/license">Font Awesome</a> 圖示</string>
     <string name="flat_icon_license">這個圖示是由<a href="https://www.flaticon.com/authors/freepik"> Freepik from Flaticon.</a>製作</string>
-    <string name="detect_same_file">下載目錄下已經有一個相同黨名的檔案，你想要開啟舊黨還是下載新的。</string>
+    <string name="detect_same_file">下載目錄下已經有一個相同檔名的檔案，你想要開啟舊檔還是下載新的。</string>
     <string name="download_again">重新下載</string>
     <string name="open_existed">開啟舊檔</string>
+    <string name="download_completed">下載完成</string>
+    <string name="open_file">開啟</string>
 
+    <!--Title-->
+    <string name="title_ann">公告</string>
+    <string name="double_back_to_exit">再按一次返回鍵退出</string>
 </resources>
