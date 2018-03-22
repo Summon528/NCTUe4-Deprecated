@@ -18,6 +18,7 @@
     <!--Login Activity-->
     <string name="student_id">學號</string>
     <string name="student_password">密碼</string>
+    <string name="portal_password">單一入口密碼</string>
     <string name="login_hint">請輸入學號以及 e3 密碼</string>
     <string name="login">登入</string>
     <string name="logout">登出</string>
@@ -59,6 +60,9 @@
     <string name="latest_ann">最新公告</string>
     <string name="download_history">下載紀錄</string>
     <string name="more">更多</string>
+    <string name="more_ann">更多公告</string>
+    <string name="more_downloadhistory">更多下載紀錄</string>
+    <string name="more_starredcourse">更多收藏課程</string>
     <string name="confirm_delete">你確定要刪除%s嗎？</string>
     <string name="delete">刪除</string>
     <string name="rename">重新命名</string>
