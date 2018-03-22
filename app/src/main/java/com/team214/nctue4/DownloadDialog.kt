@@ -5,24 +5,18 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
-import android.util.DisplayMetrics
 import android.view.*
 import android.webkit.MimeTypeMap
 import android.widget.EditText
 import kotlinx.android.synthetic.main.dialog_download.*
 import java.io.File
-import kotlin.math.round
 import kotlin.math.roundToInt
 
 
-/**
- * A simple [Fragment] subclass.
- */
-class DownloadDialog : DialogFragment() {
+class DownloadDialog : BottomSheetDialogFragment() {
 
     private var onDismissListener: DialogInterface.OnDismissListener? = null
 

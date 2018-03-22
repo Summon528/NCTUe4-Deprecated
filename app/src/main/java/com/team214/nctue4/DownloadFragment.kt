@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.status_empty.*
 import java.io.File
 
 class DownloadFragment : Fragment() {
-    
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         if (arguments?.getBoolean("home") == null)
