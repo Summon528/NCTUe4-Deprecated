@@ -1,21 +1,17 @@
 package com.team214.nctue4
 
-import android.app.Activity
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.team214.nctue4.utility.NewE3Connect
+import com.team214.nctue4.utility.NewE3Interface
 import com.team214.nctue4.utility.OldE3Connect
 import com.team214.nctue4.utility.OldE3Interface
 import kotlinx.android.synthetic.main.activity_login.*
-import android.support.v4.content.ContextCompat.startActivity
-import com.team214.nctue4.utility.NewE3Connect
-import com.team214.nctue4.utility.NewE3Interface
 
 
 class LoginActivity : AppCompatActivity() {
@@ -50,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
             val prefsEditor = prefs.edit()
             prefsEditor.remove("studentId")
             prefsEditor.remove("studentPassword")
+            prefsEditor.remove("studentPortalPassword")
             prefsEditor.apply()
         } else {
             val studentId = prefs.getString("studentId", "")
@@ -66,6 +63,7 @@ class LoginActivity : AppCompatActivity() {
         login_button.setOnClickListener {
             student_id.isEnabled = false
             student_password.isEnabled = false
+            student_portal_password.isEnabled = false
             login_progressbar.visibility = View.VISIBLE
             val studentId = student_id.text.toString()
             val studentPassword = student_password.text.toString()
@@ -89,6 +87,7 @@ class LoginActivity : AppCompatActivity() {
                         login_progressbar.visibility = View.GONE
                         student_id.isEnabled = true
                         student_password.isEnabled = true
+                        student_portal_password.isEnabled = true
                     }
                     else -> {
                         login_error_text_view.text = getString(R.string.generic_error)
@@ -96,6 +95,7 @@ class LoginActivity : AppCompatActivity() {
                         login_progressbar.visibility = View.GONE
                         student_id.isEnabled = true
                         student_password.isEnabled = true
+                        student_portal_password.isEnabled = true
                     }
                 }
             }
@@ -117,6 +117,7 @@ class LoginActivity : AppCompatActivity() {
                         login_progressbar.visibility = View.GONE
                         student_id.isEnabled = true
                         student_password.isEnabled = true
+                        student_portal_password.isEnabled = true
                     }
                     else -> {
                         login_error_text_view.text = getString(R.string.generic_error)
@@ -124,6 +125,7 @@ class LoginActivity : AppCompatActivity() {
                         login_progressbar.visibility = View.GONE
                         student_id.isEnabled = true
                         student_password.isEnabled = true
+                        student_portal_password.isEnabled = true
                     }
                 }
             }
