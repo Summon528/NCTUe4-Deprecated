@@ -9,6 +9,7 @@ import com.team214.nctue4.R
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.htmlCleaner
 import kotlinx.android.synthetic.main.item_course_announcement.view.*
+import java.text.SimpleDateFormat
 
 class CourseAnnAdapter(private val dataSet: ArrayList<AnnItem>,
                        private val itemClickListener: (AnnItem) -> Unit) :
@@ -25,8 +26,9 @@ class CourseAnnAdapter(private val dataSet: ArrayList<AnnItem>,
                 view.announcement_content.text = Html.fromHtml(htmlCleaner(ann.content),
                         Html.FROM_HTML_MODE_COMPACT).replace("\\s+".toRegex(), " ")
             }
-            view.announcement_beginDate.text = ann.beginDate.toLocaleString().replace(" \\d\\d:\\d\\d:\\d\\d.*".toRegex(), "")
-            view.setOnClickListener{
+            val sdf = SimpleDateFormat("yyyy/MM/dd")
+            view.announcement_beginDate.text = sdf.format(ann.beginDate)
+            view.setOnClickListener {
                 itemClickListener(ann)
             }
         }

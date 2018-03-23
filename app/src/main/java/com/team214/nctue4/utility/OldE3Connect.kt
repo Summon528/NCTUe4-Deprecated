@@ -40,8 +40,8 @@ class OldE3Connect(private var studentId: String = "",
                         getLoginTicket { _, _ ->
                             post(path, params, true, completionHandler)
                         }
-                    }
-                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                    } else
+                        completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }) {
             override fun getParams(): Map<String, String> {
                 return params
@@ -196,7 +196,7 @@ class OldE3Connect(private var studentId: String = "",
 
         val arrayOfMaterialDocData = response.getJSONObject("ArrayOfMaterialDocData")
         val data = arrayOfMaterialDocData.forceGetJsonArray("MaterialDocData")
-        Log.d("RESP",response.toString())
+        Log.d("RESP", response.toString())
         (0 until data.length()).map { data.get(it) as JSONObject }
                 .forEach {
                     var dateArray: List<String> = it.getString("BeginDate").split("/")

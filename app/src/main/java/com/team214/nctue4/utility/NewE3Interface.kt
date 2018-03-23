@@ -1,7 +1,6 @@
 package com.team214.nctue4.utility
 
-import android.content.Context
-import com.team214.nctue4.model.*
+import com.team214.nctue4.model.AnnItem
 
 interface NewE3Interface {
     enum class Status {
@@ -34,7 +33,7 @@ interface NewE3Interface {
 //                          completionHandler: (status: Status,
 //                                              response: ArrayList<AttachItem>?) -> Unit)
 
-    fun cancelPendingRequests()
+//    fun cancelPendingRequests()
 
     fun getCredential(): String
 }

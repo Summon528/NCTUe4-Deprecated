@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -16,6 +15,7 @@ import android.webkit.WebSettings
 import com.team214.nctue4.utility.*
 import kotlinx.android.synthetic.main.activity_ann.*
 import kotlinx.android.synthetic.main.status_error.*
+import java.text.SimpleDateFormat
 
 
 class AnnActivity : AppCompatActivity() {
@@ -27,8 +27,8 @@ class AnnActivity : AppCompatActivity() {
         super.onStop()
         if (this::oldE3Service.isInitialized)
             oldE3Service.cancelPendingRequests()
-        if (this::newE3Service.isInitialized)
-            newE3Service.cancelPendingRequests()
+//        if (this::newE3Service.isInitialized)
+//            newE3Service.cancelPendingRequests()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
 
@@ -91,7 +91,7 @@ class AnnActivity : AppCompatActivity() {
             newE3Service.getAnnDetail(annId) { status, response ->
                 when (status) {
                     NewE3Interface.Status.SUCCESS -> {
-                        this.runOnUiThread{
+                        this.runOnUiThread {
                             Runnable {
                                 error_request.visibility = View.GONE
                                 // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
@@ -99,7 +99,8 @@ class AnnActivity : AppCompatActivity() {
                                         "http://e3.nctu.edu.tw/")
                                 ann_caption.text = response.caption
                                 ann_courseName.text = response.courseName
-                                ann_date.text = response.beginDate.toLocaleString().replace("\\d\\d:\\d\\d:\\d\\d.*".toRegex(), "")
+                                val sdf = SimpleDateFormat("yyyy/MM/dd")
+                                ann_date.text = sdf.format(response.beginDate)
                                 ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
                                 ann_content_web_view.loadData(content, "text/html; charset=utf-8", "UTF-8")
@@ -121,7 +122,7 @@ class AnnActivity : AppCompatActivity() {
                         }
                     }
                     else -> {
-                        this.runOnUiThread{
+                        this.runOnUiThread {
                             Runnable {
                                 error_request.visibility = View.VISIBLE
                                 dataStatus = DataStatus.INIT
@@ -146,7 +147,8 @@ class AnnActivity : AppCompatActivity() {
                                         "http://e3.nctu.edu.tw/")
                                 ann_caption.text = response.caption
                                 ann_courseName.text = response.courseName
-                                ann_date.text = response.beginDate.toLocaleString().replace(" \\d\\d:\\d\\d:\\d\\d.*".toRegex(), "")
+                                val sdf = SimpleDateFormat("yyyy/MM/dd")
+                                ann_date.text = sdf.format(response.beginDate)
                                 ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
                                 ann_content_web_view.loadData(content, "text/html; charset=utf-8", "UTF-8")
@@ -167,7 +169,7 @@ class AnnActivity : AppCompatActivity() {
                         }
                     }
                     else -> {
-                        this.runOnUiThread{
+                        this.runOnUiThread {
                             Runnable {
                                 error_request.visibility = View.VISIBLE
                                 dataStatus = DataStatus.INIT

@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
-        if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
+//        if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
     }
 
     private fun loginSuccess(){
@@ -99,14 +99,14 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
-            val newService = NewE3Connect(studentId, studentPortalPassword)
-            newService.getCookie{ status, response ->
+            newE3Service = NewE3Connect(studentId, studentPortalPassword)
+            newE3Service.getCookie{ status, response ->
                 when(status) {
                     NewE3Interface.Status.SUCCESS -> {
                         val prefsEditor = prefs.edit()
                         prefsEditor.putString("studentId", studentId)
                         prefsEditor.putString("studentPortalPassword", studentPortalPassword)
-                        prefsEditor.putString("newE3Cookie", response)
+//                        prefsEditor.putString("newE3Cookie", response)
                         prefsEditor.apply()
                         newE3Success = true
                         loginSuccess()

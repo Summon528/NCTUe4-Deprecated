@@ -12,12 +12,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.team214.nctue4.utility.DataStatus
+import com.team214.nctue4.utility.NewE3Connect
 import com.team214.nctue4.utility.OldE3Connect
 import com.team214.nctue4.utility.OldE3Interface
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import com.team214.nctue4.utility.NewE3Connect
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         oldE3Service = OldE3Connect(studentId, studentPassword)
 
         val studentPortalPassword = prefs.getString("studentPortalPassword", "")
-        val newE3Cookie = prefs.getString("newE3Cookie", "")
-        newE3Service = NewE3Connect(studentId, studentPortalPassword, newE3Cookie)
+//        val newE3Cookie = prefs.getString("newE3Cookie", "")
+        newE3Service = NewE3Connect(studentId, studentPortalPassword, "")
 
         currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
             savedInstanceState.getInt("currentFragment")

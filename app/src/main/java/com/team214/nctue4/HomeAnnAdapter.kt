@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.team214.nctue4.model.AnnItem
 import kotlinx.android.synthetic.main.item_home_announcement.view.*
+import java.text.SimpleDateFormat
 
 class HomeAnnAdapter(private val dataSet: List<AnnItem>, private val fromHome: Boolean,
                      private val itemClickListener: (AnnItem) -> Unit) :
@@ -17,7 +18,8 @@ class HomeAnnAdapter(private val dataSet: List<AnnItem>, private val fromHome: B
             view.announcement_name_in_image.text = ann.courseName.first().toString()
             view.announcement_name.text = ann.courseName
             view.announcement_caption.text = ann.caption
-            view.announcement_beginDate.text = ann.beginDate.toLocaleString().replace("\\d\\d:\\d\\d:\\d\\d.*".toRegex(), "")
+            val sdf = SimpleDateFormat("yyyy/MM/dd")
+            view.announcement_beginDate.text = sdf.format(ann.beginDate)
             view.setOnClickListener {
                 itemClickListener(ann)
             }
