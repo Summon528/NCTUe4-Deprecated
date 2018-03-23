@@ -36,4 +36,8 @@ interface OldE3Interface {
     fun cancelPendingRequests()
 
     fun getCredential() : Pair<String,String>
+
+    fun getCourseTime(courseId: String,
+                      completionHandler: (status: Status,
+                                          response: ArrayList<CourseTime>?) -> Unit)
 }

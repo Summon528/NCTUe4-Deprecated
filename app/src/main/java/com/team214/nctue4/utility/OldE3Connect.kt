@@ -9,6 +9,7 @@ import com.team214.nctue4.R
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.model.CourseItem
+import com.team214.nctue4.model.CourseTime
 import com.team214.nctue4.model.DocGroupItem
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import org.json.JSONObject
@@ -294,6 +295,35 @@ class OldE3Connect(private var studentId: String = "",
 
     override fun cancelPendingRequests() {
         VolleyHandler.instance?.cancelPendingRequests(tag)
+    }
+
+
+    override fun getCourseTime(courseId: String,
+                               completionHandler: (status: OldE3Interface.Status,
+                                                   response: ArrayList<CourseTime>?) -> Unit) {
+        post("/GetCourseTime", hashMapOf(
+                "loginTicket" to loginTicket,
+                "accountId" to accountId
+        )) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                val data = response!!.getJSONObject("ArrayOfCourseTimeData")
+                        .forceGetJsonArray("CourseTimeData")
+                val courseTimes = ArrayList<CourseTime>()
+                (0 until data.length()).map { data.get(it) as JSONObject }
+                        .forEach {
+                            courseTimes.add(CourseTime(
+                                    it.getString("CourseId"),
+                                    it.getString("WeekDay"),
+                                    it.getString("Section"),
+                                    it.getString("RoomNo"),
+                                    it.getString("CourseName")
+                            ))
+                        }
+                completionHandler(status, courseTimes)
+            } else {
+                completionHandler(status, null)
+            }
+        }
     }
 }
 
