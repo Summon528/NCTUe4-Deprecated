@@ -3,7 +3,6 @@ package com.team214.nctue4.utility
 import android.util.Log
 import com.team214.nctue4.model.AnnItem
 import okhttp3.*
-import okhttp3.Cookie
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -16,85 +15,95 @@ class NewE3Connect(private var studentId: String = "",
                    private var studentPassword: String = "",
                    private var newE3Cookie: String = "") : NewE3Interface {
 
-    private val tag = NewE3Connect::class.java.simpleName
-    private var cookieStore: HashMap<String, MutableList<Cookie>> = HashMap()
 
-    override fun getCredential() = newE3Cookie
+    private val HOST = "e3new.nctu.edu.tw"
+    private var cookieStore: HashMap<String, MutableList<Cookie>> = if (newE3Cookie != "") {
+        hashMapOf(HOST to mutableListOf(Cookie.parse(HttpUrl.parse("https://e3new.nctu.edu.tw/"),
+                "MoodleSession=$newE3Cookie")))
+    } else {
+        hashMapOf()
+    }
+
+    override fun getCredential(): String {
+        Log.d("POSTTGET", cookieStore[HOST]!![0].value())
+        return cookieStore[HOST]!![0].value()
+    }
+
 
     private fun post(path: String, params: HashMap<String, String>,
                      secondTry: Boolean = false,
-                     completionHandler: (status: NewE3Interface.Status, cookie: String?,
+                     completionHandler: (status: NewE3Interface.Status,
                                          response: String?) -> Unit) {
-        val client = OkHttpClient().newBuilder().cookieJar(object : CookieJar {
-            override fun loadForRequest(url: HttpUrl?): MutableList<Cookie>? {
-                Log.d("send cookie", newE3Cookie)
-                if (cookieStore[url!!.host()] != null) {
-                    newE3Cookie = cookieStore[url.host()]!![0].value()
-                }
-                if (newE3Cookie != "") {
-                    Log.d("has cookie", url.toString())
-                    val tmp = emptyList<Cookie>().toMutableList()
-                    tmp.add(Cookie.parse(url, "MoodleSession=" + newE3Cookie))
-                    return tmp
-                } else
-                    return emptyList<Cookie>().toMutableList()
 
-            }
+        Log.d("POSTT", path)
+        if (cookieStore[HOST] != null)
+            Log.d("POSTTCOOKIE", cookieStore[HOST]!![0].value().toString())
+        val client = OkHttpClient().newBuilder().cache(null).followRedirects(false)
+                .followSslRedirects(false).cookieJar(object : CookieJar {
+                    override fun loadForRequest(url: HttpUrl?): MutableList<Cookie>? {
+                        val tmp = if (cookieStore[HOST] != null) cookieStore[HOST]
+                        else mutableListOf()
+                        Log.d("POSTTSENTT", tmp.toString())
+                        return tmp
+                    }
 
-            override fun saveFromResponse(url: HttpUrl?, cookies: MutableList<Cookie>?) {
-                if (cookies!!.size > 1)
-                    cookieStore[url!!.host()] = cookies.subList(1, 2)
-                else
-                    cookieStore[url!!.host()] = cookies
-                Log.d("saved cookie", cookieStore[url.host()].toString())
-            }
-        }).build()
+                    override fun saveFromResponse(url: HttpUrl?, cookies: MutableList<Cookie>?) {
+                        Log.d("POSTTGET", cookies.toString())
+                        cookieStore[HOST] =
+                                if (cookies!!.size > 1) cookies.subList(1, 2)
+                                else cookies
+                    }
+                }).build()
         val url = "https://e3new.nctu.edu.tw$path"
-        Log.d("user an pas", studentId + " " + studentPassword)
-        val formBody = FormBody.Builder().add("username", studentId).add("password", studentPassword).build()
+//        Log.d("user an pas", studentId + " " + studentPassword)
+
+        val formBody = FormBody.Builder()
+                .add("username", studentId)
+                .add("password", studentPassword).build()
+
         val request = Request.Builder().url(url).post(formBody).build()
 
         val call = client.newCall(request)
+
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                if (!secondTry) {
-                    cookieStore.clear()
-                    newE3Cookie = ""
-                    getCookie { _, _ ->
-                        post(path, params, true, completionHandler)
-                    }
-                } else
-                    completionHandler(NewE3Interface.Status.SERVICE_ERROR, null, null)
+                completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
             }
 
             override fun onResponse(call: Call, response: Response) {
                 val res = response.body().string()
-                if (res.contains("Log in to the site")) {
-                    Log.d("fail", cookieStore.toString())
+                Log.d("POSTTRES", res)
+                if (res.contains("<title>New E3 數位教學平台: 登入本網站</title>") ||
+                        res.contains("<title>New E3 數位教學平台: Log in to the site</title>") ||
+                        res.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">Continue</a>") ||
+                        res.contains("本頁面會自動重新導向。如果什麼都沒發生，請點選下面的\"繼續\"連結。<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">繼續")) {
+//                    Log.d("fail", cookieStore.toString())
                     cookieStore.clear()
-                    newE3Cookie = ""
-                    if (!secondTry) {
+//                    newE3Cookie = ""
+                    if (!secondTry && path != "/login/index.php?lang=en") {
+                        Log.d("secondTry", "secondTry")
                         getCookie { _, _ ->
                             post(path, params, true, completionHandler)
                         }
-                    }
-                    completionHandler(NewE3Interface.Status.SERVICE_ERROR, null, null)
+                    } else completionHandler(NewE3Interface.Status.WRONG_CREDENTIALS, null)
                 }
-                if (res.contains("pc-for-in-progress")) {
-                    Log.d("con", "yes")
-                }
-                completionHandler(NewE3Interface.Status.SUCCESS, newE3Cookie, res)
+//                if (res.contains("pc-for-in-progress")) {
+//                    Log.d("con", "yes")
+//                }
+                else completionHandler(NewE3Interface.Status.SUCCESS, res)
             }
         })
+
     }
 
     override fun getCookie(completionHandler: (status: NewE3Interface.Status, response: String?) -> Unit) {
+        cookieStore.clear()
         post("/login/index.php?lang=en", hashMapOf(
                 "username" to studentId,
                 "password" to studentPassword
-        )) { status, cookie, response ->
+        )) { status, response ->
             if (status == NewE3Interface.Status.SUCCESS) {
-                completionHandler(NewE3Interface.Status.SUCCESS, cookie)
+                completionHandler(NewE3Interface.Status.SUCCESS, response)
             } else {
                 completionHandler(status, null)
             }
@@ -103,7 +112,7 @@ class NewE3Connect(private var studentId: String = "",
 
     override fun getAnn(completionHandler: (status: NewE3Interface.Status, response: ArrayList<AnnItem>?) -> Unit) {
         post("/my/index.php?lang=en", HashMap()
-        ) { status, cookie, response ->
+        ) { status, response ->
             if (status == NewE3Interface.Status.SUCCESS) {
                 Log.d("loca", response!!)
                 if (response.contains("pc-for-in-progress")) {
@@ -139,7 +148,7 @@ class NewE3Connect(private var studentId: String = "",
     override fun getAnnDetail(bulletinId: String, completionHandler: (status: NewE3Interface.Status, response: AnnItem?) -> Unit) {
         Log.d("buul id", bulletinId)
         post(bulletinId, HashMap()
-        ) { status, cookie, response ->
+        ) { status, response ->
             //            Log.d("detail cookie", cookie)
             if (status == NewE3Interface.Status.SUCCESS) {
                 Log.d("getanndetail", response)

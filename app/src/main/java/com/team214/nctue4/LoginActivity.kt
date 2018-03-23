@@ -26,14 +26,42 @@ class LoginActivity : AppCompatActivity() {
 //        if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
     }
 
-    private fun loginSuccess(){
+    private fun loginSuccess() {
         if (oldE3Success and newE3Success) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
             if (Looper.myLooper() == null) Looper.prepare()
             Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
-            Looper.loop();
-            finish()
+            Looper.loop()
+        }
+    }
+
+    private var isWrongCredentials = false
+    private fun showWrongCredentials() {
+        if (isWrongCredentials) return
+        isWrongCredentials = true
+        runOnUiThread {
+            login_error_text_view.text = getString(R.string.login_id_or_password_error)
+            login_error_text_view.visibility = View.VISIBLE
+            login_progressbar.visibility = View.GONE
+            student_id.isEnabled = true
+            student_password.isEnabled = true
+            student_portal_password.isEnabled = true
+        }
+    }
+
+    private var isServiceError = false
+    private fun showServiceError() {
+        if (isServiceError) return
+        isServiceError = true
+        runOnUiThread {
+            login_error_text_view.text = getString(R.string.generic_error)
+            login_error_text_view.visibility = View.VISIBLE
+            login_progressbar.visibility = View.GONE
+            student_id.isEnabled = true
+            student_password.isEnabled = true
+            student_portal_password.isEnabled = true
         }
     }
 
@@ -61,6 +89,8 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
         login_button.setOnClickListener {
+            isServiceError = false
+            isWrongCredentials = false
             student_id.isEnabled = false
             student_password.isEnabled = false
             student_portal_password.isEnabled = false
@@ -75,33 +105,21 @@ class LoginActivity : AppCompatActivity() {
                         val prefsEditor = prefs.edit()
                         prefsEditor.putString("studentId", studentId)
                         prefsEditor.putString("studentPassword", studentPassword)
-                        prefsEditor.putString("studentName", response!!.first)
-                        prefsEditor.putString("studentEmail", response.second)
                         prefsEditor.apply()
                         oldE3Success = true
                         loginSuccess()
                     }
                     OldE3Interface.Status.WRONG_CREDENTIALS -> {
-                        login_error_text_view.text = getString(R.string.login_id_or_password_error)
-                        login_error_text_view.visibility = View.VISIBLE
-                        login_progressbar.visibility = View.GONE
-                        student_id.isEnabled = true
-                        student_password.isEnabled = true
-                        student_portal_password.isEnabled = true
+                        showWrongCredentials()
                     }
                     else -> {
-                        login_error_text_view.text = getString(R.string.generic_error)
-                        login_error_text_view.visibility = View.VISIBLE
-                        login_progressbar.visibility = View.GONE
-                        student_id.isEnabled = true
-                        student_password.isEnabled = true
-                        student_portal_password.isEnabled = true
+                        showServiceError()
                     }
                 }
             }
             newE3Service = NewE3Connect(studentId, studentPortalPassword)
-            newE3Service.getCookie{ status, response ->
-                when(status) {
+            newE3Service.getCookie { status, response ->
+                when (status) {
                     NewE3Interface.Status.SUCCESS -> {
                         val prefsEditor = prefs.edit()
                         prefsEditor.putString("studentId", studentId)
@@ -112,20 +130,10 @@ class LoginActivity : AppCompatActivity() {
                         loginSuccess()
                     }
                     NewE3Interface.Status.WRONG_CREDENTIALS -> {
-                        login_error_text_view.text = getString(R.string.login_id_or_password_error)
-                        login_error_text_view.visibility = View.VISIBLE
-                        login_progressbar.visibility = View.GONE
-                        student_id.isEnabled = true
-                        student_password.isEnabled = true
-                        student_portal_password.isEnabled = true
+                        showWrongCredentials()
                     }
                     else -> {
-                        login_error_text_view.text = getString(R.string.generic_error)
-                        login_error_text_view.visibility = View.VISIBLE
-                        login_progressbar.visibility = View.GONE
-                        student_id.isEnabled = true
-                        student_password.isEnabled = true
-                        student_portal_password.isEnabled = true
+                        showServiceError()
                     }
                 }
             }

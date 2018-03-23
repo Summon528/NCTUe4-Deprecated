@@ -92,9 +92,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             dataStatus = DataStatus.FINISHED
         }
 
-        newE3Service.getCookie { status, response ->
-            completionHandler()
-        }
+//        newE3Service.getCookie { status, response ->
+////            completionHandler()
+//        }
     }
 
     override fun onBackPressed() {
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawer_layout.closeDrawer(GravityCompat.START)
         } else if (currentFragment != R.id.nav_home) {
             switchFragment(R.id.nav_home)
-        } else{
+        } else {
             super.onBackPressed()
         }
     }
@@ -113,7 +113,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun switchFragment(id: Int) {
-        nav_view.setCheckedItem(id)
+        if (id != -1)
+            nav_view.setCheckedItem(id)
+        else
+            nav_view.setCheckedItem(R.id.nav_home)
         val fragment = when (id) {
             R.id.nav_home -> {
                 currentFragment = id
@@ -151,6 +154,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 null
             }
             else -> {
+                currentFragment = R.id.nav_home
                 HomeFragment()
             }
         }

@@ -30,18 +30,18 @@ class OldE3Connect(private var studentId: String = "",
                      completionHandler: (status: OldE3Interface.Status,
                                          response: JSONObject?) -> Unit) {
         val url = "http://e3.nctu.edu.tw/mService/Service.asmx$path"
+        Log.d("URL",url)
         val stringRequest = object : StringRequest(Request.Method.POST, url,
                 Response.Listener<String> { response ->
                     val xmlToJson = (XmlToJson.Builder(response).build()).toJson()
                     completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
                 },
                 Response.ErrorListener { _ ->
-                    if (!secondTry) {
+                    if (!secondTry && path != "/Login") {
                         getLoginTicket { _, _ ->
                             post(path, params, true, completionHandler)
                         }
-                    } else
-                        completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                    } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }) {
             override fun getParams(): Map<String, String> {
                 return params

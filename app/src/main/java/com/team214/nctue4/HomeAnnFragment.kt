@@ -52,12 +52,13 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
         super.onViewCreated(view, savedInstanceState)
         getData()
     }
+
     private fun race() {
-        if (oldE3get && newE3get){
+        if (oldE3get && newE3get) {
             val annItems = ArrayList<AnnItem>()
             annItems.addAll(newE3AnnItems)
             annItems.addAll(oldE3AnnItems)
-            (activity as MainActivity).runOnUiThread{
+            (activity as MainActivity).runOnUiThread {
                 Runnable {
                     annItems.sortByDescending { it.beginDate }
                     updateList(annItems)
@@ -71,7 +72,6 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
     private fun getData() {
         error_request?.visibility = View.GONE
         progress_bar.visibility = View.VISIBLE
-
         oldE3Service = (activity as MainActivity).oldE3Service
 //        announcement_refreshLayout.setOnRefreshListener(this)
         oldE3Service.getAnnouncementListLogin { status, response ->
@@ -82,9 +82,10 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                     race()
                 }
                 else -> {
-                    (activity as MainActivity).runOnUiThread{
+                    (activity as MainActivity).runOnUiThread {
                         Runnable {
                             error_request.visibility = View.VISIBLE
+                            progress_bar.visibility = View.GONE
                             dataStatus = DataStatus.INIT
                             error_request_retry.setOnClickListener { getData() }
                         }.run()
@@ -94,17 +95,33 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
         }
 
         newE3Service = (activity as MainActivity).newE3Service
-        newE3Service.getAnn { status, response ->
+        newE3Service.getCookie { status, _ ->
             when (status) {
-                OldE3Interface.Status.SUCCESS -> {
-                    newE3AnnItems = response!!
-                    newE3get = true
-                    race()
-                }
+                NewE3Interface.Status.SUCCESS ->
+                    newE3Service.getAnn { status, response ->
+                        when (status) {
+                            OldE3Interface.Status.SUCCESS -> {
+                                newE3AnnItems = response!!
+                                newE3get = true
+                                race()
+                            }
+                            else -> {
+                                (activity as MainActivity).runOnUiThread {
+                                    Runnable {
+                                        error_request.visibility = View.VISIBLE
+                                        progress_bar.visibility = View.GONE
+                                        dataStatus = DataStatus.INIT
+                                        error_request_retry.setOnClickListener { getData() }
+                                    }.run()
+                                }
+                            }
+                        }
+                    }
                 else -> {
-                    (activity as MainActivity).runOnUiThread{
+                    (activity as MainActivity).runOnUiThread {
                         Runnable {
                             error_request.visibility = View.VISIBLE
+                            progress_bar.visibility = View.GONE
                             dataStatus = DataStatus.INIT
                             error_request_retry.setOnClickListener { getData() }
                         }.run()
