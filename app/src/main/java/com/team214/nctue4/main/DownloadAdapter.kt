@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.team214.nctue4.R
 import com.team214.nctue4.utility.FileNameToColor
 import com.team214.nctue4.utility.FileNameToIcon
 import kotlinx.android.synthetic.main.item_course_doc.view.*
@@ -36,10 +37,10 @@ class DownloadAdapter(val context: Context,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): DownloadAdapter.ViewHolder {
+                                    viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_course_doc, parent, false)
-        return ViewHolder(context, view,  itemClickListener, longClickListener)
+        return ViewHolder(context, view, itemClickListener, longClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

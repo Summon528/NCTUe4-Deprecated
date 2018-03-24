@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.team214.nctue4.R
 import com.team214.nctue4.model.CourseItem
 import kotlinx.android.synthetic.main.item_course.view.*
 
@@ -39,7 +40,7 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
 
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): CourseAdapter.ViewHolder {
+                                    viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_course, parent, false)
         return ViewHolder(view, oldE3Starred, context, starClickListener, itemClickListener)

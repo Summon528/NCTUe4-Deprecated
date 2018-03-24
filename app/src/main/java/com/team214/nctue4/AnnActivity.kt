@@ -25,10 +25,10 @@ class AnnActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        if (this::oldE3Service.isInitialized)
-            oldE3Service.cancelPendingRequests()
-//        if (this::newE3Service.isInitialized)
-//            newE3Service.cancelPendingRequests()
+        if (dataStatus != DataStatus.FINISHED) {
+            if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
+            if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
+        }
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
 
@@ -57,7 +57,7 @@ class AnnActivity : AppCompatActivity() {
         when (requestCode) {
             0 -> {
                 if ((grantResults.isNotEmpty() &&
-                                grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     downloadFile(fileName, uri, this, this, ann_root, null)
                 }
                 return
@@ -68,7 +68,6 @@ class AnnActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ann)
-
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         getData()
@@ -76,18 +75,14 @@ class AnnActivity : AppCompatActivity() {
 
     private fun getData() {
         val bundle = intent.extras
-        val loginTicket = bundle.getString("loginTicket")
-        val accountId = bundle.getString("accountId")
         val annId = bundle.getString("annId")
         val from = bundle.getInt("from")
         val courseId = bundle.getString("courseId")
-        val newE3Cookie = bundle.getString("newE3Cookie")
+
         error_request?.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
-        Log.d("ann acti", annId)
+        progress_bar?.visibility = View.VISIBLE
         if (annId.contains("theme")) {
-            Log.d("new e3 ann ", annId)
-            newE3Service = NewE3Connect(newE3Cookie = newE3Cookie)
+            newE3Service = bundle.getParcelable("newE3Service")
             newE3Service.getAnnDetail(annId) { status, response ->
                 when (status) {
                     NewE3Interface.Status.SUCCESS -> {
@@ -135,7 +130,7 @@ class AnnActivity : AppCompatActivity() {
                 }
             }
         } else {
-            oldE3Service = OldE3Connect(loginTicket = loginTicket, accountId = accountId)
+            oldE3Service = bundle.getParcelable("oldE3Service")
             oldE3Service.getAnnouncementDetail(annId, from, courseId) { status, response ->
                 when (status) {
                     OldE3Interface.Status.SUCCESS -> {

@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.team214.nctue4.AnnActivity
+import com.team214.nctue4.R
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.*
 import kotlinx.android.synthetic.main.fragment_ann.*
@@ -27,7 +29,6 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
 
     override fun onStop() {
         super.onStop()
-        oldE3Service.cancelPendingRequests()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
 
@@ -58,12 +59,12 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
             val annItems = ArrayList<AnnItem>()
             annItems.addAll(newE3AnnItems)
             annItems.addAll(oldE3AnnItems)
-            (activity as MainActivity).runOnUiThread {
+            activity?.runOnUiThread {
                 Runnable {
                     annItems.sortByDescending { it.beginDate }
                     updateList(annItems)
                     dataStatus = DataStatus.FINISHED
-                    progress_bar.visibility = View.GONE
+                    progress_bar?.visibility = View.GONE
                 }.run()
             }
         }
@@ -71,9 +72,8 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
 
     private fun getData() {
         error_request?.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
+        progress_bar?.visibility = View.VISIBLE
         oldE3Service = (activity as MainActivity).oldE3Service
-//        announcement_refreshLayout.setOnRefreshListener(this)
         oldE3Service.getAnnouncementListLogin { status, response ->
             when (status) {
                 OldE3Interface.Status.SUCCESS -> {
@@ -82,12 +82,12 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                     race()
                 }
                 else -> {
-                    (activity as MainActivity).runOnUiThread {
+                    activity?.runOnUiThread {
                         Runnable {
-                            error_request.visibility = View.VISIBLE
-                            progress_bar.visibility = View.GONE
+                            error_request?.visibility = View.VISIBLE
+                            progress_bar?.visibility = View.GONE
                             dataStatus = DataStatus.INIT
-                            error_request_retry.setOnClickListener { getData() }
+                            error_request_retry?.setOnClickListener { getData() }
                         }.run()
                     }
                 }
@@ -100,7 +100,7 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                 NewE3Interface.Status.SUCCESS ->
                     newE3Service.getAnn { status, response ->
                         when (status) {
-                            OldE3Interface.Status.SUCCESS -> {
+                            NewE3Interface.Status.SUCCESS -> {
                                 newE3AnnItems = response!!
                                 newE3get = true
                                 race()
@@ -108,10 +108,10 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                             else -> {
                                 (activity as MainActivity).runOnUiThread {
                                     Runnable {
-                                        error_request.visibility = View.VISIBLE
-                                        progress_bar.visibility = View.GONE
+                                        error_request?.visibility = View.VISIBLE
+                                        progress_bar?.visibility = View.GONE
                                         dataStatus = DataStatus.INIT
-                                        error_request_retry.setOnClickListener { getData() }
+                                        error_request_retry?.setOnClickListener { getData() }
                                     }.run()
                                 }
                             }
@@ -120,10 +120,10 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                 else -> {
                     (activity as MainActivity).runOnUiThread {
                         Runnable {
-                            error_request.visibility = View.VISIBLE
-                            progress_bar.visibility = View.GONE
+                            error_request?.visibility = View.VISIBLE
+                            progress_bar?.visibility = View.GONE
                             dataStatus = DataStatus.INIT
-                            error_request_retry.setOnClickListener { getData() }
+                            error_request_retry?.setOnClickListener { getData() }
                         }.run()
                     }
                 }
@@ -133,7 +133,7 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
 
     private fun updateList(annItems: ArrayList<AnnItem>) {
         if (annItems.size == 0) {
-            empty_request.visibility = View.VISIBLE
+            empty_request?.visibility = View.VISIBLE
         } else {
             ann_login_recycler_view?.layoutManager = LinearLayoutManager(context)
             ann_login_recycler_view?.addItemDecoration(DividerItemDecoration(context,
@@ -149,15 +149,13 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                 intent.setClass(activity, AnnActivity::class.java)
                 intent.putExtra("annId", it.bulletinId)
                 intent.putExtra("courseName", it.courseName)
-                intent.putExtra("loginTicket", oldE3Service.getCredential().first)
-                intent.putExtra("accountId", oldE3Service.getCredential().second)
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("from", OldE3AnnFrom.HOME)
-                intent.putExtra("newE3Cookie", newE3Service.getCredential())
+                intent.putExtra("oldE3Service",oldE3Service)
+                intent.putExtra("newE3Service",newE3Service)
                 startActivity(intent)
             }
-            ann_login_recycler_view.visibility = View.VISIBLE
-//            announcement_refreshLayout.visibility = View.VISIBLE
+            ann_login_recycler_view?.visibility = View.VISIBLE
         }
         oldE3get = false
         newE3get = false

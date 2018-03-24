@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 
 import android.content.DialogInterface
@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.team214.nctue4.R
 import com.team214.nctue4.utility.openFile
 import kotlinx.android.synthetic.main.fragment_download.*
 import kotlinx.android.synthetic.main.status_empty.*
@@ -83,4 +84,4 @@ class DownloadFragment : Fragment() {
         }
     }
 
-}// Required empty public constructor
+}

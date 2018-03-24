@@ -1,9 +1,10 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.team214.nctue4.R
 import com.team214.nctue4.model.AnnItem
 import kotlinx.android.synthetic.main.item_home_announcement.view.*
 import java.text.SimpleDateFormat
@@ -27,7 +28,7 @@ class HomeAnnAdapter(private val dataSet: List<AnnItem>, private val fromHome: B
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): HomeAnnAdapter.ViewHolder {
+                                    viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(if (fromHome) R.layout.item_home_announcement_compact else
                     R.layout.item_home_announcement, parent, false)

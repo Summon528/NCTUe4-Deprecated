@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 
 import android.content.DialogInterface
@@ -11,9 +11,9 @@ import android.support.v7.app.AlertDialog
 import android.view.*
 import android.webkit.MimeTypeMap
 import android.widget.EditText
+import com.team214.nctue4.R
 import kotlinx.android.synthetic.main.dialog_download.*
 import java.io.File
-import kotlin.math.roundToInt
 
 
 class DownloadDialog : BottomSheetDialogFragment() {
@@ -33,7 +33,6 @@ class DownloadDialog : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.dialog_download, container, false)
     }
 
@@ -63,7 +62,7 @@ class DownloadDialog : BottomSheetDialogFragment() {
                 file.renameTo(File(file.parentFile, editText.text.toString()))
                 dismiss()
             }
-            val spacing = (20 * Resources.getSystem().displayMetrics.density).roundToInt()
+            val spacing = (20 * Resources.getSystem().displayMetrics.density).toInt()
             editDialogBuild.setView(editText, spacing, 0, spacing, 0)
             val editDialog = editDialogBuild.create()
             editDialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
@@ -82,4 +81,4 @@ class DownloadDialog : BottomSheetDialogFragment() {
         }
     }
 
-}// Required empty public constructor
+}

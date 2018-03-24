@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.team214.nctue4.R
 import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.CourseItem
 import com.team214.nctue4.utility.DataStatus
@@ -27,7 +28,6 @@ class StarredCoursesE3Fragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        oldE3Service.cancelPendingRequests()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
 

@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import com.team214.nctue4.LoginActivity
+import com.team214.nctue4.R
 import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.NewE3Connect
 import com.team214.nctue4.utility.OldE3Connect
@@ -37,7 +39,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onStop() {
         super.onStop()
-        if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
+        if (dataStatus != DataStatus.FINISHED) {
+            if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
+            if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
+        }
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
 
@@ -66,7 +71,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         oldE3Service = OldE3Connect(studentId, studentPassword)
 
         val studentPortalPassword = prefs.getString("studentPortalPassword", "")
-//        val newE3Cookie = prefs.getString("newE3Cookie", "")
         newE3Service = NewE3Connect(studentId, studentPortalPassword, "")
 
         currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
@@ -92,9 +96,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             dataStatus = DataStatus.FINISHED
         }
 
-//        newE3Service.getCookie { status, response ->
-////            completionHandler()
-//        }
     }
 
     override fun onBackPressed() {

@@ -1,6 +1,8 @@
 package com.team214.nctue4.utility
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Parcelable
 import android.util.Log
 import com.android.volley.Request
 import com.android.volley.Response
@@ -11,15 +13,18 @@ import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.model.CourseItem
 import com.team214.nctue4.model.DocGroupItem
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
+import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
 
+@Parcelize
+@SuppressLint("ParcelCreator")
 class OldE3Connect(private var studentId: String = "",
                    private var studentPassword: String = "",
                    private var loginTicket: String = "",
-                   private var accountId: String = "") : OldE3Interface {
+                   private var accountId: String = "") : OldE3Interface,Parcelable {
 
     private val tag = OldE3Connect::class.java.simpleName
 

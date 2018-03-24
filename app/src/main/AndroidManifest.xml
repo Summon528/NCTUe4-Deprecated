@@ -24,7 +24,7 @@
         </provider>
 
         <activity
-            android:name="com.team214.nctue4.MainActivity"
+            android:name="com.team214.nctue4.main.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Main"/>
@@ -43,11 +43,11 @@
             android:name="com.team214.nctue4.course.CourseActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_course"
-            android:parentActivityName="com.team214.nctue4.MainActivity"
+            android:parentActivityName="com.team214.nctue4.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.team214.nctue4.MainActivity" />
+                android:value="com.team214.nctue4.main.MainActivity" />
         </activity>
         <activity
             android:name="com.team214.nctue4.AnnActivity"

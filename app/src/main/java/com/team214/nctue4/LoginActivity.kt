@@ -7,11 +7,13 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import com.team214.nctue4.main.MainActivity
 import com.team214.nctue4.utility.NewE3Connect
 import com.team214.nctue4.utility.NewE3Interface
 import com.team214.nctue4.utility.OldE3Connect
 import com.team214.nctue4.utility.OldE3Interface
 import kotlinx.android.synthetic.main.activity_login.*
+import java.io.File
 
 
 class LoginActivity : AppCompatActivity() {
@@ -23,7 +25,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
-//        if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
+        if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
     }
 
     private fun loginSuccess() {
@@ -76,6 +78,9 @@ class LoginActivity : AppCompatActivity() {
             prefsEditor.remove("studentPassword")
             prefsEditor.remove("studentPortalPassword")
             prefsEditor.apply()
+            val path = this.getExternalFilesDir(null)
+            val dir = File(path, "Download")
+            dir.deleteRecursively()
         } else {
             val studentId = prefs.getString("studentId", "")
             val studentPassword = prefs.getString("studentPassword", "")
@@ -124,7 +129,6 @@ class LoginActivity : AppCompatActivity() {
                         val prefsEditor = prefs.edit()
                         prefsEditor.putString("studentId", studentId)
                         prefsEditor.putString("studentPortalPassword", studentPortalPassword)
-//                        prefsEditor.putString("newE3Cookie", response)
                         prefsEditor.apply()
                         newE3Success = true
                         loginSuccess()

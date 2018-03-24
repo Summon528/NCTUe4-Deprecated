@@ -33,7 +33,7 @@ interface NewE3Interface {
 //                          completionHandler: (status: Status,
 //                                              response: ArrayList<AttachItem>?) -> Unit)
 
-//    fun cancelPendingRequests()
+    fun cancelPendingRequests()
 
     fun getCredential(): String
 }
