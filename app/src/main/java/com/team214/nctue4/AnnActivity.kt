@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
@@ -57,7 +56,7 @@ class AnnActivity : AppCompatActivity() {
         when (requestCode) {
             0 -> {
                 if ((grantResults.isNotEmpty() &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                                grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     downloadFile(fileName, uri, this, this, ann_root, null)
                 }
                 return
@@ -89,9 +88,13 @@ class AnnActivity : AppCompatActivity() {
                         this.runOnUiThread {
                             Runnable {
                                 error_request.visibility = View.GONE
-                                // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
-                                val content = response!!.content.replace("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))".toRegex(),
-                                        "http://e3.nctu.edu.tw/")
+                                val content: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
+                                    response!!.content.replace("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))".toRegex(),
+                                            "http://e3.nctu.edu.tw/")
+                                } else {
+                                    response!!.content
+                                }
                                 ann_caption.text = response.caption
                                 ann_courseName.text = response.courseName
                                 val sdf = SimpleDateFormat("yyyy/MM/dd")
