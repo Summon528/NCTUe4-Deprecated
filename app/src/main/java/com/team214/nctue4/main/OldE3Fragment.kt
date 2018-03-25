@@ -70,20 +70,20 @@ class OldE3Fragment : Fragment() {
         if (courseItems.isEmpty()) empty_request?.visibility = View.VISIBLE
         else {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val oldE3Starred = HashSet(prefs.getStringSet("oldE3Starred", HashSet<String>()))
+            val oldE3Bookmarked = HashSet(prefs.getStringSet("oldE3Bookmarked", HashSet<String>()))
             old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
             old_e3_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
-            old_e3_recycler_view?.adapter = CourseAdapter(courseItems, HashSet(oldE3Starred),
+            old_e3_recycler_view?.adapter = CourseAdapter(courseItems, HashSet(oldE3Bookmarked),
                     context, fun(view: View, courseId: String) {
-                if (oldE3Starred.contains(courseId)) {
-                    oldE3Starred.remove(courseId)
+                if (oldE3Bookmarked.contains(courseId)) {
+                    oldE3Bookmarked.remove(courseId)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
                 } else {
-                    oldE3Starred.add(courseId)
+                    oldE3Bookmarked.add(courseId)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
                 }
-                prefs.edit().putStringSet("oldE3Starred", oldE3Starred).apply()
+                prefs.edit().putStringSet("oldE3Bookmarked", oldE3Bookmarked).apply()
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)

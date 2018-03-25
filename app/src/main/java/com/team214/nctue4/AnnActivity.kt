@@ -16,6 +16,7 @@ import com.team214.nctue4.utility.*
 import kotlinx.android.synthetic.main.activity_ann.*
 import kotlinx.android.synthetic.main.status_error.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AnnActivity : AppCompatActivity() {
@@ -80,7 +81,7 @@ class AnnActivity : AppCompatActivity() {
                 "http://e3.nctu.edu.tw/")
         ann_caption.text = annItem.caption
         ann_courseName.text = annItem.courseName
-        val sdf = SimpleDateFormat("yyyy/MM/dd")
+        val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.US)
         ann_date.text = sdf.format(annItem.beginDate)
         ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE

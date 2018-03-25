@@ -11,13 +11,13 @@ import com.team214.nctue4.model.CourseItem
 import kotlinx.android.synthetic.main.item_course.view.*
 
 class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
-                    private val oldE3Starred: HashSet<String>,
+                    private val oldE3Bookmarked: HashSet<String>,
                     private val context: Context?,
                     private val starClickListener: ((view: View, courseId: String) -> Unit),
                     private val itemClickListener: (CourseItem) -> Unit) :
         RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     class ViewHolder(val view: View,
-                     private val oldE3Starred: HashSet<String>,
+                     private val oldE3Bookmarked: HashSet<String>,
                      private val context: Context?,
                      private val starClickListener: ((view: View, courseId: String) -> Unit),
                      private val itemClickListener: (CourseItem) -> Unit) : RecyclerView.ViewHolder(view) {
@@ -28,7 +28,7 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
                 itemClickListener(course)
             }
 
-            if (oldE3Starred.contains(course.courseId)) {
+            if (oldE3Bookmarked.contains(course.courseId)) {
                 view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
             }
             view.course_star?.setOnClickListener {
@@ -43,7 +43,7 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
                                     viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_course, parent, false)
-        return ViewHolder(view, oldE3Starred, context, starClickListener, itemClickListener)
+        return ViewHolder(view, oldE3Bookmarked, context, starClickListener, itemClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

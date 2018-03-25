@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
 
 
-class StarredCoursesE3Fragment : Fragment() {
+class BookmarkedFragment : Fragment() {
     private lateinit var oldE3Service: OldE3Connect
     private var dataStatus = DataStatus.INIT
 
@@ -38,7 +38,7 @@ class StarredCoursesE3Fragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (arguments?.getBoolean("home") == null)
-            activity!!.setTitle(R.string.starred_courses)
+            activity!!.setTitle(R.string.bookmarked_courses)
         return inflater.inflate(R.layout.fragment_old_e3, container, false)
     }
 
@@ -70,30 +70,30 @@ class StarredCoursesE3Fragment : Fragment() {
 
     private fun updateList(courseItems: ArrayList<CourseItem>) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val oldE3Starred = HashSet(prefs.getStringSet("oldE3Starred", HashSet<String>()))
-        if (oldE3Starred.isEmpty()) empty_request?.visibility = View.VISIBLE
-        val starredCourse =
+        val oldE3Bookmarked = HashSet(prefs.getStringSet("oldE3Bookmarked", HashSet<String>()))
+        if (oldE3Bookmarked.isEmpty()) empty_request?.visibility = View.VISIBLE
+        val bookmarked =
                 if (arguments?.getBoolean("home") != null) {
-                    val tmp = courseItems.filter { oldE3Starred.contains(it.courseId) }
+                    val tmp = courseItems.filter { oldE3Bookmarked.contains(it.courseId) }
                     ArrayList(tmp.subList(0, minOf(5, tmp.size)))
-                } else ArrayList(courseItems.filter { oldE3Starred.contains(it.courseId) })
-        if (starredCourse.isEmpty()) empty_request?.visibility = View.VISIBLE
+                } else ArrayList(courseItems.filter { oldE3Bookmarked.contains(it.courseId) })
+        if (bookmarked.isEmpty()) empty_request?.visibility = View.VISIBLE
         else {
             old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
             if (arguments?.getBoolean("home") != null)
                 old_e3_recycler_view?.isNestedScrollingEnabled = false
             old_e3_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
-            old_e3_recycler_view?.adapter = CourseAdapter(starredCourse, HashSet(oldE3Starred),
+            old_e3_recycler_view?.adapter = CourseAdapter(bookmarked, HashSet(oldE3Bookmarked),
                     context, fun(view: View, courseId: String) {
-                if (oldE3Starred.contains(courseId)) {
-                    oldE3Starred.remove(courseId)
+                if (oldE3Bookmarked.contains(courseId)) {
+                    oldE3Bookmarked.remove(courseId)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
                 } else {
-                    oldE3Starred.add(courseId)
+                    oldE3Bookmarked.add(courseId)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
                 }
-                prefs.edit().putStringSet("oldE3Starred", oldE3Starred).apply()
+                prefs.edit().putStringSet("oldE3Bookmarked", oldE3Bookmarked).apply()
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)

@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingRight="10dp"
     android:paddingBottom="15dp"
+    android:paddingRight="10dp"
     android:paddingTop="15dp">
 
     <RelativeLayout
@@ -44,19 +44,25 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/e3_identifier"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ann_newe3_rounded_squre"
-                android:gravity="center"
-                android:maxLines="1"
-                android:paddingBottom="3dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="3dp"
-                android:text="New"
-                android:textColor="#FFFFFF" />
+            <ImageView
+                android:id="@+id/e3_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_old_e3"
+                android:tint="@color/old_e3" />
+            <!--<TextView-->
+            <!--android:id="@+id/e3_identifier"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/ann_newe3_rounded_squre"-->
+            <!--android:gravity="center"-->
+            <!--android:maxLines="1"-->
+            <!--android:paddingBottom="3dp"-->
+            <!--android:paddingLeft="10dp"-->
+            <!--android:paddingRight="10dp"-->
+            <!--android:paddingTop="3dp"-->
+            <!--android:text="New"-->
+            <!--android:textColor="#FFFFFF" />-->
 
             <TextView
                 android:id="@+id/announcement_beginDate"
@@ -67,7 +73,7 @@
                 android:text="10/23"
                 android:textColor="#535353"
                 android:textSize="14sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
 
@@ -82,8 +88,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
 
             <TextView
                 android:id="@+id/announcement_caption"
@@ -93,7 +100,7 @@
                 android:maxLines="1"
                 android:text="課堂標題"
                 android:textColor="@android:color/black"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
 
             <TextView
@@ -134,16 +141,7 @@
 
     <!--</LinearLayout>-->
 
-    <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
-    <!--&lt;!&ndash;android:id="@+id/e3_image"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_alignParentEnd="true"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_gravity="end"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:paddingEnd="8dp"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:src="@drawable/ic_new_e3"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:tint="@color/md_grey_500"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:visibility="gone" />&ndash;&gt;-->
+
     <!--</RelativeLayout>-->
 
 

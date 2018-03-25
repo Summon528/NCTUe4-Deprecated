@@ -143,7 +143,7 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
             if (fromHome) ann_login_recycler_view?.isNestedScrollingEnabled = false
             ann_login_recycler_view?.adapter = HomeAnnAdapter(
                     if (fromHome) annItems.slice(0..minOf(4, annItems.size - 1))
-                    else annItems.toList(), fromHome) {
+                    else annItems.toList(), context!!) {
                 val intent = Intent()
                 intent.setClass(activity, AnnActivity::class.java)
                 if (it.e3Type == E3Type.OLD) {

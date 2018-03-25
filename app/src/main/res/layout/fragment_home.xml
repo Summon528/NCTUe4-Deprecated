@@ -121,7 +121,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="15dp"
                 android:gravity="center"
-                android:text="@string/starred_courses"
+                android:text="@string/bookmarked_courses"
                 android:textSize="16sp" />
 
 
@@ -144,7 +144,7 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:id="@+id/home_starred"
+                        android:id="@+id/home_bookmarked"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -158,7 +158,7 @@
                         android:focusableInTouchMode="false"
                         android:gravity="center"
                         android:padding="8dp"
-                        android:text="@string/more_starredcourse"
+                        android:text="@string/more_bookmarked_course"
                         android:textSize="16sp" />
 
                 </LinearLayout>

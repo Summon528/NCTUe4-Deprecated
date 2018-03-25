@@ -128,9 +128,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 currentFragment = id
                 HomeAnnFragment()
             }
-            R.id.nav_starred_courses -> {
+            R.id.nav_bookmarked -> {
                 currentFragment = id
-                StarredCoursesE3Fragment()
+                BookmarkedFragment()
             }
             R.id.nav_download -> {
                 currentFragment = id

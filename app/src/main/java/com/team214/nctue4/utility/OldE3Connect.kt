@@ -164,7 +164,7 @@ class OldE3Connect(private var studentId: String = "",
                 val arrayOfBulletinData = response!!.getJSONObject("ArrayOfBulletinData")
                 val data = arrayOfBulletinData.forceGetJsonArray("BulletinData")
                 val annItems = ArrayList<AnnItem>()
-                val df = SimpleDateFormat("yyyy/M/d", Locale.US)
+                val df = SimpleDateFormat("yyyy/M/d",Locale.US)
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
                             val attachItemList = ArrayList<AttachItem>()

@@ -42,13 +42,13 @@ class HomeFragment : Fragment() {
         val fragment2 = DownloadFragment()
         fragment2.arguments = bundle
         transaction.replace(R.id.home_download, fragment2)
-        val fragment3 = StarredCoursesE3Fragment()
+        val fragment3 = BookmarkedFragment()
         fragment3.arguments = bundle
-        transaction.replace(R.id.home_starred, fragment3)
+        transaction.replace(R.id.home_bookmarked, fragment3)
         transaction.commit()
         home_more_ann?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_ann) }
         home_more_download?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_download) }
-        home_more_course?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_starred_courses) }
+        home_more_course?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_bookmarked) }
 
     }
 
