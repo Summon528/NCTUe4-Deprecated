@@ -77,7 +77,12 @@
     <string name="rename">Rename</string>
     <string name="share">Share</string>
     <string name="positive">OK</string>
+
     <string name="cancel">Cancel</string>
 
     <string name="no_compatible_app">No app can handle this kinfile.</string>
+
+    <!--identifier-->
+    <string name="ann_e3_identifier">Old</string>
+    <string name="ann_new_e3_identifier">New</string>
 </resources>

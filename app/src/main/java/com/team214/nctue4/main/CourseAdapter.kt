@@ -29,7 +29,7 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
             }
 
             if (oldE3Starred.contains(course.courseId)) {
-                view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_orange_500))
+                view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
             }
             view.course_star?.setOnClickListener {
                 starClickListener(view, course.courseId)

@@ -91,7 +91,7 @@ class StarredCoursesE3Fragment : Fragment() {
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
                 } else {
                     oldE3Starred.add(courseId)
-                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_orange_500))
+                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
                 }
                 prefs.edit().putStringSet("oldE3Starred", oldE3Starred).apply()
             }, {
