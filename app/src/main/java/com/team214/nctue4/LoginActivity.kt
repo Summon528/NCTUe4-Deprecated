@@ -6,6 +6,11 @@ import android.os.Looper
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.team214.nctue4.main.MainActivity
 import com.team214.nctue4.utility.NewE3Connect
@@ -45,7 +50,8 @@ class LoginActivity : AppCompatActivity() {
         isWrongCredentials = true
         runOnUiThread {
             login_error_text_view.text = getString(R.string.login_id_or_password_error)
-            login_error_text_view?.visibility = View.VISIBLE
+            //login_error_text_view?.visibility = View.VISIBLE
+            login_button.text = getString(R.string.login_id_or_password_error)
             login_progressbar?.visibility = View.GONE
             student_id.isEnabled = true
             student_password.isEnabled = true
@@ -68,7 +74,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (intent.getBooleanExtra("logout", false)) {
@@ -94,6 +99,13 @@ class LoginActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_login)
+
+        val animFade = AnimationUtils.loadAnimation(this, R.anim.fade)
+        logo.startAnimation(animFade)
+        LoginBox.startAnimation(animFade)
+        login_button.startAnimation(animFade)
+
+
         login_button?.setOnClickListener {
             isServiceError = false
             isWrongCredentials = false
