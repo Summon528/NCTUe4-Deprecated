@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -144,10 +145,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 NewE3Fragment()
             }
             R.id.nav_log_out -> {
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.putExtra("logout", true)
-                startActivity(intent)
-                finish()
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.logout)
+                        .setMessage(R.string.logout_confirm)
+                        .setPositiveButton(R.string.positive) { _, _ ->
+                            val intent = Intent(this, LoginActivity::class.java)
+                            intent.putExtra("logout", true)
+                            startActivity(intent)
+                            finish()
+                        }.setNegativeButton(R.string.cancel) { dialog, which ->
+                            dialog.cancel()
+                        }.show()
                 null
             }
             R.id.nav_about -> {

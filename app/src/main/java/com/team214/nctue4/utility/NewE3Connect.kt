@@ -20,7 +20,7 @@ class NewE3Connect(private var studentId: String = "",
                    private var newE3Cookie: String = "") : NewE3Interface, Parcelable {
 
     companion object {
-        const private val HOST = "e3new.nctu.edu.tw"
+        private const val HOST = "e3new.nctu.edu.tw"
     }
 
     private val client = OkHttpClient().newBuilder().followRedirects(false)
@@ -56,7 +56,7 @@ class NewE3Connect(private var studentId: String = "",
                                          response: String?) -> Unit) {
 
         val url = "https://e3new.nctu.edu.tw$path"
-
+        Log.d("NewE3URL", url)
         val formBody = FormBody.Builder()
                 .add("username", studentId)
                 .add("password", studentPassword).build()

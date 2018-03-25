@@ -36,7 +36,6 @@ class DownloadFragment : Fragment() {
             if (arguments?.getBoolean("home") != null) {
                 files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })
             } else files.addAll(fileList.filter { it != null })
-            Log.d("FILES", files.toString())
             files.sortByDescending { it.lastModified() }
             download_recycler?.layoutManager = LinearLayoutManager(context)
             if (arguments?.getBoolean("home") != null)
@@ -51,7 +50,6 @@ class DownloadFragment : Fragment() {
                         val dialog = DownloadDialog()
                         dialog.setOnDismissListener(object : DialogInterface.OnDismissListener {
                             override fun onDismiss(dialog: DialogInterface?) {
-                                Log.d("Up", "date")
                                 updateList()
                             }
                         })

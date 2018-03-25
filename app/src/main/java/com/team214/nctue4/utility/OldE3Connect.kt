@@ -24,7 +24,7 @@ import java.util.*
 class OldE3Connect(private var studentId: String = "",
                    private var studentPassword: String = "",
                    private var loginTicket: String = "",
-                   private var accountId: String = "") : OldE3Interface,Parcelable {
+                   private var accountId: String = "") : OldE3Interface, Parcelable {
 
     private val tag = OldE3Connect::class.java.simpleName
 
@@ -35,7 +35,7 @@ class OldE3Connect(private var studentId: String = "",
                      completionHandler: (status: OldE3Interface.Status,
                                          response: JSONObject?) -> Unit) {
         val url = "http://e3.nctu.edu.tw/mService/Service.asmx$path"
-        Log.d("URL",url)
+        Log.d("OldE3URL", url)
         val stringRequest = object : StringRequest(Request.Method.POST, url,
                 Response.Listener<String> { response ->
                     val xmlToJson = (XmlToJson.Builder(response).build()).toJson()
@@ -104,8 +104,8 @@ class OldE3Connect(private var studentId: String = "",
         }
     }
 
-    override fun getAnnouncementListLogin(count : Int, completionHandler: (status: OldE3Interface.Status,
-                                                              response: ArrayList<AnnItem>?) -> Unit) {
+    override fun getAnnouncementListLogin(count: Int, completionHandler: (status: OldE3Interface.Status,
+                                                                          response: ArrayList<AnnItem>?) -> Unit) {
         post("/GetAnnouncementList_LoginByCountWithAttach", hashMapOf(
                 "loginTicket" to loginTicket,
                 "studentId" to accountId,
@@ -155,7 +155,7 @@ class OldE3Connect(private var studentId: String = "",
     override fun getCourseAnn(courseId: String, courseName: String,
                               completionHandler: (status: OldE3Interface.Status,
                                                   response: ArrayList<AnnItem>?) -> Unit) {
-        post("/GetAnnouncementList", hashMapOf(
+        post("/GetAnnouncementListWithAttach", hashMapOf(
                 "loginTicket" to loginTicket,
                 "courseId" to courseId,
                 "bulType" to "1"
@@ -167,6 +167,20 @@ class OldE3Connect(private var studentId: String = "",
                 val df = SimpleDateFormat("yyyy/M/d", Locale.US)
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
+                            val attachItemList = ArrayList<AttachItem>()
+                            val attachNames = it.forceGetJsonArray("AttachFileName")
+                            val attachUrls = it.forceGetJsonArray("AttachFileURL")
+                            val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
+                            if ((attachNames.get(0) as JSONObject).getString("string") != "") {
+                                (0 until attachNames.length()).map {
+                                    AttachItem(
+                                            (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
+                                            (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
+                                            (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
+                                }.forEach {
+                                    attachItemList.add(it)
+                                }
+                            }
                             annItems.add(AnnItem(
                                     it.getInt("BulType"),
                                     it.getString("BulletinId"),
@@ -177,7 +191,7 @@ class OldE3Connect(private var studentId: String = "",
                                     df.parse(it.getString("EndDate")),
                                     it.getString("CourseId"),
                                     E3Type.OLD,
-                                    ArrayList()
+                                    attachItemList
                             ))
                         }
                 completionHandler(status, annItems)
@@ -217,7 +231,6 @@ class OldE3Connect(private var studentId: String = "",
 
         val arrayOfMaterialDocData = response.getJSONObject("ArrayOfMaterialDocData")
         val data = arrayOfMaterialDocData.forceGetJsonArray("MaterialDocData")
-        Log.d("RESP", response.toString())
         (0 until data.length()).map { data.get(it) as JSONObject }
                 .forEach {
                     var dateArray: List<String> = it.getString("BeginDate").split("/")

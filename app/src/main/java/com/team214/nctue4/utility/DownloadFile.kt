@@ -3,10 +3,7 @@ package com.team214.nctue4.utility
 import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -31,7 +28,11 @@ fun openFile(fileName: String, file: File, context: Context, activity: Activity)
                     ".com.team214", file)
     intent.setDataAndType(fileUri, type)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    activity.startActivity(intent)
+    try {
+        activity.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, R.string.no_compatible_app, Toast.LENGTH_SHORT).show()
+    }
 
 }
 

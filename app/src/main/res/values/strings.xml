@@ -5,6 +5,7 @@
     <!--Main Activity-->
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="logout_confirm">Logging out will erase your current starred courses and download history. Continue?</string>
 
     <!--Nav Drawer-->
     <string name="home">Home</string>
@@ -76,4 +77,7 @@
     <string name="rename">Rename</string>
     <string name="share">Share</string>
     <string name="positive">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="no_compatible_app">No app can handle this kinfile.</string>
 </resources>

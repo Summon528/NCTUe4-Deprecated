@@ -48,6 +48,7 @@ class DownloadDialog : BottomSheetDialogFragment() {
                         file.delete()
                         dismiss()
                     }
+                    .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
             deleteDialog.show()
         }
         download_rename.setOnClickListener {
@@ -58,10 +59,10 @@ class DownloadDialog : BottomSheetDialogFragment() {
             editDialogBuild.setView(editText)
             editText.requestFocus()
             editText.setSelection(0, file.nameWithoutExtension.length)
-            editDialogBuild.setPositiveButton(R.string.positive) { _, _ ->
+            editDialogBuild.setPositiveButton(R.string.positive) { dialog, _ ->
                 file.renameTo(File(file.parentFile, editText.text.toString()))
-                dismiss()
-            }
+                dialog.cancel()
+            }.setNegativeButton(R.string.cancel) { _, _ -> dismiss() }
             val spacing = (20 * Resources.getSystem().displayMetrics.density).toInt()
             editDialogBuild.setView(editText, spacing, 0, spacing, 0)
             val editDialog = editDialogBuild.create()

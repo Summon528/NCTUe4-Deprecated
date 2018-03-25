@@ -49,7 +49,7 @@ class StarredCoursesE3Fragment : Fragment() {
 
     private fun getData() {
         error_request?.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
+        progress_bar?.visibility = View.VISIBLE
 
         oldE3Service = (activity as MainActivity).oldE3Service
         oldE3Service.getCourseList { status, response ->
@@ -58,26 +58,26 @@ class StarredCoursesE3Fragment : Fragment() {
                     updateList(response!!)
                 }
                 else -> {
-                    error_request.visibility = View.VISIBLE
+                    error_request?.visibility = View.VISIBLE
                     dataStatus = DataStatus.INIT
-                    error_request_retry.setOnClickListener { getData() }
+                    error_request_retry?.setOnClickListener { getData() }
                 }
             }
             dataStatus = DataStatus.FINISHED
-            progress_bar.visibility = View.GONE
+            progress_bar?.visibility = View.GONE
         }
     }
 
     private fun updateList(courseItems: ArrayList<CourseItem>) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val oldE3Starred = HashSet(prefs.getStringSet("oldE3Starred", HashSet<String>()))
-        if (oldE3Starred.isEmpty()) empty_request.visibility = View.VISIBLE
+        if (oldE3Starred.isEmpty()) empty_request?.visibility = View.VISIBLE
         val starredCourse =
                 if (arguments?.getBoolean("home") != null) {
                     val tmp = courseItems.filter { oldE3Starred.contains(it.courseId) }
                     ArrayList(tmp.subList(0, minOf(5, tmp.size)))
                 } else ArrayList(courseItems.filter { oldE3Starred.contains(it.courseId) })
-        if (starredCourse.isEmpty()) empty_request.visibility = View.VISIBLE
+        if (starredCourse.isEmpty()) empty_request?.visibility = View.VISIBLE
         else {
             old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
             if (arguments?.getBoolean("home") != null)
@@ -101,8 +101,8 @@ class StarredCoursesE3Fragment : Fragment() {
                 intent.putExtra("courseName", it.courseName)
                 startActivity(intent)
             })
-            old_e3_recycler_view.visibility = View.VISIBLE
+            old_e3_recycler_view?.visibility = View.VISIBLE
         }
-        progress_bar.visibility = View.GONE
+        progress_bar?.visibility = View.GONE
     }
 }

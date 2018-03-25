@@ -58,7 +58,23 @@ class FileNameToIcon {
                 "odp" to R.drawable.file_powerpoint,
                 "doc" to R.drawable.file_word,
                 "docx" to R.drawable.file_word,
-                "odt" to R.drawable.file_word
+                "odt" to R.drawable.file_word,
+                "webm" to R.drawable.file_video,
+                "mkv" to R.drawable.file_video,
+                "flv" to R.drawable.file_video,
+                "avi" to R.drawable.file_video,
+                "mov" to R.drawable.file_video,
+                "wmv" to R.drawable.file_video,
+                "rmvb" to R.drawable.file_video,
+                "mp4" to R.drawable.file_video,
+                "m4v" to R.drawable.file_video,
+                "mpg" to R.drawable.file_video,
+                "mpeg" to R.drawable.file_video,
+                "mp2" to R.drawable.file_video,
+                "mpe" to R.drawable.file_video,
+                "m2v" to R.drawable.file_video,
+                "m4v" to R.drawable.file_video,
+                "3gp" to R.drawable.file_video
         )
     }
 }

@@ -88,7 +88,7 @@
                 android:layout_gravity="end"
                 android:paddingEnd="8dp"
                 android:id="@+id/e3_image"
-                android:tint="@color/md_grey_500"
+                android:tint="@color/md_grey_400"
                 android:src="@drawable/ic_new_e3" />
         </RelativeLayout>
 
