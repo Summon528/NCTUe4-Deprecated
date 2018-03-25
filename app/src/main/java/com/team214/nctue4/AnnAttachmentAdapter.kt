@@ -23,7 +23,7 @@ class AnnAttachmentAdapter(val context: Context,  val dataSet: ArrayList<AttachI
             view.announcement_attach_img.setColorFilter(getColor(context, FileNameToColor().getId(attach.name)))
             view.announcement_attach_bar.setBackgroundColor(getColor(context, FileNameToColor().getId(attach.name)))
             view.announcement_attach_fileSize.text = attach.fileSize
-            view.announcement_attach_button.setOnClickListener{
+            view.announcement_attach_button?.setOnClickListener{
                 itemClickListener(attach)
             }
         }

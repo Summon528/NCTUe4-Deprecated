@@ -83,7 +83,7 @@ class CourseDocDialog : DialogFragment() {
             }
 
         }
-        progress_bar.visibility = View.GONE
+        progress_bar?.visibility = View.GONE
 
     }
 

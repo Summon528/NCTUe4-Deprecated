@@ -22,7 +22,7 @@ class HomeAnnAdapter(private val dataSet: List<AnnItem>, private val fromHome: B
             view.announcement_caption.text = ann.caption
             val sdf = SimpleDateFormat("yyyy/MM/dd")
             view.announcement_beginDate.text = sdf.format(ann.beginDate)
-            view.setOnClickListener {
+            view?.setOnClickListener {
                 itemClickListener(ann)
             }
             if (!fromHome) {

@@ -91,7 +91,7 @@ class CourseActivity : AppCompatActivity() {
                 }
             }
         }
-        course_bottom_nav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        course_bottom_nav?.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
 }

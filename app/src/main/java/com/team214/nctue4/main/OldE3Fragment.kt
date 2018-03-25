@@ -48,7 +48,7 @@ class OldE3Fragment : Fragment() {
 
     private fun getData() {
         error_request?.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
+        progress_bar?.visibility = View.VISIBLE
         oldE3Service = (activity as MainActivity).oldE3Service
         oldE3Service.getCourseList { status, response ->
             when (status) {
@@ -56,18 +56,18 @@ class OldE3Fragment : Fragment() {
                     updateList(response!!)
                 }
                 else -> {
-                    error_request.visibility = View.VISIBLE
+                    error_request?.visibility = View.VISIBLE
                     dataStatus = DataStatus.INIT
-                    error_request_retry.setOnClickListener { getData() }
+                    error_request_retry?.setOnClickListener { getData() }
                 }
             }
             dataStatus = DataStatus.FINISHED
-            progress_bar.visibility = View.GONE
+            progress_bar?.visibility = View.GONE
         }
     }
 
     private fun updateList(courseItems: ArrayList<CourseItem>) {
-        if (courseItems.isEmpty()) empty_request.visibility = View.VISIBLE
+        if (courseItems.isEmpty()) empty_request?.visibility = View.VISIBLE
         else {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val oldE3Starred = HashSet(prefs.getStringSet("oldE3Starred", HashSet<String>()))
@@ -92,8 +92,8 @@ class OldE3Fragment : Fragment() {
                 startActivity(intent)
             })
 
-            old_e3_recycler_view.visibility = View.VISIBLE
+            old_e3_recycler_view?.visibility = View.VISIBLE
         }
-        progress_bar.visibility = View.GONE
+        progress_bar?.visibility = View.GONE
     }
 }

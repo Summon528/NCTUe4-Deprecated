@@ -74,7 +74,7 @@ class AnnActivity : AppCompatActivity() {
     }
 
     private fun showAnn(annItem: AnnItem) {
-        error_request.visibility = View.GONE
+        error_request?.visibility = View.GONE
         // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
         val content = annItem!!.content.replace("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))".toRegex(),
                 "http://e3.nctu.edu.tw/")
@@ -96,8 +96,8 @@ class AnnActivity : AppCompatActivity() {
             }
 
         }
-        ann_container.visibility = View.VISIBLE
-        progress_bar.visibility = View.GONE
+        ann_container?.visibility = View.VISIBLE
+        progress_bar?.visibility = View.GONE
         dataStatus = DataStatus.FINISHED
     }
 
@@ -120,10 +120,10 @@ class AnnActivity : AppCompatActivity() {
                     else -> {
                         this.runOnUiThread {
                             Runnable {
-                                error_request.visibility = View.VISIBLE
+                                error_request?.visibility = View.VISIBLE
                                 dataStatus = DataStatus.INIT
-                                error_request_retry.setOnClickListener { getData() }
-                                progress_bar.visibility = View.GONE
+                                error_request_retry?.setOnClickListener { getData() }
+                                progress_bar?.visibility = View.GONE
                                 dataStatus = DataStatus.FINISHED
                             }.run()
                         }

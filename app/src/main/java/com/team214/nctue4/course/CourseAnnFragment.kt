@@ -55,10 +55,10 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun getData() {
         error_request?.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
+        progress_bar?.visibility = View.VISIBLE
 
         oldE3Service = (activity as CourseActivity).oldE3Service
-        announcement_refreshLayout.setOnRefreshListener(this)
+        announcement_refreshLayout?.setOnRefreshListener(this)
         val courseId = arguments!!.getString("courseId")
         val courseName = arguments!!.getString("courseName")
         activity!!.title = courseName
@@ -70,19 +70,19 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     }
                 }
                 else -> {
-                    error_request.visibility = View.VISIBLE
+                    error_request?.visibility = View.VISIBLE
                     dataStatus = DataStatus.INIT
-                    error_request_retry.setOnClickListener { getData() }
+                    error_request_retry?.setOnClickListener { getData() }
                 }
             }
             dataStatus = DataStatus.FINISHED
-            progress_bar.visibility = View.GONE
+            progress_bar?.visibility = View.GONE
         }
     }
 
     private fun update(annItems: ArrayList<AnnItem>) {
         if (annItems.size == 0) {
-            empty_request.visibility = View.VISIBLE
+            empty_request?.visibility = View.VISIBLE
         } else {
             announcement_course_recycler_view?.layoutManager = LinearLayoutManager(context)
             announcement_course_recycler_view?.addItemDecoration(DividerItemDecoration(context,
@@ -96,7 +96,7 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
                 startActivity(intent)
             }
-            announcement_refreshLayout.visibility = View.VISIBLE
+            announcement_refreshLayout?.visibility = View.VISIBLE
         }
     }
 }

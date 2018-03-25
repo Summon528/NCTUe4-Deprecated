@@ -43,7 +43,7 @@ class CourseDocListFragment : Fragment() {
 
     private fun getData() {
         error_request?.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
+        progress_bar?.visibility = View.VISIBLE
 
         oldE3Service = (activity as CourseActivity).oldE3Service
         val courseId = arguments!!.getString("courseId")
@@ -53,19 +53,19 @@ class CourseDocListFragment : Fragment() {
                     updateList(response!!)
                 }
                 else -> {
-                    error_request.visibility = View.VISIBLE
+                    error_request?.visibility = View.VISIBLE
                     dataStatus = DataStatus.INIT
-                    error_request_retry.setOnClickListener { getData() }
+                    error_request_retry?.setOnClickListener { getData() }
                 }
             }
             dataStatus = DataStatus.FINISHED
-            progress_bar.visibility = View.GONE
+            progress_bar?.visibility = View.GONE
         }
     }
 
     private fun updateList(docGroupItems: ArrayList<DocGroupItem>) {
         if (docGroupItems.size == 0) {
-            empty_request.visibility = View.VISIBLE
+            empty_request?.visibility = View.VISIBLE
         } else {
             course_doc_list_recycler_view?.layoutManager = LinearLayoutManager(context)
             course_doc_list_recycler_view?.adapter = CourseDocListAdapter(docGroupItems) {
@@ -76,7 +76,7 @@ class CourseDocListFragment : Fragment() {
                 dialog.arguments = bundle
                 dialog.show(fragmentManager, "TAG")
             }
-            course_doc_list_recycler_view.visibility = View.VISIBLE
+            course_doc_list_recycler_view?.visibility = View.VISIBLE
         }
     }
 }

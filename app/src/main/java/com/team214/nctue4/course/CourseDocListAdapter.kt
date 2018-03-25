@@ -17,7 +17,7 @@ class CourseDocListAdapter(private val dataSet: ArrayList<DocGroupItem>,
         fun bind(doc: DocGroupItem) {
             view.doc_group_display_name.text = doc.displayName
             view.course_doc_type.text = doc.docType
-            view.course_doc_group_list_item.setOnClickListener {
+            view.course_doc_group_list_item?.setOnClickListener {
                 itemClickListener(doc)
             }
         }

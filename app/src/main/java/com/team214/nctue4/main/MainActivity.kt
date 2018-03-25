@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = response.second
                 }
             }
-            main_container.visibility = View.VISIBLE
+            main_container?.visibility = View.VISIBLE
             dataStatus = DataStatus.FINISHED
         }
 

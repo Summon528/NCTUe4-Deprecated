@@ -45,8 +45,8 @@ class LoginActivity : AppCompatActivity() {
         isWrongCredentials = true
         runOnUiThread {
             login_error_text_view.text = getString(R.string.login_id_or_password_error)
-            login_error_text_view.visibility = View.VISIBLE
-            login_progressbar.visibility = View.GONE
+            login_error_text_view?.visibility = View.VISIBLE
+            login_progressbar?.visibility = View.GONE
             student_id.isEnabled = true
             student_password.isEnabled = true
             student_portal_password.isEnabled = true
@@ -59,8 +59,8 @@ class LoginActivity : AppCompatActivity() {
         isServiceError = true
         runOnUiThread {
             login_error_text_view.text = getString(R.string.generic_error)
-            login_error_text_view.visibility = View.VISIBLE
-            login_progressbar.visibility = View.GONE
+            login_error_text_view?.visibility = View.VISIBLE
+            login_progressbar?.visibility = View.GONE
             student_id.isEnabled = true
             student_password.isEnabled = true
             student_portal_password.isEnabled = true
@@ -94,13 +94,13 @@ class LoginActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_login)
-        login_button.setOnClickListener {
+        login_button?.setOnClickListener {
             isServiceError = false
             isWrongCredentials = false
             student_id.isEnabled = false
             student_password.isEnabled = false
             student_portal_password.isEnabled = false
-            login_progressbar.visibility = View.VISIBLE
+            login_progressbar?.visibility = View.VISIBLE
             val studentId = student_id.text.toString()
             val studentPassword = student_password.text.toString()
             val studentPortalPassword = student_portal_password.text.toString()

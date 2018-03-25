@@ -20,10 +20,10 @@ class LicenseDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        flat_icon_license.setOnClickListener {
+        flat_icon_license?.setOnClickListener {
             goToUrl("https://www.flaticon.com/authors/freepik")
         }
-        font_awesome_license.setOnClickListener {
+        font_awesome_license?.setOnClickListener {
             goToUrl("https://fontawesome.com/license")
         }
     }

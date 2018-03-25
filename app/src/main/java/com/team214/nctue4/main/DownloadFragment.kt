@@ -32,7 +32,7 @@ class DownloadFragment : Fragment() {
         val dir = File(path, "Download")
         if (dir.exists()) {
             val fileList = dir.listFiles()
-            if (fileList.isEmpty()) empty_request.visibility = View.VISIBLE
+            if (fileList.isEmpty()) empty_request?.visibility = View.VISIBLE
             if (arguments?.getBoolean("home") != null) {
                 files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })
             } else files.addAll(fileList.filter { it != null })
@@ -48,7 +48,7 @@ class DownloadFragment : Fragment() {
                     },
                     fun(it) {
                         val dialog = DownloadDialog()
-                        dialog.setOnDismissListener(object : DialogInterface.OnDismissListener {
+                        dialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                             override fun onDismiss(dialog: DialogInterface?) {
                                 updateList()
                             }
@@ -61,7 +61,7 @@ class DownloadFragment : Fragment() {
                     })
 
         } else {
-            empty_request.visibility = View.VISIBLE
+            empty_request?.visibility = View.VISIBLE
         }
     }
 
@@ -71,8 +71,8 @@ class DownloadFragment : Fragment() {
         files.clear()
         val fileList = dir.listFiles()
         if (fileList.isEmpty()) {
-            empty_request.visibility = View.VISIBLE
-            download_recycler.visibility = View.GONE
+            empty_request?.visibility = View.VISIBLE
+            download_recycler?.visibility = View.GONE
         } else {
             if (arguments?.getBoolean("home") != null) {
                 files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })

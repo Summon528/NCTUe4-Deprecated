@@ -40,7 +40,7 @@ class DownloadDialog : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
         val file = arguments?.getSerializable("file") as File
-        download_delete.setOnClickListener {
+        download_delete?.setOnClickListener {
             val deleteDialog = AlertDialog.Builder(context!!)
             deleteDialog.setTitle(getString(R.string.delete))
                     .setMessage(getString(R.string.confirm_delete, file.name))
@@ -51,7 +51,7 @@ class DownloadDialog : BottomSheetDialogFragment() {
                     .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
             deleteDialog.show()
         }
-        download_rename.setOnClickListener {
+        download_rename?.setOnClickListener {
             val editDialogBuild = AlertDialog.Builder(context!!)
             editDialogBuild.setTitle(R.string.rename)
             val editText = EditText(context)
@@ -69,7 +69,7 @@ class DownloadDialog : BottomSheetDialogFragment() {
             editDialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             editDialog.show()
         }
-        download_share.setOnClickListener {
+        download_share?.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
             val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
             val fileUri = FileProvider.getUriForFile(context!!,

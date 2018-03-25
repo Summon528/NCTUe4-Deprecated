@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        home_swipe_refresh.setOnRefreshListener {
+        home_swipe_refresh?.setOnRefreshListener {
             loadFragments()
             val handler = Handler()
             handler.postDelayed({ home_swipe_refresh.isRefreshing = false }, 1000)
@@ -46,9 +46,9 @@ class HomeFragment : Fragment() {
         fragment3.arguments = bundle
         transaction.replace(R.id.home_starred, fragment3)
         transaction.commit()
-        home_more_ann.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_ann) }
-        home_more_download.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_download) }
-        home_more_course.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_starred_courses) }
+        home_more_ann?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_ann) }
+        home_more_download?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_download) }
+        home_more_course?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_starred_courses) }
 
     }
 
