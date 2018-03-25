@@ -1,8 +1,14 @@
 package com.team214.nctue4.model
 
+import android.os.Parcel
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import java.text.DateFormat
 import java.util.*
 
+
+@Parcelize
 class AnnItem(val bulType: Int,
               val bulletinId: String,
               val courseName: String,
@@ -11,5 +17,6 @@ class AnnItem(val bulType: Int,
               val beginDate: Date,
               val endDate: Date,
               val courseId: String,
+              val e3Type: Int,
               val attachItems: ArrayList<AttachItem>
-)
+) : Parcelable

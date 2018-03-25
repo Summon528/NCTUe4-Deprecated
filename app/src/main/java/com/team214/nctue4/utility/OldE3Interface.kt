@@ -14,11 +14,11 @@ interface OldE3Interface {
     fun getCourseList(completionHandler: (status: OldE3Interface.Status,
                                           response: ArrayList<CourseItem>?) -> Unit)
 
-    fun getAnnouncementDetail(bulletinId: String, from: Int?, courseId: String,
-                              completionHandler: (status: OldE3Interface.Status,
-                                                  response: AnnItem?) -> Unit)
+//    fun getAnnouncementDetail(bulletinId: String, from: Int?, courseId: String,
+//                              completionHandler: (status: OldE3Interface.Status,
+//                                                  response: AnnItem?) -> Unit)
 
-    fun getAnnouncementListLogin(completionHandler: (status: OldE3Interface.Status,
+    fun getAnnouncementListLogin(count:Int, completionHandler: (status: OldE3Interface.Status,
                                                      response: ArrayList<AnnItem>?) -> Unit)
 
     fun getCourseAnn(courseId: String, courseName: String,

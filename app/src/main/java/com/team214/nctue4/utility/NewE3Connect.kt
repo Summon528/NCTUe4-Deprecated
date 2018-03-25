@@ -118,6 +118,7 @@ class NewE3Connect(private var studentId: String = "",
                                         df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[\\.|\\:,][0-9]*)".toRegex(), "") + "2018"),
                                         df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[\\.|\\:,][0-9]*)".toRegex(), "") + "2018"),
                                         "",
+                                        E3Type.NEW,
                                         ArrayList()
                                 ))
                             }
@@ -150,6 +151,7 @@ class NewE3Connect(private var studentId: String = "",
                         df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
                         df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
                         "",
+                        E3Type.NEW,
                         ArrayList()
                 )
                 completionHandler(NewE3Interface.Status.SUCCESS, annItem)

@@ -70,7 +70,7 @@ class StarredCoursesE3Fragment : Fragment() {
 
     private fun updateList(courseItems: ArrayList<CourseItem>) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val oldE3Starred = prefs.getStringSet("oldE3Starred", HashSet<String>())
+        val oldE3Starred = HashSet(prefs.getStringSet("oldE3Starred", HashSet<String>()))
         if (oldE3Starred.isEmpty()) empty_request.visibility = View.VISIBLE
         val starredCourse =
                 if (arguments?.getBoolean("home") != null) {
@@ -93,7 +93,7 @@ class StarredCoursesE3Fragment : Fragment() {
                     oldE3Starred.add(courseId)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_orange_500))
                 }
-                prefs.edit().putStringSet("oldE3Starred", oldE3Starred).commit()
+                prefs.edit().putStringSet("oldE3Starred", oldE3Starred).apply()
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)

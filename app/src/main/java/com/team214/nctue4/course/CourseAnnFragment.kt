@@ -14,11 +14,11 @@ import com.team214.nctue4.AnnActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.DataStatus
-import com.team214.nctue4.utility.OldE3AnnFrom
+import com.team214.nctue4.utility.E3Type
 import com.team214.nctue4.utility.OldE3Connect
 import com.team214.nctue4.utility.OldE3Interface
-import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.fragment_course_ann.*
+import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
 
 
@@ -90,12 +90,10 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             announcement_course_recycler_view?.adapter = CourseAnnAdapter(annItems) {
                 val intent = Intent()
                 intent.setClass(activity, AnnActivity::class.java)
-                intent.putExtra("annId", it.bulletinId)
-                intent.putExtra("courseName", it.courseName)
-                intent.putExtra("courseId", it.courseId)
-                intent.putExtra("loginTicket", oldE3Service.getCredential().first)
-                intent.putExtra("accountId", oldE3Service.getCredential().second)
-                intent.putExtra("from", OldE3AnnFrom.COURSE)
+                if (it.e3Type == E3Type.OLD) {
+                    intent.putExtra("annItem", it)
+                    intent.putExtra("oldE3Service", oldE3Service)
+                }
                 startActivity(intent)
             }
             announcement_refreshLayout.visibility = View.VISIBLE

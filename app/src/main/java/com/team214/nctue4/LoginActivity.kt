@@ -77,6 +77,7 @@ class LoginActivity : AppCompatActivity() {
             prefsEditor.remove("studentId")
             prefsEditor.remove("studentPassword")
             prefsEditor.remove("studentPortalPassword")
+            prefsEditor.remove("oldE3Starred")
             prefsEditor.apply()
             val path = this.getExternalFilesDir(null)
             val dir = File(path, "Download")

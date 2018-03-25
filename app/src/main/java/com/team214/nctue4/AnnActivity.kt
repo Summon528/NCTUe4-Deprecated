@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
+import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.*
 import kotlinx.android.synthetic.main.activity_ann.*
 import kotlinx.android.synthetic.main.status_error.*
@@ -18,15 +19,15 @@ import java.text.SimpleDateFormat
 
 
 class AnnActivity : AppCompatActivity() {
-    private lateinit var oldE3Service: OldE3Connect
-    private lateinit var newE3Service: NewE3Connect
+    private var oldE3Service: OldE3Connect? = null
+    private var newE3Service: NewE3Connect? = null
     private var dataStatus = DataStatus.INIT
 
     override fun onStop() {
         super.onStop()
         if (dataStatus != DataStatus.FINISHED) {
-            if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
-            if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
+            oldE3Service?.cancelPendingRequests()
+            newE3Service?.cancelPendingRequests()
         }
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
@@ -72,50 +73,47 @@ class AnnActivity : AppCompatActivity() {
         getData()
     }
 
+    private fun showAnn(annItem: AnnItem) {
+        error_request.visibility = View.GONE
+        // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
+        val content = annItem!!.content.replace("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))".toRegex(),
+                "http://e3.nctu.edu.tw/")
+        ann_caption.text = annItem.caption
+        ann_courseName.text = annItem.courseName
+        val sdf = SimpleDateFormat("yyyy/MM/dd")
+        ann_date.text = sdf.format(annItem.beginDate)
+        ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+        ann_content_web_view.loadData(content, "text/html; charset=utf-8", "UTF-8")
+        ann_content_web_view.setBackgroundColor(Color.TRANSPARENT)
+        announcement_attach.layoutManager = LinearLayoutManager(this)
+        announcement_attach.adapter = AnnAttachmentAdapter(this, annItem.attachItems) {
+            uri = it.url
+            fileName = it.name
+            downloadFile(fileName, uri, this, this, ann_root) {
+                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        0)
+            }
+
+        }
+        ann_container.visibility = View.VISIBLE
+        progress_bar.visibility = View.GONE
+        dataStatus = DataStatus.FINISHED
+    }
+
     private fun getData() {
         val bundle = intent.extras
-        val annId = bundle.getString("annId")
-        val from = bundle.getInt("from")
-        val courseId = bundle.getString("courseId")
-
+        newE3Service = bundle.getParcelable("newE3Service")
+        oldE3Service = bundle.getParcelable("oldE3Service")
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
-        if (annId.contains("theme")) {
-            newE3Service = bundle.getParcelable("newE3Service")
-            newE3Service.getAnnDetail(annId) { status, response ->
+        if (newE3Service != null) {
+            newE3Service!!.getAnnDetail(bundle.getString("annUrl")) { status, response ->
                 when (status) {
                     NewE3Interface.Status.SUCCESS -> {
                         this.runOnUiThread {
                             Runnable {
-                                error_request.visibility = View.GONE
-                                val content: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
-                                    response!!.content.replace("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))".toRegex(),
-                                            "http://e3.nctu.edu.tw/")
-                                } else {
-                                    response!!.content
-                                }
-                                ann_caption.text = response.caption
-                                ann_courseName.text = response.courseName
-                                val sdf = SimpleDateFormat("yyyy/MM/dd")
-                                ann_date.text = sdf.format(response.beginDate)
-                                ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-                                ann_content_web_view.loadData(content, "text/html; charset=utf-8", "UTF-8")
-                                ann_content_web_view.setBackgroundColor(Color.TRANSPARENT)
-                                announcement_attach.layoutManager = LinearLayoutManager(this)
-                                announcement_attach.adapter = AnnAttachmentAdapter(this, response.attachItems) {
-                                    uri = it.url
-                                    fileName = it.name
-                                    downloadFile(fileName, uri, this, this, ann_root) {
-                                        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                                0)
-                                    }
-
-                                }
-                                ann_container.visibility = View.VISIBLE
-                                progress_bar.visibility = View.GONE
-                                dataStatus = DataStatus.FINISHED
+                                showAnn(response!!)
                             }.run()
                         }
                     }
@@ -134,51 +132,7 @@ class AnnActivity : AppCompatActivity() {
             }
         } else {
             oldE3Service = bundle.getParcelable("oldE3Service")
-            oldE3Service.getAnnouncementDetail(annId, from, courseId) { status, response ->
-                when (status) {
-                    OldE3Interface.Status.SUCCESS -> {
-                        this.runOnUiThread {
-                            Runnable {
-                                error_request.visibility = View.GONE
-                                // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
-                                val content = response!!.content.replace("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))".toRegex(),
-                                        "http://e3.nctu.edu.tw/")
-                                ann_caption.text = response.caption
-                                ann_courseName.text = response.courseName
-                                val sdf = SimpleDateFormat("yyyy/MM/dd")
-                                ann_date.text = sdf.format(response.beginDate)
-                                ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-                                ann_content_web_view.loadData(content, "text/html; charset=utf-8", "UTF-8")
-                                ann_content_web_view.setBackgroundColor(Color.TRANSPARENT)
-                                announcement_attach.layoutManager = LinearLayoutManager(this)
-                                announcement_attach.adapter = AnnAttachmentAdapter(this, response.attachItems) {
-                                    uri = it.url
-                                    fileName = it.name
-                                    downloadFile(fileName, uri, this, this, ann_root) {
-                                        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                                0)
-                                    }
-                                }
-                                ann_container.visibility = View.VISIBLE
-                                progress_bar.visibility = View.GONE
-                                dataStatus = DataStatus.FINISHED
-                            }.run()
-                        }
-                    }
-                    else -> {
-                        this.runOnUiThread {
-                            Runnable {
-                                error_request.visibility = View.VISIBLE
-                                dataStatus = DataStatus.INIT
-                                error_request_retry.setOnClickListener { getData() }
-                                progress_bar.visibility = View.GONE
-                                dataStatus = DataStatus.FINISHED
-                            }.run()
-                        }
-                    }
-                }
-            }
+            showAnn(bundle.getParcelable("annItem"))
         }
     }
 }

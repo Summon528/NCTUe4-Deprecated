@@ -70,7 +70,7 @@ class OldE3Fragment : Fragment() {
         if (courseItems.isEmpty()) empty_request.visibility = View.VISIBLE
         else {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val oldE3Starred = prefs.getStringSet("oldE3Starred", HashSet<String>())
+            val oldE3Starred = HashSet(prefs.getStringSet("oldE3Starred", HashSet<String>()))
             old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
             old_e3_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
@@ -83,7 +83,7 @@ class OldE3Fragment : Fragment() {
                     oldE3Starred.add(courseId)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_orange_500))
                 }
-                prefs.edit().putStringSet("oldE3Starred", oldE3Starred).commit()
+                prefs.edit().putStringSet("oldE3Starred", oldE3Starred).apply()
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)

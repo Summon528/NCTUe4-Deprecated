@@ -8,9 +8,9 @@ class DataStatus{
     }
 }
 
-class OldE3AnnFrom{
+class E3Type{
     companion object {
-        const val HOME = 0
-        const val COURSE = 1
+        const val OLD = 0
+        const val NEW = 1
     }
 }

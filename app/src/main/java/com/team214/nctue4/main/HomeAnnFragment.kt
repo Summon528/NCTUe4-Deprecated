@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,7 +73,9 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
         oldE3Service = (activity as MainActivity).oldE3Service
-        oldE3Service.getAnnouncementListLogin { status, response ->
+        oldE3Service.getAnnouncementListLogin(
+                if (arguments?.getBoolean("home") != null) 5 else 100
+        ) { status, response ->
             when (status) {
                 OldE3Interface.Status.SUCCESS -> {
                     oldE3AnnItems = response!!
@@ -143,16 +144,15 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
             ann_login_recycler_view?.adapter = HomeAnnAdapter(
                     if (fromHome) annItems.slice(0..minOf(4, annItems.size - 1))
                     else annItems.toList(), fromHome) {
-
-                Log.d("dd", "start ann acti")
                 val intent = Intent()
                 intent.setClass(activity, AnnActivity::class.java)
-                intent.putExtra("annId", it.bulletinId)
-                intent.putExtra("courseName", it.courseName)
-                intent.putExtra("courseId", it.courseId)
-                intent.putExtra("from", OldE3AnnFrom.HOME)
-                intent.putExtra("oldE3Service",oldE3Service)
-                intent.putExtra("newE3Service",newE3Service)
+                if (it.e3Type == E3Type.OLD) {
+                    intent.putExtra("annItem", it)
+                    intent.putExtra("oldE3Service", oldE3Service)
+                } else {
+                    intent.putExtra("newE3Service", newE3Service)
+                    intent.putExtra("annUrl", it.bulletinId)
+                }
                 startActivity(intent)
             }
             ann_login_recycler_view?.visibility = View.VISIBLE

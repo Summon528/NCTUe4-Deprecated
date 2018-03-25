@@ -104,12 +104,12 @@ class OldE3Connect(private var studentId: String = "",
         }
     }
 
-    override fun getAnnouncementListLogin(completionHandler: (status: OldE3Interface.Status,
+    override fun getAnnouncementListLogin(count : Int, completionHandler: (status: OldE3Interface.Status,
                                                               response: ArrayList<AnnItem>?) -> Unit) {
         post("/GetAnnouncementList_LoginByCountWithAttach", hashMapOf(
                 "loginTicket" to loginTicket,
                 "studentId" to accountId,
-                "ShowCount" to "100"
+                "ShowCount" to count.toString()
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
                 val annData = response!!.getJSONObject("ArrayOfBulletinData")
@@ -118,6 +118,20 @@ class OldE3Connect(private var studentId: String = "",
                 val df = SimpleDateFormat("yyyy/M/d", Locale.US)
                 (0 until annData.length()).map { annData.get(it) as JSONObject }
                         .forEach {
+                            val attachItemList = ArrayList<AttachItem>()
+                            val attachNames = it.forceGetJsonArray("AttachFileName")
+                            val attachUrls = it.forceGetJsonArray("AttachFileURL")
+                            val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
+                            if ((attachNames.get(0) as JSONObject).getString("string") != "") {
+                                (0 until attachNames.length()).map {
+                                    AttachItem(
+                                            (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
+                                            (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
+                                            (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
+                                }.forEach {
+                                    attachItemList.add(it)
+                                }
+                            }
                             annItems.add(AnnItem(
                                     it.getString("BulType").toInt(),
                                     it.getString("BulletinId"),
@@ -127,7 +141,8 @@ class OldE3Connect(private var studentId: String = "",
                                     df.parse(it.getString("BeginDate")),
                                     df.parse(it.getString("EndDate")),
                                     it.getString("CourseId"),
-                                    ArrayList()
+                                    E3Type.OLD,
+                                    attachItemList
                             ))
                         }
                 completionHandler(status, annItems)
@@ -161,6 +176,7 @@ class OldE3Connect(private var studentId: String = "",
                                     df.parse(it.getString("BeginDate")),
                                     df.parse(it.getString("EndDate")),
                                     it.getString("CourseId"),
+                                    E3Type.OLD,
                                     ArrayList()
                             ))
                         }
@@ -222,58 +238,59 @@ class OldE3Connect(private var studentId: String = "",
     }
 
 
-    override fun getAnnouncementDetail(bulletinId: String, from: Int?, courseId: String,
-                                       completionHandler: (status: OldE3Interface.Status,
-                                                           response: AnnItem?) -> Unit) {
-        Log.d("ann", loginTicket)
-        val path = if (from == OldE3AnnFrom.HOME) "/GetAnnouncementList_LoginByCountWithAttach"
-        else "/GetAnnouncementListWithAttach"
-        post(path, hashMapOf(
-                "loginTicket" to loginTicket,
-                "studentId" to accountId,
-                "ShowCount" to "100",
-                "courseId" to courseId,
-                "bulType" to "1"
-        )) { status, response ->
-            if (status == OldE3Interface.Status.SUCCESS) {
-                val data = response!!.getJSONObject("ArrayOfBulletinData").forceGetJsonArray("BulletinData")
-                val df = SimpleDateFormat("yyyy/M/d", Locale.US)
-                (0 until data.length()).map { data.getJSONObject(it) }
-                        .forEach {
-                            if (it.getString("BulletinId") == bulletinId) {
-                                val attachItemList = ArrayList<AttachItem>()
-                                val attachNames = it.forceGetJsonArray("AttachFileName")
-                                val attachUrls = it.forceGetJsonArray("AttachFileURL")
-                                val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
-                                if ((attachNames.get(0) as JSONObject).getString("string") != "") {
-                                    (0 until attachNames.length()).map {
-                                        AttachItem(
-                                                (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
-                                                (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
-                                                (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
-                                    }.forEach {
-                                        attachItemList.add(it)
-                                    }
-                                }
-                                val annItem = AnnItem(
-                                        it.getInt("BulType"),
-                                        it.getString("BulletinId"),
-                                        it.getString("CourseName"),
-                                        it.getString("Caption"),
-                                        htmlCleaner(it.getString("Content")),
-                                        df.parse(it.getString("BeginDate")),
-                                        df.parse(it.getString("EndDate")),
-                                        it.getString("CourseId"),
-                                        attachItemList
-                                )
-                                completionHandler(status, annItem)
-                            }
-                        }
-            } else {
-                completionHandler(status, null)
-            }
-        }
-    }
+//    override fun getAnnouncementDetail(bulletinId: String, from: Int?, courseId: String,
+//                                       completionHandler: (status: OldE3Interface.Status,
+//                                                           response: AnnItem?) -> Unit) {
+//        Log.d("ann", loginTicket)
+//        val path = if (from == OldE3AnnFrom.HOME) "/GetAnnouncementList_LoginByCountWithAttach"
+//        else "/GetAnnouncementListWithAttach"
+//        post(path, hashMapOf(
+//                "loginTicket" to loginTicket,
+//                "studentId" to accountId,
+//                "ShowCount" to "100",
+//                "courseId" to courseId,
+//                "bulType" to "1"
+//        )) { status, response ->
+//            if (status == OldE3Interface.Status.SUCCESS) {
+//                val data = response!!.getJSONObject("ArrayOfBulletinData").forceGetJsonArray("BulletinData")
+//                val df = SimpleDateFormat("yyyy/M/d", Locale.US)
+//                (0 until data.length()).map { data.getJSONObject(it) }
+//                        .forEach {
+//                            if (it.getString("BulletinId") == bulletinId) {
+//                                val attachItemList = ArrayList<AttachItem>()
+//                                val attachNames = it.forceGetJsonArray("AttachFileName")
+//                                val attachUrls = it.forceGetJsonArray("AttachFileURL")
+//                                val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
+//                                if ((attachNames.get(0) as JSONObject).getString("string") != "") {
+//                                    (0 until attachNames.length()).map {
+//                                        AttachItem(
+//                                                (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
+//                                                (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
+//                                                (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
+//                                    }.forEach {
+//                                        attachItemList.add(it)
+//                                    }
+//                                }
+//                                val annItem = AnnItem(
+//                                        it.getInt("BulType"),
+//                                        it.getString("BulletinId"),
+//                                        it.getString("CourseName"),
+//                                        it.getString("Caption"),
+//                                        htmlCleaner(it.getString("Content")),
+//                                        df.parse(it.getString("BeginDate")),
+//                                        df.parse(it.getString("EndDate")),
+//                                        it.getString("CourseId"),
+//                                        E3Type.OLD,
+//                                        attachItemList
+//                                )
+//                                completionHandler(status, annItem)
+//                            }
+//                        }
+//            } else {
+//                completionHandler(status, null)
+//            }
+//        }
+//    }
 
     override fun getAttachFileList(documentId: String, courseId: String,
                                    completionHandler: (status: OldE3Interface.Status,
