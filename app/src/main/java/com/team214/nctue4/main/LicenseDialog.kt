@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import com.team214.nctue4.R
 import kotlinx.android.synthetic.main.dialog_license.*
 
@@ -20,6 +21,7 @@ class LicenseDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
         flat_icon_license?.setOnClickListener {
             goToUrl("https://www.flaticon.com/authors/freepik")
         }

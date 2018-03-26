@@ -21,7 +21,7 @@
     <!--Login Activity-->
     <string name="student_id">Student ID</string>
     <string name="student_olde3_password">Old E3 Password</string>
-    <string name="portal_password">New E3 password (Portal Password)</string>
+    <string name="portal_password">Portal Password (For New e3)</string>
     <string name="login_hint">Please enter ID and e3 password.</string>
     <string name="login">LogIn</string>
     <string name="logout">Log out</string>
@@ -80,7 +80,7 @@
 
     <string name="cancel">Cancel</string>
 
-    <string name="no_compatible_app">No app can handle this kinfile.</string>
+    <string name="no_compatible_app">No app can handle this kind of file</string>
 
     <!--identifier-->
     <string name="ann_e3_identifier">Old</string>

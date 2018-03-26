@@ -109,7 +109,7 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                                 race()
                             }
                             else -> {
-                                (activity as MainActivity).runOnUiThread {
+                                activity?.runOnUiThread {
                                     Runnable {
                                         error_request?.visibility = View.VISIBLE
                                         progress_bar?.visibility = View.GONE
@@ -121,7 +121,7 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                         }
                     }
                 else -> {
-                    (activity as MainActivity).runOnUiThread {
+                    activity?.runOnUiThread {
                         Runnable {
                             error_request?.visibility = View.VISIBLE
                             progress_bar?.visibility = View.GONE
