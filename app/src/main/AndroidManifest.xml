@@ -32,7 +32,7 @@
         <activity
             android:name="com.team214.nctue4.LoginActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/splashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

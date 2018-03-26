@@ -5,12 +5,8 @@ import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.team214.nctue4.main.MainActivity
 import com.team214.nctue4.utility.NewE3Connect
@@ -50,12 +46,14 @@ class LoginActivity : AppCompatActivity() {
         isWrongCredentials = true
         runOnUiThread {
             login_error_text_view.text = getString(R.string.login_id_or_password_error)
-            //login_error_text_view?.visibility = View.VISIBLE
-            login_button.text = getString(R.string.login_id_or_password_error)
+            login_error_text_view?.visibility = View.VISIBLE
+//            login_button.text = getString(R.string.login_id_or_password_error)
             login_progressbar?.visibility = View.GONE
+            login_button?.text = getString(R.string.login)
             student_id.isEnabled = true
             student_password.isEnabled = true
             student_portal_password.isEnabled = true
+            login_button?.isEnabled = true
         }
     }
 
@@ -67,9 +65,11 @@ class LoginActivity : AppCompatActivity() {
             login_error_text_view.text = getString(R.string.generic_error)
             login_error_text_view?.visibility = View.VISIBLE
             login_progressbar?.visibility = View.GONE
+            login_button?.text = getString(R.string.login)
             student_id.isEnabled = true
             student_password.isEnabled = true
             student_portal_password.isEnabled = true
+            login_button?.isEnabled =true
         }
     }
 
@@ -97,14 +97,20 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }
-
         setContentView(R.layout.activity_login)
 
-        val animFade = AnimationUtils.loadAnimation(this, R.anim.fade)
-        logo.startAnimation(animFade)
-        LoginBox.startAnimation(animFade)
-        login_button.startAnimation(animFade)
+//        val animFade = AnimationUtils.loadAnimation(this, R.anim.fade)
+//        logo.startAnimation(animFade)
+//        LoginBox.startAnimation(animFade)
+//        login_button.startAnimation(animFade)
 
+        //detect soft keyboard
+        login_layout.viewTreeObserver.addOnGlobalLayoutListener {
+            val heightDiff = login_layout.rootView.height - login_layout.height
+            if (heightDiff > dpToPx(200f)) {
+                login_scroll_view.smoothScrollBy(0, heightDiff)
+            }
+        }
 
         login_button?.setOnClickListener {
             isServiceError = false
@@ -113,6 +119,8 @@ class LoginActivity : AppCompatActivity() {
             student_password.isEnabled = false
             student_portal_password.isEnabled = false
             login_progressbar?.visibility = View.VISIBLE
+            login_button?.text = ""
+            login_button?.isEnabled = false
             val studentId = student_id.text.toString()
             val studentPassword = student_password.text.toString()
             val studentPortalPassword = student_portal_password.text.toString()
@@ -155,5 +163,10 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun dpToPx(valueInDp: Float): Float {
+        val metrics = resources.displayMetrics
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics)
     }
 }

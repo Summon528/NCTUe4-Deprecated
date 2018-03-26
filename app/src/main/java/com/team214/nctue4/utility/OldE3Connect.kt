@@ -39,7 +39,7 @@ class OldE3Connect(private var studentId: String = "",
         val stringRequest = object : StringRequest(Request.Method.POST, url,
                 Response.Listener<String> { response ->
                     val xmlToJson = (XmlToJson.Builder(response).build()).toJson()
-                    completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                        completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
                 },
                 Response.ErrorListener { _ ->
                     if (!secondTry && path != "/Login") {

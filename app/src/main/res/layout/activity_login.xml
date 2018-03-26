@@ -1,179 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/login_progressbar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+    <ScrollView
+        android:id="@+id/login_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-6dp"
-        android:indeterminate="true"
-        android:visibility="invisible" />
-
-    <LinearLayout
-        android:id="@+id/logo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="40dp"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="125dp"
-            android:layout_height="125dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_fox" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/logo" />
-    </LinearLayout>
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/LoginBox"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:orientation="vertical"-->
-    <!--android:padding="16dp">-->
-
-    <!--<android.support.design.widget.TextInputLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<android.support.design.widget.TextInputEditText-->
-    <!--android:id="@+id/student_id"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:hint="@string/student_id"-->
-    <!--android:textColorHint="#FFFFFF"-->
-    <!--android:textColor="#FFFFFF"-->
-    <!--android:inputType="number"-->
-    <!--android:maxLines="1" />-->
-    <!--</android.support.design.widget.TextInputLayout>-->
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/login_button">
 
 
-    <!--<android.support.design.widget.TextInputLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<android.support.design.widget.TextInputEditText-->
-    <!--android:id="@+id/student_password"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:hint="@string/student_olde3_password"-->
-    <!--android:inputType="textPassword"-->
-    <!--android:maxLines="1" />-->
-    <!--</android.support.design.widget.TextInputLayout>-->
-
-
-    <!--<android.support.design.widget.TextInputLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<android.support.design.widget.TextInputEditText-->
-    <!--android:id="@+id/student_portal_password"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:hint="@string/portal_password"-->
-    <!--android:inputType="textPassword"-->
-    <!--android:maxLines="1" />-->
-    <!--</android.support.design.widget.TextInputLayout>-->
-    <!--</LinearLayout>-->
-
-    <LinearLayout
-        android:id="@+id/LoginBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:layout_below="@id/logo">
-
-        <TextView
+        <LinearLayout
+            android:id="@+id/logo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="8dp"
-            android:text="@string/login_hint"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:visibility="gone" />
+            android:layout_marginTop="40dp"
+            android:orientation="vertical"
+            android:paddingBottom="40dp">
 
-        <EditText
-            android:id="@+id/student_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/edittext"
-            android:drawableLeft="@drawable/ic_account_circle_black_24dp"
-            android:drawablePadding="8dp"
-            android:hint="@string/student_id"
-            android:inputType="number"
-            android:maxLines="1"
-            android:padding="10dp"
-            android:textColor="@android:color/black" />
+            <ImageView
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_fox" />
 
-        <EditText
-            android:id="@+id/student_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/edittext"
-            android:drawableLeft="@drawable/ic_key_black_24dp"
-            android:drawablePadding="8dp"
-            android:hint="@string/student_olde3_password"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:padding="10dp"
-            android:textColor="@android:color/black" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/logo" />
 
-        <EditText
-            android:id="@+id/student_portal_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/edittext"
-            android:drawableLeft="@drawable/ic_key_black_24dp"
-            android:drawablePadding="8dp"
-            android:hint="@string/portal_password"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:padding="10dp"
-            android:textColor="@android:color/black" />
-    </LinearLayout>
+            <EditText
+                android:id="@+id/student_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext"
+                android:drawableStart="@drawable/ic_account_circle_black_24dp"
+                android:drawablePadding="8dp"
+                android:hint="@string/student_id"
+                android:inputType="number"
+                android:maxLines="1"
+                android:padding="10dp" />
 
-    <TextView
-        android:id="@+id/login_error_text_view"
+            <EditText
+                android:id="@+id/student_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext"
+                android:drawableStart="@drawable/ic_key_black_24dp"
+                android:drawablePadding="8dp"
+                android:hint="@string/student_olde3_password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:padding="10dp" />
+
+            <EditText
+                android:id="@+id/student_portal_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext"
+                android:drawableStart="@drawable/ic_key_black_24dp"
+                android:drawablePadding="8dp"
+                android:hint="@string/portal_password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/login_error_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:text="@string/login_id_or_password_error"
-        android:textColor="#DE4C4A"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:layout_height="50dp">
 
-
-    <android.support.v7.widget.AppCompatButton
+        <Button
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#DE4C4A"
+            android:background="@color/md_red_900"
             android:foreground="?android:attr/selectableItemBackground"
             android:text="@string/login"
-            android:layout_alignParentBottom="true"
             android:textColor="#FFFFFF"
             android:textSize="24sp" />
-</RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/login_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:indeterminate="true"
+            android:indeterminateTint="#FFFFFF"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+</LinearLayout>

@@ -29,6 +29,7 @@ class BookmarkedFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
+        if (dataStatus != DataStatus.FINISHED) oldE3Service.cancelPendingRequests()
     }
 
     override fun onStart() {
