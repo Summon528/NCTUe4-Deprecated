@@ -69,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
             student_id.isEnabled = true
             student_password.isEnabled = true
             student_portal_password.isEnabled = true
-            login_button?.isEnabled =true
+            login_button?.isEnabled = true
         }
     }
 
@@ -123,7 +123,8 @@ class LoginActivity : AppCompatActivity() {
             login_button?.isEnabled = false
             val studentId = student_id.text.toString()
             val studentPassword = student_password.text.toString()
-            val studentPortalPassword = student_portal_password.text.toString()
+            var studentPortalPassword = student_portal_password.text.toString()
+            if (studentPortalPassword == "") studentPortalPassword = studentPassword
             val oldService = OldE3Connect(studentId, studentPassword)
             oldService.getLoginTicket { status, response ->
                 when (status) {

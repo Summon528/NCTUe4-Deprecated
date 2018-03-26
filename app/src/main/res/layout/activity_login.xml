@@ -48,7 +48,8 @@
                 android:hint="@string/student_id"
                 android:inputType="number"
                 android:maxLines="1"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:autofillHints="username"/>
 
             <EditText
                 android:id="@+id/student_password"
@@ -61,7 +62,8 @@
                 android:hint="@string/student_olde3_password"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:autofillHints="password"/>
 
             <EditText
                 android:id="@+id/student_portal_password"
@@ -74,7 +76,8 @@
                 android:hint="@string/portal_password"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:autofillHints="password"/>
 
             <TextView
                 android:id="@+id/login_error_text_view"
