@@ -11,15 +11,13 @@ import com.team214.nctue4.model.CourseItem
 import kotlinx.android.synthetic.main.item_course.view.*
 
 class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
-                    private val oldE3Bookmarked: HashSet<String>,
                     private val context: Context?,
-                    private val starClickListener: ((view: View, courseId: String) -> Unit),
+                    private val starClickListener: ((view: View, course: CourseItem) -> Unit),
                     private val itemClickListener: (CourseItem) -> Unit) :
         RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     class ViewHolder(val view: View,
-                     private val oldE3Bookmarked: HashSet<String>,
                      private val context: Context?,
-                     private val starClickListener: ((view: View, courseId: String) -> Unit),
+                     private val starClickListener: ((view: View, course: CourseItem) -> Unit),
                      private val itemClickListener: (CourseItem) -> Unit) : RecyclerView.ViewHolder(view) {
         fun bind(course: CourseItem) {
             view.course_name.text = course.courseName
@@ -28,11 +26,12 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
                 itemClickListener(course)
             }
 
-            if (oldE3Bookmarked.contains(course.courseId)) {
+            if (course.bookmarked == 1) {
                 view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
-            }
+            } else view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.blueGrey))
+
             view.course_star?.setOnClickListener {
-                starClickListener(view, course.courseId)
+                starClickListener(view, course)
             }
 
         }
@@ -43,7 +42,7 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
                                     viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_course, parent, false)
-        return ViewHolder(view, oldE3Bookmarked, context, starClickListener, itemClickListener)
+        return ViewHolder(view, context, starClickListener, itemClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

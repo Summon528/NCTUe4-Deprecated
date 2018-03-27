@@ -40,7 +40,7 @@ class OldE3Connect(private var studentId: String = "",
         val stringRequest = object : StringRequest(Request.Method.POST, url,
                 Response.Listener<String> { response ->
                     val xmlToJson = (XmlToJson.Builder(response).build()).toJson()
-                        completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                    completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
                 },
                 Response.ErrorListener { _ ->
                     if (!secondTry && path != "/Login") {
@@ -93,10 +93,11 @@ class OldE3Connect(private var studentId: String = "",
                 val courseItems = ArrayList<CourseItem>()
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
-                            courseItems.add(CourseItem(it.getInt("CourseNo"),
+                            courseItems.add(CourseItem(it.getString("CourseNo"),
                                     it.getString("CourseName"),
                                     it.getString("TeacherName"),
-                                    it.getString("CourseId")))
+                                    it.getString("CourseId"),
+                                    E3Type.OLD))
                         }
                 completionHandler(status, courseItems)
             } else {
@@ -165,7 +166,7 @@ class OldE3Connect(private var studentId: String = "",
                 val arrayOfBulletinData = response!!.getJSONObject("ArrayOfBulletinData")
                 val data = arrayOfBulletinData.forceGetJsonArray("BulletinData")
                 val annItems = ArrayList<AnnItem>()
-                val df = SimpleDateFormat("yyyy/M/d",Locale.US)
+                val df = SimpleDateFormat("yyyy/M/d", Locale.US)
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
                             val attachItemList = ArrayList<AttachItem>()

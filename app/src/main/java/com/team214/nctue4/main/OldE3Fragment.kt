@@ -2,89 +2,108 @@ package com.team214.nctue4.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.team214.nctue4.R
-import com.team214.nctue4.course.CourseActivity
-import com.team214.nctue4.model.CourseItem
-import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
+import com.team214.nctue4.course.CourseActivity
+import com.team214.nctue4.model.CourseDBHelper
+import com.team214.nctue4.model.CourseItem
+import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_old_e3.*
 import kotlinx.android.synthetic.main.item_course.view.*
 import kotlinx.android.synthetic.main.status_empty.*
-import kotlinx.android.synthetic.main.status_error.*
 
 
 class OldE3Fragment : Fragment() {
     private lateinit var oldE3Service: OldE3Connect
-    private var dataStatus = DataStatus.INIT
+    private lateinit var courseDBHelper: CourseDBHelper
+    private var courseItems = ArrayList<CourseItem>()
 
     override fun onStop() {
+        if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
         super.onStop()
-        if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
-        if (dataStatus != DataStatus.FINISHED) oldE3Service.cancelPendingRequests()
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (dataStatus == DataStatus.STOPPED) getData()
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.refresh, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item!!.itemId) {
+            R.id.action_refresh -> {
+                if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
+                getData()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         activity!!.setTitle(R.string.old_e3)
+        setHasOptionsMenu(true)
+        courseDBHelper = CourseDBHelper(context!!)
         return inflater.inflate(R.layout.fragment_old_e3, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        courseItems = courseDBHelper.readCourses(E3Type.OLD)
+        if (courseItems.isEmpty()) getData()
+        else updateList()
         super.onViewCreated(view, savedInstanceState)
-        getData()
     }
 
     private fun getData() {
-        error_request?.visibility = View.GONE
-        progress_bar?.visibility = View.VISIBLE
+        progress_bar.visibility = View.VISIBLE
         oldE3Service = (activity as MainActivity).oldE3Service
         oldE3Service.getCourseList { status, response ->
             when (status) {
                 OldE3Interface.Status.SUCCESS -> {
-                    updateList(response!!)
+                    courseDBHelper.refreshCourses(response!!, E3Type.OLD)
+                    if (old_e3_recycler_view.adapter == null) {
+                        courseItems = response
+                        updateList()
+                    } else {
+                        courseItems.clear()
+                        courseItems.addAll(courseDBHelper.readCourses(E3Type.OLD))
+                        old_e3_recycler_view.adapter.notifyDataSetChanged()
+                    }
+                    Snackbar.make(old_e3_root, getString(R.string.refresh_success), Snackbar.LENGTH_SHORT).show()
+                    progress_bar.visibility = View.INVISIBLE
+
                 }
                 else -> {
-                    error_request?.visibility = View.VISIBLE
-                    dataStatus = DataStatus.INIT
-                    error_request_retry?.setOnClickListener { getData() }
+                    Snackbar.make(old_e3_root, getString(R.string.generic_error), Snackbar.LENGTH_SHORT).show()
+                    progress_bar.visibility = View.INVISIBLE
                 }
             }
-            dataStatus = DataStatus.FINISHED
-            progress_bar?.visibility = View.GONE
         }
     }
 
-    private fun updateList(courseItems: ArrayList<CourseItem>) {
+
+    private fun updateList() {
         if (courseItems.isEmpty()) empty_request?.visibility = View.VISIBLE
         else {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val oldE3Bookmarked = HashSet(prefs.getStringSet("oldE3Bookmarked", HashSet<String>()))
             old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
             old_e3_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
-            old_e3_recycler_view?.adapter = CourseAdapter(courseItems, HashSet(oldE3Bookmarked),
-                    context, fun(view: View, courseId: String) {
-                if (oldE3Bookmarked.contains(courseId)) {
-                    oldE3Bookmarked.remove(courseId)
+            old_e3_recycler_view?.adapter = CourseAdapter(courseItems,
+                    context, fun(view: View, course: CourseItem) {
+                if (course.bookmarked == 1) {
+                    courseDBHelper.bookmarkCourse(course.courseId, 0)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
                 } else {
-                    oldE3Bookmarked.add(courseId)
+                    courseDBHelper.bookmarkCourse(course.courseId, 1)
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
                 }
-                prefs.edit().putStringSet("oldE3Bookmarked", oldE3Bookmarked).apply()
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)
@@ -93,8 +112,6 @@ class OldE3Fragment : Fragment() {
                 startActivity(intent)
             })
 
-            old_e3_recycler_view?.visibility = View.VISIBLE
         }
-        progress_bar?.visibility = View.GONE
     }
 }
