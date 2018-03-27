@@ -1,4 +1,4 @@
-package com.team214.nctue4.utility
+package com.team214.nctue4.connect
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,6 +12,9 @@ import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.model.CourseItem
 import com.team214.nctue4.model.DocGroupItem
+import com.team214.nctue4.utility.E3Type
+import com.team214.nctue4.utility.forceGetJsonArray
+import com.team214.nctue4.utility.htmlCleaner
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import kotlinx.android.parcel.Parcelize
 import org.json.JSONObject
@@ -27,8 +30,6 @@ class OldE3Connect(private var studentId: String = "",
                    private var accountId: String = "") : OldE3Interface, Parcelable {
 
     private val tag = OldE3Connect::class.java.simpleName
-
-    override fun getCredential() = Pair(loginTicket, accountId)
 
     private fun post(path: String, params: HashMap<String, String>,
                      secondTry: Boolean = false,
@@ -249,61 +250,6 @@ class OldE3Connect(private var studentId: String = "",
             docGroupItems = null
         }
     }
-
-
-//    override fun getAnnouncementDetail(bulletinId: String, from: Int?, courseId: String,
-//                                       completionHandler: (status: OldE3Interface.Status,
-//                                                           response: AnnItem?) -> Unit) {
-//        Log.d("ann", loginTicket)
-//        val path = if (from == OldE3AnnFrom.HOME) "/GetAnnouncementList_LoginByCountWithAttach"
-//        else "/GetAnnouncementListWithAttach"
-//        post(path, hashMapOf(
-//                "loginTicket" to loginTicket,
-//                "studentId" to accountId,
-//                "ShowCount" to "100",
-//                "courseId" to courseId,
-//                "bulType" to "1"
-//        )) { status, response ->
-//            if (status == OldE3Interface.Status.SUCCESS) {
-//                val data = response!!.getJSONObject("ArrayOfBulletinData").forceGetJsonArray("BulletinData")
-//                val df = SimpleDateFormat("yyyy/M/d", Locale.US)
-//                (0 until data.length()).map { data.getJSONObject(it) }
-//                        .forEach {
-//                            if (it.getString("BulletinId") == bulletinId) {
-//                                val attachItemList = ArrayList<AttachItem>()
-//                                val attachNames = it.forceGetJsonArray("AttachFileName")
-//                                val attachUrls = it.forceGetJsonArray("AttachFileURL")
-//                                val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
-//                                if ((attachNames.get(0) as JSONObject).getString("string") != "") {
-//                                    (0 until attachNames.length()).map {
-//                                        AttachItem(
-//                                                (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
-//                                                (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
-//                                                (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
-//                                    }.forEach {
-//                                        attachItemList.add(it)
-//                                    }
-//                                }
-//                                val annItem = AnnItem(
-//                                        it.getInt("BulType"),
-//                                        it.getString("BulletinId"),
-//                                        it.getString("CourseName"),
-//                                        it.getString("Caption"),
-//                                        htmlCleaner(it.getString("Content")),
-//                                        df.parse(it.getString("BeginDate")),
-//                                        df.parse(it.getString("EndDate")),
-//                                        it.getString("CourseId"),
-//                                        E3Type.OLD,
-//                                        attachItemList
-//                                )
-//                                completionHandler(status, annItem)
-//                            }
-//                        }
-//            } else {
-//                completionHandler(status, null)
-//            }
-//        }
-//    }
 
     override fun getAttachFileList(documentId: String, courseId: String,
                                    completionHandler: (status: OldE3Interface.Status,

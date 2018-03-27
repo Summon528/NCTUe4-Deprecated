@@ -9,17 +9,17 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import com.team214.nctue4.main.MainActivity
-import com.team214.nctue4.utility.NewE3Connect
-import com.team214.nctue4.utility.NewE3Interface
-import com.team214.nctue4.utility.OldE3Connect
-import com.team214.nctue4.utility.OldE3Interface
+import com.team214.nctue4.connect.NewE3WebConnect
+import com.team214.nctue4.connect.NewE3WebInterface
+import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.connect.OldE3Interface
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var oldE3Service: OldE3Connect
-    private lateinit var newE3Service: NewE3Connect
+    private lateinit var newE3Service: NewE3WebConnect
     private var oldE3Success = false
     private var newE3Success = false
 
@@ -145,10 +145,10 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
-            newE3Service = NewE3Connect(studentId, studentPortalPassword)
+            newE3Service = NewE3WebConnect(studentId, studentPortalPassword)
             newE3Service.getCookie { status, response ->
                 when (status) {
-                    NewE3Interface.Status.SUCCESS -> {
+                    NewE3WebInterface.Status.SUCCESS -> {
                         val prefsEditor = prefs.edit()
                         prefsEditor.putString("studentId", studentId)
                         prefsEditor.putString("studentPortalPassword", studentPortalPassword)
@@ -156,7 +156,7 @@ class LoginActivity : AppCompatActivity() {
                         newE3Success = true
                         loginSuccess()
                     }
-                    NewE3Interface.Status.WRONG_CREDENTIALS -> {
+                    NewE3WebInterface.Status.WRONG_CREDENTIALS -> {
                         showWrongCredentials()
                     }
                     else -> {

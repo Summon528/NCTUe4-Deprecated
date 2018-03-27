@@ -11,6 +11,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
+import com.team214.nctue4.connect.NewE3WebConnect
+import com.team214.nctue4.connect.NewE3WebInterface
+import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.*
 import kotlinx.android.synthetic.main.activity_ann.*
@@ -21,7 +24,7 @@ import java.util.*
 
 class AnnActivity : AppCompatActivity() {
     private var oldE3Service: OldE3Connect? = null
-    private var newE3Service: NewE3Connect? = null
+    private var newE3Service: NewE3WebConnect? = null
     private var dataStatus = DataStatus.INIT
 
     override fun onStop() {
@@ -111,7 +114,7 @@ class AnnActivity : AppCompatActivity() {
         if (newE3Service != null) {
             newE3Service!!.getAnnDetail(bundle.getString("annUrl")) { status, response ->
                 when (status) {
-                    NewE3Interface.Status.SUCCESS -> {
+                    NewE3WebInterface.Status.SUCCESS -> {
                         this.runOnUiThread {
                             Runnable {
                                 showAnn(response!!)

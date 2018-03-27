@@ -1,9 +1,10 @@
-package com.team214.nctue4.utility
+package com.team214.nctue4.connect
 
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import android.util.Log
 import com.team214.nctue4.model.AnnItem
+import com.team214.nctue4.utility.E3Type
 import kotlinx.android.parcel.Parcelize
 import okhttp3.*
 import org.jsoup.Jsoup
@@ -15,9 +16,9 @@ import kotlin.collections.HashMap
 
 @Parcelize
 @SuppressLint("ParcelCreator")
-class NewE3Connect(private var studentId: String = "",
-                   private var studentPassword: String = "",
-                   private var newE3Cookie: String = "") : NewE3Interface, Parcelable {
+class NewE3WebConnect(private var studentId: String = "",
+                      private var studentPassword: String = "",
+                      private var newE3Cookie: String = "") : NewE3WebInterface, Parcelable {
 
     companion object {
         private const val HOST = "e3new.nctu.edu.tw"
@@ -25,18 +26,18 @@ class NewE3Connect(private var studentId: String = "",
 
     private val client = OkHttpClient().newBuilder().followRedirects(false)
             .followSslRedirects(false).cookieJar(
-            object : CookieJar {
-                override fun loadForRequest(url: HttpUrl?): MutableList<Cookie>? {
-                    return if (cookieStore[HOST] != null) cookieStore[HOST]
-                    else mutableListOf()
-                }
+                    object : CookieJar {
+                        override fun loadForRequest(url: HttpUrl?): MutableList<Cookie>? {
+                            return if (cookieStore[HOST] != null) cookieStore[HOST]
+                            else mutableListOf()
+                        }
 
-                override fun saveFromResponse(url: HttpUrl?, cookies: MutableList<Cookie>?) {
-                    cookieStore[HOST] =
-                            if (cookies!!.size > 1) cookies.subList(1, 2)
-                            else cookies
-                }
-            }).build()
+                        override fun saveFromResponse(url: HttpUrl?, cookies: MutableList<Cookie>?) {
+                            cookieStore[HOST] =
+                                    if (cookies!!.size > 1) cookies.subList(1, 2)
+                                    else cookies
+                        }
+                    }).build()
 
     private var cookieStore: HashMap<String, MutableList<Cookie>> = if (newE3Cookie != "") {
         hashMapOf(HOST to mutableListOf(Cookie.parse(HttpUrl.parse("https://e3new.nctu.edu.tw/"),
@@ -45,14 +46,9 @@ class NewE3Connect(private var studentId: String = "",
         hashMapOf()
     }
 
-    override fun getCredential(): String {
-        return cookieStore[HOST]!![0].value()
-    }
-
-
     private fun post(path: String, params: HashMap<String, String>,
                      secondTry: Boolean = false,
-                     completionHandler: (status: NewE3Interface.Status,
+                     completionHandler: (status: NewE3WebInterface.Status,
                                          response: String?) -> Unit) {
 
         val url = "https://e3new.nctu.edu.tw$path"
@@ -67,7 +63,7 @@ class NewE3Connect(private var studentId: String = "",
 
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
+                completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -78,31 +74,31 @@ class NewE3Connect(private var studentId: String = "",
                         getCookie { _, _ ->
                             post(path, params, true, completionHandler)
                         }
-                    } else completionHandler(NewE3Interface.Status.WRONG_CREDENTIALS, null)
-                } else completionHandler(NewE3Interface.Status.SUCCESS, res)
+                    } else completionHandler(NewE3WebInterface.Status.WRONG_CREDENTIALS, null)
+                } else completionHandler(NewE3WebInterface.Status.SUCCESS, res)
             }
         })
 
     }
 
-    override fun getCookie(completionHandler: (status: NewE3Interface.Status, response: String?) -> Unit) {
+    override fun getCookie(completionHandler: (status: NewE3WebInterface.Status, response: String?) -> Unit) {
         cookieStore.clear()
         post("/login/index.php?lang=en", hashMapOf(
                 "username" to studentId,
                 "password" to studentPassword
         )) { status, response ->
-            if (status == NewE3Interface.Status.SUCCESS) {
-                completionHandler(NewE3Interface.Status.SUCCESS, response)
+            if (status == NewE3WebInterface.Status.SUCCESS) {
+                completionHandler(NewE3WebInterface.Status.SUCCESS, response)
             } else {
                 completionHandler(status, null)
             }
         }
     }
 
-    override fun getAnn(completionHandler: (status: NewE3Interface.Status, response: ArrayList<AnnItem>?) -> Unit) {
+    override fun getAnn(completionHandler: (status: NewE3WebInterface.Status, response: ArrayList<AnnItem>?) -> Unit) {
         post("/my/index.php?lang=en", HashMap()
         ) { status, response ->
-            if (status == NewE3Interface.Status.SUCCESS) {
+            if (status == NewE3WebInterface.Status.SUCCESS) {
                 val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
                 var annItems = ArrayList<AnnItem>()
                 val df = SimpleDateFormat("d LLL,  yyyy", Locale.US)
@@ -124,17 +120,17 @@ class NewE3Connect(private var studentId: String = "",
                             }
 
                         }
-                completionHandler(NewE3Interface.Status.SUCCESS, annItems)
+                completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
             } else {
                 completionHandler(status, null)
             }
         }
     }
 
-    override fun getAnnDetail(bulletinId: String, completionHandler: (status: NewE3Interface.Status, response: AnnItem?) -> Unit) {
+    override fun getAnnDetail(bulletinId: String, completionHandler: (status: NewE3WebInterface.Status, response: AnnItem?) -> Unit) {
         post(bulletinId, HashMap()
         ) { status, response ->
-            if (status == NewE3Interface.Status.SUCCESS) {
+            if (status == NewE3WebInterface.Status.SUCCESS) {
                 val annPage = Jsoup.parse(response)
                 val df = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.US)
                 val caption = if (annPage.select(".name").size > 0) {
@@ -154,7 +150,7 @@ class NewE3Connect(private var studentId: String = "",
                         E3Type.NEW,
                         ArrayList()
                 )
-                completionHandler(NewE3Interface.Status.SUCCESS, annItem)
+                completionHandler(NewE3WebInterface.Status.SUCCESS, annItem)
             } else {
                 completionHandler(status, null)
             }

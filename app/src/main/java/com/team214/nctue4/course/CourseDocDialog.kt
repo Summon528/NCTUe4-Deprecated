@@ -15,8 +15,8 @@ import android.widget.Toast
 import com.team214.nctue4.R
 import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.utility.DataStatus
-import com.team214.nctue4.utility.OldE3Connect
-import com.team214.nctue4.utility.OldE3Interface
+import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.utility.downloadFile
 import kotlinx.android.synthetic.main.dialog_course_doc.*
 

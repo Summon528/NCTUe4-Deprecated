@@ -1,4 +1,4 @@
-package com.team214.nctue4.utility
+package com.team214.nctue4.connect
 
 import android.app.Application
 import android.text.TextUtils

@@ -15,9 +15,9 @@ import android.widget.TextView
 import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.utility.DataStatus
-import com.team214.nctue4.utility.NewE3Connect
-import com.team214.nctue4.utility.OldE3Connect
-import com.team214.nctue4.utility.OldE3Interface
+import com.team214.nctue4.connect.NewE3WebConnect
+import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.connect.OldE3Interface
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var currentFragment = -1
     lateinit var oldE3Service: OldE3Connect
-    lateinit var newE3Service: NewE3Connect
+    lateinit var newE3Service: NewE3WebConnect
     private lateinit var studentId: String
     private lateinit var studentPassword: String
 
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         oldE3Service = OldE3Connect(studentId, studentPassword)
 
         val studentPortalPassword = prefs.getString("studentPortalPassword", "")
-        newE3Service = NewE3Connect(studentId, studentPortalPassword, "")
+        newE3Service = NewE3WebConnect(studentId, studentPortalPassword, "")
 
         currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
             savedInstanceState.getInt("currentFragment")

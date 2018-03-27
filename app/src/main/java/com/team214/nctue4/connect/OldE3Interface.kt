@@ -1,28 +1,27 @@
-package com.team214.nctue4.utility
+package com.team214.nctue4.connect
 
 import android.content.Context
-import com.team214.nctue4.model.*
+import com.team214.nctue4.model.AnnItem
+import com.team214.nctue4.model.AttachItem
+import com.team214.nctue4.model.CourseItem
+import com.team214.nctue4.model.DocGroupItem
 
 interface OldE3Interface {
     enum class Status {
         SUCCESS, SERVICE_ERROR, WRONG_CREDENTIALS
     }
 
-    fun getLoginTicket(completionHandler: (status: OldE3Interface.Status,
+    fun getLoginTicket(completionHandler: (status: Status,
                                            response: Pair<String, String>?) -> Unit)
 
-    fun getCourseList(completionHandler: (status: OldE3Interface.Status,
+    fun getCourseList(completionHandler: (status: Status,
                                           response: ArrayList<CourseItem>?) -> Unit)
 
-//    fun getAnnouncementDetail(bulletinId: String, from: Int?, courseId: String,
-//                              completionHandler: (status: OldE3Interface.Status,
-//                                                  response: AnnItem?) -> Unit)
-
-    fun getAnnouncementListLogin(count:Int, completionHandler: (status: OldE3Interface.Status,
-                                                     response: ArrayList<AnnItem>?) -> Unit)
+    fun getAnnouncementListLogin(count: Int, completionHandler: (status: Status,
+                                                                 response: ArrayList<AnnItem>?) -> Unit)
 
     fun getCourseAnn(courseId: String, courseName: String,
-                     completionHandler: (status: OldE3Interface.Status,
+                     completionHandler: (status: Status,
                                          response: ArrayList<AnnItem>?) -> Unit)
 
     fun getMaterialDocList(courseId: String, context: Context,
@@ -34,6 +33,4 @@ interface OldE3Interface {
                                               response: ArrayList<AttachItem>?) -> Unit)
 
     fun cancelPendingRequests()
-
-    fun getCredential() : Pair<String,String>
 }

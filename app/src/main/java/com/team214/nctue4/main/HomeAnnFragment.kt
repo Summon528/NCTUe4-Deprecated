@@ -10,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.team214.nctue4.AnnActivity
 import com.team214.nctue4.R
+import com.team214.nctue4.connect.NewE3WebConnect
+import com.team214.nctue4.connect.NewE3WebInterface
+import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.*
 import kotlinx.android.synthetic.main.fragment_ann.*
@@ -19,7 +23,7 @@ import kotlinx.android.synthetic.main.status_error.*
 
 class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
     private lateinit var oldE3Service: OldE3Connect
-    private lateinit var newE3Service: NewE3Connect
+    private lateinit var newE3Service: NewE3WebConnect
     private var dataStatus = DataStatus.INIT
     private var oldE3get = false
     private var newE3get = false
@@ -100,10 +104,10 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
         newE3Service = (activity as MainActivity).newE3Service
         newE3Service.getCookie { status, _ ->
             when (status) {
-                NewE3Interface.Status.SUCCESS ->
+                NewE3WebInterface.Status.SUCCESS ->
                     newE3Service.getAnn { status, response ->
                         when (status) {
-                            NewE3Interface.Status.SUCCESS -> {
+                            NewE3WebInterface.Status.SUCCESS -> {
                                 newE3AnnItems = response!!
                                 newE3get = true
                                 race()

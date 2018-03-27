@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import com.team214.nctue4.R
 import com.team214.nctue4.model.DocGroupItem
 import com.team214.nctue4.utility.DataStatus
-import com.team214.nctue4.utility.OldE3Connect
-import com.team214.nctue4.utility.OldE3Interface
+import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.connect.OldE3Interface
 import kotlinx.android.synthetic.main.fragment_course_doc.*
 import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
