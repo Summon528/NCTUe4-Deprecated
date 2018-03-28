@@ -14,10 +14,10 @@ import android.view.View
 import android.widget.TextView
 import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
-import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
+import com.team214.nctue4.utility.DataStatus
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var currentFragment = -1
     lateinit var oldE3Service: OldE3Connect
-    lateinit var newE3Service: NewE3WebConnect
+    lateinit var newE3WebService: NewE3WebConnect
     private lateinit var studentId: String
     private lateinit var studentPassword: String
 
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onStop()
         if (dataStatus != DataStatus.FINISHED) {
             if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
-            if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
+            if (::newE3WebService.isInitialized) newE3WebService.cancelPendingRequests()
         }
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
@@ -70,10 +70,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         studentId = prefs.getString("studentId", "")
         studentPassword = prefs.getString("studentPassword", "")
         oldE3Service = OldE3Connect(studentId, studentPassword)
-
         val studentPortalPassword = prefs.getString("studentPortalPassword", "")
-        newE3Service = NewE3WebConnect(studentId, studentPortalPassword, "")
-
+        newE3WebService = NewE3WebConnect(studentId, studentPortalPassword, "")
         currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
             savedInstanceState.getInt("currentFragment")
         else -1

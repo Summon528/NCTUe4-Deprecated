@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/old_e3_root"
-    android:layout_height="match_parent">
-<ProgressBar
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    style="?android:attr/progressBarStyleHorizontal"
-    android:id="@+id/progress_bar"
-    android:indeterminate="true"
-    android:layout_marginTop="-7dp"
-    android:visibility="invisible"
-    android:elevation="10dp"/>
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-7dp"
+        android:elevation="10dp"
+        android:indeterminate="true"
+        android:visibility="invisible" />
 
     <include layout="@layout/status_empty" />
+
+    <include layout="@layout/status_error" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/old_e3_recycler_view"
@@ -24,3 +27,4 @@
 
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>
+

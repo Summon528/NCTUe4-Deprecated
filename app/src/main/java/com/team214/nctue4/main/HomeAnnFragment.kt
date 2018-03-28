@@ -15,7 +15,8 @@ import com.team214.nctue4.connect.NewE3WebInterface
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.model.AnnItem
-import com.team214.nctue4.utility.*
+import com.team214.nctue4.utility.DataStatus
+import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_ann.*
 import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
@@ -101,7 +102,7 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
             }
         }
 
-        newE3Service = (activity as MainActivity).newE3Service
+        newE3Service = (activity as MainActivity).newE3WebService
         newE3Service.getCookie { status, _ ->
             when (status) {
                 NewE3WebInterface.Status.SUCCESS ->
@@ -156,7 +157,7 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
                     intent.putExtra("annItem", it)
                     intent.putExtra("oldE3Service", oldE3Service)
                 } else {
-                    intent.putExtra("newE3Service", newE3Service)
+                    intent.putExtra("newE3WebService", newE3Service)
                     intent.putExtra("annUrl", it.bulletinId)
                 }
                 startActivity(intent)

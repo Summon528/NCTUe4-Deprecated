@@ -107,7 +107,7 @@ class AnnActivity : AppCompatActivity() {
 
     private fun getData() {
         val bundle = intent.extras
-        newE3Service = bundle.getParcelable("newE3Service")
+        newE3Service = bundle.getParcelable("newE3WebService")
         oldE3Service = bundle.getParcelable("oldE3Service")
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE

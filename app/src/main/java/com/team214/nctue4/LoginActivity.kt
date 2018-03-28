@@ -8,25 +8,25 @@ import android.support.v7.app.AppCompatActivity
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
-import com.team214.nctue4.main.MainActivity
 import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.NewE3WebInterface
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
+import com.team214.nctue4.main.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var oldE3Service: OldE3Connect
-    private lateinit var newE3Service: NewE3WebConnect
+    private lateinit var newE3WebService: NewE3WebConnect
     private var oldE3Success = false
     private var newE3Success = false
 
     override fun onStop() {
         super.onStop()
         if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
-        if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
+        if (::newE3WebService.isInitialized) newE3WebService.cancelPendingRequests()
     }
 
     private fun loginSuccess() {
@@ -47,7 +47,6 @@ class LoginActivity : AppCompatActivity() {
         runOnUiThread {
             login_error_text_view.text = getString(R.string.login_id_or_password_error)
             login_error_text_view?.visibility = View.VISIBLE
-//            login_button.text = getString(R.string.login_id_or_password_error)
             login_progressbar?.visibility = View.GONE
             login_button?.text = getString(R.string.login)
             student_id.isEnabled = true
@@ -100,11 +99,6 @@ class LoginActivity : AppCompatActivity() {
         }
         setContentView(R.layout.activity_login)
 
-//        val animFade = AnimationUtils.loadAnimation(this, R.anim.fade)
-//        logo.startAnimation(animFade)
-//        LoginBox.startAnimation(animFade)
-//        login_button.startAnimation(animFade)
-
         //detect soft keyboard
         login_layout.viewTreeObserver.addOnGlobalLayoutListener {
             val heightDiff = login_layout.rootView.height - login_layout.height
@@ -145,12 +139,11 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
-            newE3Service = NewE3WebConnect(studentId, studentPortalPassword)
-            newE3Service.getCookie { status, response ->
+            newE3WebService = NewE3WebConnect(studentId, studentPortalPassword)
+            newE3WebService.getCookie { status, response ->
                 when (status) {
                     NewE3WebInterface.Status.SUCCESS -> {
                         val prefsEditor = prefs.edit()
-                        prefsEditor.putString("studentId", studentId)
                         prefsEditor.putString("studentPortalPassword", studentPortalPassword)
                         prefsEditor.apply()
                         newE3Success = true
@@ -164,6 +157,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
+
         }
     }
 

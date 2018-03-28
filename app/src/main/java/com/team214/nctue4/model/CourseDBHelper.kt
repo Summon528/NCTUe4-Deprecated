@@ -57,7 +57,7 @@ class CourseDBHelper(context: Context)
             }
         }
         cursor.close()
-        writableDatabase.delete("courses", null, null)
+        writableDatabase.delete("courses", "e3_type=?", arrayOf(e3Type.toString()))
         data.forEach {
             val values = ContentValues()
             values.put("course_no", it.courseNo)

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.team214.nctue4.R
 import com.team214.nctue4.model.CourseItem
+import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.item_course.view.*
 
 class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
@@ -27,7 +28,10 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
             }
 
             if (course.bookmarked == 1) {
-                view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
+                if (course.e3Type == E3Type.OLD)
+                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
+                else
+                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.new_e3))
             } else view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.blueGrey))
 
             view.course_star?.setOnClickListener {
