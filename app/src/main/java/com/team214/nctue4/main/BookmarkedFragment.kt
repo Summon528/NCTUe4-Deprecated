@@ -16,7 +16,7 @@ import com.team214.nctue4.R
 import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.CourseDBHelper
 import com.team214.nctue4.model.CourseItem
-import kotlinx.android.synthetic.main.fragment_old_e3.*
+import kotlinx.android.synthetic.main.fragment_couse_list.*
 import kotlinx.android.synthetic.main.item_course.view.*
 import kotlinx.android.synthetic.main.status_empty.*
 
@@ -29,12 +29,12 @@ class BookmarkedFragment : Fragment() {
         courseDBHelper = CourseDBHelper(context!!)
         if (arguments?.getBoolean("home") == null)
             activity!!.setTitle(R.string.bookmarked_courses)
-        return inflater.inflate(R.layout.fragment_old_e3, container, false)
+        return inflater.inflate(R.layout.fragment_couse_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (arguments?.getBoolean("home") != null)
-            old_e3_recycler_view.isNestedScrollingEnabled = false
+            course_list_recycler_view.isNestedScrollingEnabled = false
         courseItems = courseDBHelper.readBookmarkedCourse(
                 if (arguments?.getBoolean("home") != null) 5 else null
         )
@@ -64,15 +64,15 @@ class BookmarkedFragment : Fragment() {
                 startActivity(intent)
             }, courseDBHelper)
             val wrappedAdapter = dragDropManager.createWrappedAdapter(courseAdapter)
-            old_e3_recycler_view?.adapter = wrappedAdapter
-            old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
-            old_e3_recycler_view?.addItemDecoration(DividerItemDecoration(context,
+            course_list_recycler_view?.adapter = wrappedAdapter
+            course_list_recycler_view?.layoutManager = LinearLayoutManager(context)
+            course_list_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
             dragDropManager.setDraggingItemShadowDrawable(ContextCompat.getDrawable(context!!, R.drawable.ms9_composite_shadow_z6) as NinePatchDrawable)
             dragDropManager.setInitiateOnLongPress(true)
             dragDropManager.setInitiateOnMove(false)
-            old_e3_recycler_view.itemAnimator = DraggableItemAnimator()
-            dragDropManager.attachRecyclerView(old_e3_recycler_view)
+            course_list_recycler_view.itemAnimator = DraggableItemAnimator()
+            dragDropManager.attachRecyclerView(course_list_recycler_view)
 
         }
     }
