@@ -39,15 +39,14 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
 
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): ViewHolder {
+                                    viewType: Int): CourseAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_course, parent, false)
         return ViewHolder(view, context, starClickListener, itemClickListener)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CourseAdapter.ViewHolder, position: Int) {
         holder.bind(dataSet[position])
-
     }
 
     override fun getItemCount() = dataSet.size

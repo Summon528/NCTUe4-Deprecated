@@ -36,6 +36,14 @@ class CourseDBHelper(context: Context)
         writableDatabase.update("courses", values, "course_id = ?", arrayOf(courseId))
     }
 
+    fun updateBookmarkIdx(data: ArrayList<CourseItem>) {
+        (0 until data.size).forEach {
+            val values = ContentValues()
+            values.put("bookmark_idx", it)
+            writableDatabase.update("courses", values, "id =?", arrayOf(data[it].id.toString()))
+        }
+
+    }
 
     fun refreshCourses(data: ArrayList<CourseItem>, e3Type: Int) {
         val hashSet = HashSet<String>()
@@ -59,7 +67,6 @@ class CourseDBHelper(context: Context)
             values.put("e3_type", it.e3Type)
             values.put("bookmarked", if (hashSet.contains(it.courseId)) 1 else 0)
             values.put("bookmark_idx", it.bookmarkIdx)
-            values.put("idx", it.idx)
             writableDatabase.insert("courses", null, values)
         }
     }
@@ -87,7 +94,7 @@ class CourseDBHelper(context: Context)
                 cursor.getInt(cursor.getColumnIndex("e3_type")),
                 cursor.getInt(cursor.getColumnIndex("bookmarked")),
                 cursor.getInt(cursor.getColumnIndex("bookmark_idx")),
-                cursor.getInt(cursor.getColumnIndex("idx"))
+                cursor.getInt(cursor.getColumnIndex("id"))
         )
     }
 }

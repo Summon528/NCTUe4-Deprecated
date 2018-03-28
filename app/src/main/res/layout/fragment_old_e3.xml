@@ -9,9 +9,10 @@
     android:layout_alignParentTop="true"
     style="?android:attr/progressBarStyleHorizontal"
     android:id="@+id/progress_bar"
-    android:visibility="invisible"
     android:indeterminate="true"
-    android:layout_marginTop="-7dp"/>
+    android:layout_marginTop="-7dp"
+    android:visibility="invisible"
+    android:elevation="10dp"/>
 
     <include layout="@layout/status_empty" />
 

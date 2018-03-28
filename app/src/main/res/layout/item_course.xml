@@ -7,6 +7,7 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingBottom="15dp"
     android:paddingRight="15dp"
+    android:background="#ffffff"
     android:paddingTop="15dp">
 
     <View

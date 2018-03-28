@@ -1,6 +1,7 @@
 package com.team214.nctue4.main
 
 import android.content.Intent
+import android.graphics.drawable.NinePatchDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -9,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import com.team214.nctue4.R
 import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.CourseDBHelper
@@ -43,10 +46,8 @@ class BookmarkedFragment : Fragment() {
     private fun updateList() {
         if (courseItems.isEmpty()) empty_request?.visibility = View.VISIBLE
         else {
-            old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
-            old_e3_recycler_view?.addItemDecoration(DividerItemDecoration(context,
-                    LinearLayoutManager.VERTICAL))
-            old_e3_recycler_view?.adapter = CourseAdapter(courseItems,
+            val dragDropManager = RecyclerViewDragDropManager()
+            val courseAdapter = CourseDragDropAdapter(courseItems,
                     context, fun(view: View, course: CourseItem) {
                 if (course.bookmarked == 1) {
                     courseDBHelper.bookmarkCourse(course.courseId, 0)
@@ -61,7 +62,17 @@ class BookmarkedFragment : Fragment() {
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
                 startActivity(intent)
-            })
+            }, courseDBHelper)
+            val wrappedAdapter = dragDropManager.createWrappedAdapter(courseAdapter)
+            old_e3_recycler_view?.adapter = wrappedAdapter
+            old_e3_recycler_view?.layoutManager = LinearLayoutManager(context)
+            old_e3_recycler_view?.addItemDecoration(DividerItemDecoration(context,
+                    LinearLayoutManager.VERTICAL))
+            dragDropManager.setDraggingItemShadowDrawable(ContextCompat.getDrawable(context!!, R.drawable.ms9_composite_shadow_z6) as NinePatchDrawable)
+            dragDropManager.setInitiateOnLongPress(true)
+            dragDropManager.setInitiateOnMove(false)
+            old_e3_recycler_view.itemAnimator = DraggableItemAnimator()
+            dragDropManager.attachRecyclerView(old_e3_recycler_view)
 
         }
     }
