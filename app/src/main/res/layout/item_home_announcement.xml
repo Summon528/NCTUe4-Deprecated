@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
@@ -8,28 +7,6 @@
     android:paddingRight="10dp"
     android:paddingTop="15dp">
 
-    <RelativeLayout
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_brightness_1_black_24dp" />
-
-        <TextView
-            android:id="@+id/announcement_name_in_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="資"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp" />
-
-    </RelativeLayout>
 
 
     <LinearLayout
@@ -50,19 +27,6 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_old_e3"
                 android:tint="@color/old_e3" />
-            <!--<TextView-->
-            <!--android:id="@+id/e3_identifier"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@drawable/ann_newe3_rounded_squre"-->
-            <!--android:gravity="center"-->
-            <!--android:maxLines="1"-->
-            <!--android:paddingBottom="3dp"-->
-            <!--android:paddingLeft="10dp"-->
-            <!--android:paddingRight="10dp"-->
-            <!--android:paddingTop="3dp"-->
-            <!--android:text="New"-->
-            <!--android:textColor="#FFFFFF" />-->
 
             <TextView
                 android:id="@+id/announcement_beginDate"
@@ -118,31 +82,6 @@
 
 
     </LinearLayout>
-
-
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="20dp"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:visibility="gone">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--<ImageView-->
-    <!--android:layout_width="18dp"-->
-    <!--android:layout_height="18dp"-->
-    <!--android:layout_marginRight="4dp"-->
-    <!--android:layout_marginTop="2dp"-->
-    <!--android:src="@drawable/ic_timeline_black_24dp" />-->
-
-    <!--</LinearLayout>-->
-
-
-    <!--</RelativeLayout>-->
 
 
 </LinearLayout>

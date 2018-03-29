@@ -1,7 +1,6 @@
 package com.team214.nctue4.main
 
 import android.content.Context
-import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -21,7 +20,6 @@ class HomeAnnAdapter(private val dataSet: List<AnnItem>, private val context: Co
     class ViewHolder(val view: View, private val context: Context,
                      private val itemClickListener: (AnnItem) -> Unit) : RecyclerView.ViewHolder(view) {
         fun bind(ann: AnnItem) {
-            view.announcement_name_in_image.text = ann.courseName.first().toString()
             view.announcement_name.text = ann.courseName
             view.announcement_caption.text = ann.caption
             val sdf = SimpleDateFormat("MM/dd", Locale.US)

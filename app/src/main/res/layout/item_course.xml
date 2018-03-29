@@ -37,7 +37,7 @@
                 android:maxLines="1"
                 android:text="微積分"
                 android:textColor="#424242"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
