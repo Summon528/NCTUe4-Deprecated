@@ -55,6 +55,7 @@ class OldE3Fragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        oldE3Service = (activity as MainActivity).oldE3Service
         courseItems = courseDBHelper.readCourses(E3Type.OLD)
         if (courseItems.isEmpty()) getData()
         else updateList()
@@ -63,7 +64,6 @@ class OldE3Fragment : Fragment() {
 
     private fun getData() {
         progress_bar.visibility = View.VISIBLE
-        oldE3Service = (activity as MainActivity).oldE3Service
         oldE3Service.getCourseList { status, response ->
             when (status) {
                 OldE3Interface.Status.SUCCESS -> {
@@ -107,6 +107,7 @@ class OldE3Fragment : Fragment() {
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)
+                intent.putExtra("oldE3Service",oldE3Service)
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
                 startActivity(intent)

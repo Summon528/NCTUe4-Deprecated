@@ -29,37 +29,53 @@ class OldE3Connect(private var studentId: String = "",
                    private var loginTicket: String = "",
                    private var accountId: String = "") : OldE3Interface, Parcelable {
 
-    private val tag = OldE3Connect::class.java.simpleName
+    companion object {
+        private val tag = OldE3Connect::class.java.simpleName
+        private const val loginPath = "/Login"
+    }
 
     private fun post(path: String, params: HashMap<String, String>,
                      secondTry: Boolean = false,
                      completionHandler: (status: OldE3Interface.Status,
                                          response: JSONObject?) -> Unit) {
-        val url = "http://e3.nctu.edu.tw/mService/Service.asmx$path"
-        Log.d("OldE3URL", url)
-        val stringRequest = object : StringRequest(Request.Method.POST, url,
-                Response.Listener<String> { response ->
-                    val xmlToJson = (XmlToJson.Builder(response).build()).toJson()
-                    completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
-                },
-                Response.ErrorListener { _ ->
-                    if (!secondTry && path != "/Login") {
-                        getLoginTicket { _, _ ->
-                            post(path, params, true, completionHandler)
-                        }
-                    } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
-                }) {
-            override fun getParams(): Map<String, String> {
-                return params
+        params["loginTicket"] = loginTicket
+        params["studentId"] = accountId
+        params["accountId"] = accountId
+        if (loginTicket == "" && path != loginPath) {
+            getLoginTicket { status, _ ->
+                if (status == OldE3Interface.Status.SUCCESS) {
+                    post(path, params, secondTry, completionHandler)
+                } else {
+                    completionHandler(status, null)
+                }
             }
+        } else {
+            val url = "http://e3.nctu.edu.tw/mService/Service.asmx$path"
+            Log.d("OldE3URL", url)
+            val stringRequest = object : StringRequest(Request.Method.POST, url,
+                    Response.Listener<String> { response ->
+                        val xmlToJson = (XmlToJson.Builder(response).build()).toJson()
+                        completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                    },
+                    Response.ErrorListener { error ->
+                        if (!secondTry && path != loginPath) {
+                            getLoginTicket { _, _ ->
+                                post(path, params, true, completionHandler)
+                            }
+                        } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                    }) {
+                override fun getParams(): Map<String, String> {
+                    return params
+                }
+            }
+            VolleyHandler.instance?.addToRequestQueue(stringRequest, tag)
         }
-        VolleyHandler.instance?.addToRequestQueue(stringRequest, tag)
     }
 
 
     override fun getLoginTicket(completionHandler: (status: OldE3Interface.Status,
                                                     response: Pair<String, String>?) -> Unit) {
-        post("/Login", hashMapOf(
+        post(loginPath, hashMapOf(
                 "account" to studentId,
                 "password" to studentPassword
         )) { status, response ->
@@ -83,8 +99,6 @@ class OldE3Connect(private var studentId: String = "",
     override fun getCourseList(completionHandler: (status: OldE3Interface.Status,
                                                    response: ArrayList<CourseItem>?) -> Unit) {
         post("/GetCourseList", hashMapOf(
-                "loginTicket" to loginTicket,
-                "accountId" to accountId,
                 "role" to "stu"
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
@@ -109,8 +123,6 @@ class OldE3Connect(private var studentId: String = "",
     override fun getAnnouncementListLogin(count: Int, completionHandler: (status: OldE3Interface.Status,
                                                                           response: ArrayList<AnnItem>?) -> Unit) {
         post("/GetAnnouncementList_LoginByCountWithAttach", hashMapOf(
-                "loginTicket" to loginTicket,
-                "studentId" to accountId,
                 "ShowCount" to count.toString()
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
@@ -158,7 +170,6 @@ class OldE3Connect(private var studentId: String = "",
                               completionHandler: (status: OldE3Interface.Status,
                                                   response: ArrayList<AnnItem>?) -> Unit) {
         post("/GetAnnouncementListWithAttach", hashMapOf(
-                "loginTicket" to loginTicket,
                 "courseId" to courseId,
                 "bulType" to "1"
         )) { status, response ->
@@ -213,7 +224,6 @@ class OldE3Connect(private var studentId: String = "",
         getMaterialDocListStatus = Array(2, { false })
         for (i in 0..1) {
             post("/GetMaterialDocList", hashMapOf(
-                    "loginTicket" to loginTicket,
                     "courseId" to courseId,
                     "docType" to i.toString()
             )) { status, response ->
@@ -256,7 +266,6 @@ class OldE3Connect(private var studentId: String = "",
                                    completionHandler: (status: OldE3Interface.Status,
                                                        response: ArrayList<AttachItem>?) -> Unit) {
         post("/GetAttachFileList", hashMapOf(
-                "loginTicket" to loginTicket,
                 "resId" to documentId,
                 "metaType" to "10", //No idea what is this for
                 "courseId" to courseId

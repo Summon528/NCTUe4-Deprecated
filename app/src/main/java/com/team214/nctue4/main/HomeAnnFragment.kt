@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
 
 
-class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
+class HomeAnnFragment : Fragment() {
     private lateinit var oldE3Service: OldE3Connect
     private lateinit var newE3Service: NewE3WebConnect
     private var dataStatus = DataStatus.INIT
@@ -42,12 +42,6 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
         super.onStart()
         if (dataStatus == DataStatus.STOPPED) getData()
     }
-
-//    override fun onRefresh() {
-//        announcement_refreshLayout.isRefreshing = false
-//        ann_login_recycler_view.adapter.notifyDataSetChanged()
-//    }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (arguments?.getBoolean("home") == null)
@@ -103,28 +97,14 @@ class HomeAnnFragment : Fragment()/*, SwipeRefreshLayout.OnRefreshListener*/ {
         }
 
         newE3Service = (activity as MainActivity).newE3WebService
-        newE3Service.getCookie { status, _ ->
+
+        newE3Service.getAnn { status, response ->
             when (status) {
-                NewE3WebInterface.Status.SUCCESS ->
-                    newE3Service.getAnn { status, response ->
-                        when (status) {
-                            NewE3WebInterface.Status.SUCCESS -> {
-                                newE3AnnItems = response!!
-                                newE3get = true
-                                race()
-                            }
-                            else -> {
-                                activity?.runOnUiThread {
-                                    Runnable {
-                                        error_request?.visibility = View.VISIBLE
-                                        progress_bar?.visibility = View.GONE
-                                        dataStatus = DataStatus.INIT
-                                        error_request_retry?.setOnClickListener { getData() }
-                                    }.run()
-                                }
-                            }
-                        }
-                    }
+                NewE3WebInterface.Status.SUCCESS -> {
+                    newE3AnnItems = response!!
+                    newE3get = true
+                    race()
+                }
                 else -> {
                     activity?.runOnUiThread {
                         Runnable {

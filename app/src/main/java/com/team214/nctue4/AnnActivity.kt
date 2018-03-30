@@ -111,7 +111,8 @@ class AnnActivity : AppCompatActivity() {
         oldE3Service = bundle.getParcelable("oldE3Service")
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
-        if (newE3Service != null) {
+        val annItem = bundle.getParcelable<AnnItem>("annItem")
+        if (annItem == null) {
             newE3Service!!.getAnnDetail(bundle.getString("annUrl")) { status, response ->
                 when (status) {
                     NewE3WebInterface.Status.SUCCESS -> {
@@ -135,8 +136,7 @@ class AnnActivity : AppCompatActivity() {
                 }
             }
         } else {
-            oldE3Service = bundle.getParcelable("oldE3Service")
-            showAnn(bundle.getParcelable("annItem"))
+            showAnn(annItem)
         }
     }
 }

@@ -2,7 +2,6 @@ package com.team214.nctue4.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -11,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
-import com.team214.nctue4.connect.NewE3Interface
 import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.CourseDBHelper
@@ -58,6 +56,7 @@ class NewE3Fragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        newE3Service = (activity as MainActivity).newE3Service
         courseItems = courseDBHelper.readCourses(E3Type.NEW)
         if (courseItems.isEmpty()) getData()
         else updateList()
@@ -66,38 +65,7 @@ class NewE3Fragment : Fragment() {
 
     private fun getData() {
         error_request?.visibility = View.GONE
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val newE3UserId = prefs.getString("newE3UserId", "")
-        val newE3Token = prefs.getString("newE3Token", "")
-        val studentId = prefs.getString("studentId", "")
-        val studentPortalPassword = prefs.getString("studentPortalPassword", "")
-        progress_bar.visibility = View.VISIBLE
-        newE3Service = NewE3Connect(studentId, studentPortalPassword, newE3UserId, newE3Token)
-        if (newE3UserId == "" || newE3Token == "") {
-            newE3Service.getToken { status: NewE3Interface.Status, response: String? ->
-                if (status == NewE3Interface.Status.SUCCESS) {
-                    prefs.edit().putString("newE3Token", response).apply()
-                    newE3Service.getUserId { status2: NewE3Interface.Status, response2: String? ->
-                        if (status2 == NewE3Interface.Status.SUCCESS) {
-                            prefs.edit().putString("newE3UserId", response2).apply()
-                            getData2()
-                        }
-                        else{
-                            error_request?.visibility = View.VISIBLE
-                            progress_bar?.visibility = View.GONE
-                            error_request_retry?.setOnClickListener { getData() }
-                        }
-                    }
-                } else {
-                    error_request?.visibility = View.VISIBLE
-                    progress_bar?.visibility = View.GONE
-                    error_request_retry?.setOnClickListener { getData() }
-                }
-            }
-        } else getData2()
-    }
-
-    private fun getData2() {
+        progress_bar?.visibility = View.VISIBLE
         newE3Service.getCourseList { status, response ->
             when (status) {
                 OldE3Interface.Status.SUCCESS -> {
@@ -141,6 +109,7 @@ class NewE3Fragment : Fragment() {
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)
+                intent.putExtra("newE3Service", newE3Service)
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
                 startActivity(intent)

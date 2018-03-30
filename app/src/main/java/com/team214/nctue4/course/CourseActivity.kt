@@ -1,24 +1,25 @@
 package com.team214.nctue4.course
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.team214.nctue4.BlankFragment
 import com.team214.nctue4.R
-import com.team214.nctue4.utility.BottomNavigationViewHelper
+import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.OldE3Connect
-import com.team214.nctue4.connect.OldE3Interface
+import com.team214.nctue4.utility.BottomNavigationViewHelper
 import kotlinx.android.synthetic.main.activity_course.*
 
 class CourseActivity : AppCompatActivity() {
-    lateinit var oldE3Service: OldE3Connect
+    var oldE3Service: OldE3Connect? = null
+    var newE3Service: NewE3Connect? = null
     private var currentFragment = -1
 
     override fun onStop() {
         super.onStop()
-        oldE3Service.cancelPendingRequests()
+        oldE3Service?.cancelPendingRequests()
+        newE3Service?.cancelPendingRequests()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -75,21 +76,18 @@ class CourseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_course)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val studentId = prefs.getString("studentId", "")
-        val studentPassword = prefs.getString("studentPassword", "")
         BottomNavigationViewHelper.disableShiftMode(course_bottom_nav)
-        oldE3Service = OldE3Connect(studentId, studentPassword)
-        oldE3Service.getLoginTicket { status, _ ->
-            when (status) {
-                OldE3Interface.Status.SUCCESS -> {
-                    switchFragment(
-                            if (savedInstanceState?.getInt("currentFragment") != null)
-                                savedInstanceState.getInt("currentFragment")
-                            else -1)
-                }
-            }
-        }
+
+        val bundle = intent.extras
+        oldE3Service = bundle.getParcelable("oldE3Service")
+        newE3Service = bundle.getParcelable("newE3Service")
+
+        switchFragment(
+                if (savedInstanceState?.getInt("currentFragment") != null)
+                    savedInstanceState.getInt("currentFragment")
+                else -1)
+
+
         course_bottom_nav?.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 

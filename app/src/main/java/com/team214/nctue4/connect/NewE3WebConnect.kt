@@ -22,6 +22,7 @@ class NewE3WebConnect(private var studentId: String = "",
 
     companion object {
         private const val HOST = "e3new.nctu.edu.tw"
+        private const val loginPath = "/login/index.php?lang=en"
     }
 
     private val client = OkHttpClient().newBuilder().followRedirects(false)
@@ -50,40 +51,46 @@ class NewE3WebConnect(private var studentId: String = "",
                      secondTry: Boolean = false,
                      completionHandler: (status: NewE3WebInterface.Status,
                                          response: String?) -> Unit) {
-
-        val url = "https://e3new.nctu.edu.tw$path"
-        Log.d("NewE3URL", url)
-        val formBody = FormBody.Builder()
-                .add("username", studentId)
-                .add("password", studentPassword).build()
-
-        val request = Request.Builder().url(url).post(formBody).build()
-
-        val call = client.newCall(request)
-
-        call.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)
+        if (cookieStore[HOST] == null && path != "/login/index.php?lang=en") {
+            getCookie { status, response ->
+                if (status == NewE3WebInterface.Status.SUCCESS) {
+                    post(path, params, secondTry, completionHandler)
+                } else completionHandler(status, null)
             }
+        } else {
+            val url = "https://e3new.nctu.edu.tw$path"
+            Log.d("NewE3URL", url)
+            val formBody = FormBody.Builder()
+                    .add("username", studentId)
+                    .add("password", studentPassword).build()
 
-            override fun onResponse(call: Call, response: Response) {
-                val res = response.body().string()
-                if (res.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">Continue</a>") ||
-                        res.contains("本頁面會自動重新導向。如果什麼都沒發生，請點選下面的\"繼續\"連結。<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">繼續")) {
-                    if (!secondTry && path != "/login/index.php?lang=en") {
-                        getCookie { _, _ ->
-                            post(path, params, true, completionHandler)
-                        }
-                    } else completionHandler(NewE3WebInterface.Status.WRONG_CREDENTIALS, null)
-                } else completionHandler(NewE3WebInterface.Status.SUCCESS, res)
-            }
-        })
+            val request = Request.Builder().url(url).post(formBody).build()
 
+            val call = client.newCall(request)
+
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val res = response.body().string()
+                    if (res.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">Continue</a>") ||
+                            res.contains("本頁面會自動重新導向。如果什麼都沒發生，請點選下面的\"繼續\"連結。<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">繼續")) {
+                        if (!secondTry && path != "/login/index.php?lang=en") {
+                            getCookie { _, _ ->
+                                post(path, params, true, completionHandler)
+                            }
+                        } else completionHandler(NewE3WebInterface.Status.WRONG_CREDENTIALS, null)
+                    } else completionHandler(NewE3WebInterface.Status.SUCCESS, res)
+                }
+            })
+        }
     }
 
     override fun getCookie(completionHandler: (status: NewE3WebInterface.Status, response: String?) -> Unit) {
         cookieStore.clear()
-        post("/login/index.php?lang=en", hashMapOf(
+        post(loginPath, hashMapOf(
                 "username" to studentId,
                 "password" to studentPassword
         )) { status, response ->

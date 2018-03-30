@@ -10,17 +10,14 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.TextView
 import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
+import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.OldE3Connect
-import com.team214.nctue4.connect.OldE3Interface
-import com.team214.nctue4.utility.DataStatus
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -28,29 +25,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var currentFragment = -1
     lateinit var oldE3Service: OldE3Connect
     lateinit var newE3WebService: NewE3WebConnect
-    private lateinit var studentId: String
-    private lateinit var studentPassword: String
+    lateinit var newE3Service: NewE3Connect
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putInt("currentFragment", currentFragment)
-    }
-
-    private var dataStatus = DataStatus.INIT
-
-    override fun onStop() {
-        super.onStop()
-        if (dataStatus != DataStatus.FINISHED) {
-            if (::oldE3Service.isInitialized) oldE3Service.cancelPendingRequests()
-            if (::newE3WebService.isInitialized) newE3WebService.cancelPendingRequests()
-        }
-        if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        if (dataStatus == DataStatus.STOPPED) getData { switchFragment(currentFragment) }
     }
 
 
@@ -67,35 +46,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        studentId = prefs.getString("studentId", "")
-        studentPassword = prefs.getString("studentPassword", "")
-        oldE3Service = OldE3Connect(studentId, studentPassword)
+        val studentId = prefs.getString("studentId", "")
+        val studentPassword = prefs.getString("studentPassword", "")
         val studentPortalPassword = prefs.getString("studentPortalPassword", "")
+        val studentEmail = prefs.getString("studentEmail", "")
+        val studentName = prefs.getString("studentName", "")
+        val newE3Token = prefs.getString("newE3Token", "")
+        val newE3UserId = prefs.getString("newE3UserId", "")
+
+        oldE3Service = OldE3Connect(studentId, studentPassword)
         newE3WebService = NewE3WebConnect(studentId, studentPortalPassword, "")
+        newE3Service = NewE3Connect(studentId, studentPortalPassword, newE3UserId, newE3Token)
         currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
-            savedInstanceState.getInt("currentFragment")
-        else -1
-        getData {
-            switchFragment(currentFragment)
-        }
+            savedInstanceState.getInt("currentFragment") else -1
+        switchFragment(currentFragment)
 
-
+        nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
+        nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = studentEmail
     }
 
-    private fun getData(completionHandler: () -> Unit) {
-        oldE3Service.getLoginTicket { status, response ->
-            completionHandler()
-            when (status) {
-                OldE3Interface.Status.SUCCESS -> {
-                    nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = response!!.first
-                    nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = response.second
-                }
-            }
-            main_container?.visibility = View.VISIBLE
-            dataStatus = DataStatus.FINISHED
-        }
-
-    }
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -151,7 +120,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             intent.putExtra("logout", true)
                             startActivity(intent)
                             finish()
-                        }.setNegativeButton(R.string.cancel) { dialog, which ->
+                        }.setNegativeButton(R.string.cancel) { dialog, _ ->
                             dialog.cancel()
                         }.show()
                 null

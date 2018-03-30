@@ -13,10 +13,10 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import com.team214.nctue4.R
-import com.team214.nctue4.model.AttachItem
-import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
+import com.team214.nctue4.model.AttachItem
+import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.downloadFile
 import kotlinx.android.synthetic.main.dialog_course_doc.*
 
@@ -53,7 +53,8 @@ class CourseDocDialog : DialogFragment() {
     private lateinit var fileName: String
 
     private fun getData() {
-        oldE3Service = (activity as CourseActivity).oldE3Service
+        //TODO NEWe3
+        oldE3Service = (activity as CourseActivity).oldE3Service!!
         oldE3Service.getAttachFileList(arguments!!.getString("documentId"),
                 arguments!!.getString("courseId"), { status, response ->
             when (status) {

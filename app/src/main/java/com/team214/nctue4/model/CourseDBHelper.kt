@@ -45,6 +45,10 @@ class CourseDBHelper(context: Context)
 
     }
 
+    fun delTable(){
+        writableDatabase.delete("courses", null, null)
+    }
+
     fun refreshCourses(data: ArrayList<CourseItem>, e3Type: Int) {
         val hashSet = HashSet<String>()
         val cursor = readableDatabase.query("courses", arrayOf("course_id"),
