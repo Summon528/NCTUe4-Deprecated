@@ -99,8 +99,7 @@ class CourseDocDialog : DialogFragment() {
         course_doc_dialog_recycler_view?.adapter = CourseDocDialogAdapter(context!!, docItems) {
             uri = it.url
             fileName = it.name
-            Log.d("URLLLLLLLLLLLLLLLLLLLLLLLL",uri)
-            downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.snack_bar)) {
+            downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.container)) {
                 requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         0)
             }
@@ -121,7 +120,7 @@ class CourseDocDialog : DialogFragment() {
             0 -> {
                 if ((grantResults.isNotEmpty() &&
                                 grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.snack_bar), null)
+                    downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.container), null)
                     dismiss()
                 }
                 return
