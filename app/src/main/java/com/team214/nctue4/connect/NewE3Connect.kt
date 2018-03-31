@@ -56,7 +56,7 @@ class NewE3Connect(private var studentId: String = "",
             val url = if (path == loginPath) "https://e3new.nctu.edu.tw$path"
             else "https://e3new.nctu.edu.tw/webservice/rest/server.php?moodlewsrestformat=json"
             val formBodyBuilder = FormBody.Builder()
-            params.forEach { t, u -> formBodyBuilder.add(t, u) }
+            params.forEach { entry -> formBodyBuilder.add(entry.key, entry.value) }
             val formBody = formBodyBuilder.build()
 
             val request = okhttp3.Request.Builder().url(url).post(formBody).build()

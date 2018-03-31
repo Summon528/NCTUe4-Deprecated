@@ -74,4 +74,6 @@
     <string name="no_compatible_app">沒有任何應用程式可以開啟這類檔案</string>
     <string name="ann_e3_identifier">舊E3</string>
     <string name="ann_new_e3_identifier">新E3</string>
+    <string name="refresh_success">重新整理成功</string>
+    <string name="action_refresh">重新整理</string>
 </resources>
