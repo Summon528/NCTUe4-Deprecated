@@ -113,7 +113,6 @@ class NewE3WebConnect(private var studentId: String = "",
                         .forEach {
                             if (it.select("b").text() != "System") {
                                 annItems.add(AnnItem(
-                                        1,
                                         it.select("a").attr("href").substring(25) + "&lang=en",
                                         it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
                                         it.select("h4").text(),
@@ -146,7 +145,6 @@ class NewE3WebConnect(private var studentId: String = "",
                     annPage.select(".subject").text().substring(5)
                 }
                 val annItem = AnnItem(
-                        1,
                         bulletinId,
                         annPage.select(".page-header-headings").text().replace("【.*】\\d*".toRegex(), "").replace(" .*".toRegex(), ""),
                         caption,

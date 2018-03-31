@@ -1,17 +1,22 @@
 package com.team214.nctue4.connect
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Parcelable
-import android.util.Log
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
+import com.team214.nctue4.R
 import com.team214.nctue4.model.AnnItem
+import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.model.CourseItem
+import com.team214.nctue4.model.DocGroupItem
 import com.team214.nctue4.utility.E3Type
 import kotlinx.android.parcel.Parcelize
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -27,6 +32,9 @@ class NewE3Connect(private var studentId: String = "",
         private val tag = NewE3Connect::class.java.simpleName
         private const val loginPath = "/login/token.php"
     }
+
+    private val client = OkHttpClient().newBuilder().followRedirects(false)
+            .followSslRedirects(false).build()
 
     private fun post(path: String?, params: HashMap<String, String>,
                      secondTry: Boolean = false,
@@ -47,26 +55,24 @@ class NewE3Connect(private var studentId: String = "",
         } else {
             val url = if (path == loginPath) "https://e3new.nctu.edu.tw$path"
             else "https://e3new.nctu.edu.tw/webservice/rest/server.php?moodlewsrestformat=json"
-            Log.d("NewE3ApiURL", url)
-            Log.d("PARA", params.toString())
-            val stringRequest = object : StringRequest(Request.Method.POST, url,
-                    Response.Listener<String> { response ->
-                        Log.d("res", response)
-                        completionHandler(NewE3Interface.Status.SUCCESS, response)
-                    },
-                    Response.ErrorListener { _ ->
-                        Log.d("res", "ERROR")
-                        if (!secondTry && path != loginPath) {
-                            getToken { _, _ ->
-                                post(path, params, true, completionHandler)
-                            }
-                        } else completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
-                    }) {
-                override fun getParams(): Map<String, String> {
-                    return params
+            val formBodyBuilder = FormBody.Builder()
+            params.forEach { t, u -> formBodyBuilder.add(t, u) }
+            val formBody = formBodyBuilder.build()
+
+            val request = okhttp3.Request.Builder().url(url).post(formBody).build()
+
+            val call = client.newCall(request)
+
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
-            }
-            VolleyHandler.instance?.addToRequestQueue(stringRequest, tag)
+
+                override fun onResponse(call: Call, response: okhttp3.Response) {
+                    val res = response.body().string()
+                    completionHandler(NewE3Interface.Status.SUCCESS, res)
+                }
+            })
         }
     }
 
@@ -111,18 +117,19 @@ class NewE3Connect(private var studentId: String = "",
                 "wsfunction" to "core_enrol_get_users_courses",
                 "userid" to userId
         )) { status, response ->
-            Log.e("RESPONSECCC", response)
             if (status == NewE3Interface.Status.SUCCESS) {
                 val data = JSONArray(response)
                 val courseItems = ArrayList<CourseItem>()
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
-                            val split = it.getString("fullname").split(".")
-                            courseItems.add(CourseItem(split[1],
-                                    split[2],
-                                    "",
-                                    it.getString("id"),
-                                    E3Type.NEW))
+                            if (it.getLong("enddate") > System.currentTimeMillis() / 1000) {
+                                val split = it.getString("fullname").split(".")
+                                courseItems.add(CourseItem(split[1],
+                                        split[2].replace(" .*".toRegex(), ""),
+                                        it.getString("shortname"),
+                                        it.getString("id"),
+                                        E3Type.NEW))
+                            }
                         }
                 completionHandler(status, courseItems)
             } else {
@@ -136,9 +143,7 @@ class NewE3Connect(private var studentId: String = "",
                 "wsfunction" to "mod_forum_get_forums_by_courses",
                 "courseids[0]" to courseId
         )) { status, response ->
-            Log.e("RESPONSECCC", response)
             if (status == NewE3Interface.Status.SUCCESS) {
-                Log.e("RESPONSECCC", response)
                 val data = JSONArray(response)
                 val forumId = (data.get(0) as JSONObject).getString("id")
                 post(null, hashMapOf(
@@ -148,18 +153,16 @@ class NewE3Connect(private var studentId: String = "",
                         "perpage" to "100",
                         "sortby" to "timemodified"
                 )) { status2, response2 ->
-                    Log.d("QQQQQQQQQQQQQQQQQQ", response2.toString())
                     if (status2 == NewE3Interface.Status.SUCCESS) {
                         val data2 = JSONObject(response2).getJSONArray("discussions")
                         val courseAnnItems = ArrayList<AnnItem>()
                         (0 until data2.length()).map { data2.get(it) as JSONObject }.forEach {
                             courseAnnItems.add(AnnItem(
-                                    0,
                                     "",
                                     courseName,
                                     it.getString("name"),
                                     it.getString("message"),
-                                    Date(it.getLong("timestart") * 1000),
+                                    Date(it.getLong("timemodified") * 1000),
                                     Date(it.getLong("timeend") * 1000),
                                     courseId,
                                     E3Type.NEW,
@@ -169,6 +172,66 @@ class NewE3Connect(private var studentId: String = "",
                         completionHandler(NewE3Interface.Status.SUCCESS, courseAnnItems)
                     } else completionHandler(status, null)
                 }
+            } else completionHandler(status, null)
+        }
+    }
+
+    override fun getCourseFolder(courseId: String, context: Context,
+                                 completionHandler: (status: NewE3Interface.Status, response: ArrayList<DocGroupItem>?) -> Unit) {
+        post(null, hashMapOf(
+                "wsfunction" to "mod_folder_get_folders_by_courses",
+                "courseids[0]" to courseId
+        )) { status, response ->
+            if (status == NewE3Interface.Status.SUCCESS) {
+                val data = JSONObject(response).getJSONArray("folders")
+                val docGroupItems = ArrayList<DocGroupItem>()
+                (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
+                    var name = it.getString("name")
+                    var which = if (name.startsWith("[參考資料]")) {
+                        name = name.drop(6)
+                        1
+                    } else 0
+                    docGroupItems.add(DocGroupItem(
+                            name,
+                            it.getString("coursemodule"),
+                            courseId,
+                            if (which == 0) context.getString(R.string.course_doc_type_handout)
+                            else context.getString(R.string.course_doc_type_reference)
+                    ))
+                }
+                completionHandler(status, docGroupItems)
+            } else completionHandler(status, null)
+        }
+    }
+
+    override fun getFiles(courseId: String, folderId: String,
+                          completionHandler: (status: NewE3Interface.Status,
+                                              response: ArrayList<AttachItem>?) -> Unit) {
+
+        post(null, hashMapOf(
+                "courseid" to courseId,
+                "options[0][name]" to "cmid",
+                "options[0][value]" to folderId,
+                "wsfunction" to "core_course_get_contents"
+        )) { status, response ->
+            if (status == NewE3Interface.Status.SUCCESS) {
+                val data = JSONArray(response)
+                val attachItems = ArrayList<AttachItem>()
+
+                (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
+                    if (it.getJSONArray("modules").length() > 0) {
+                        val data2 = it.getJSONArray("modules").getJSONObject(0).getJSONArray("contents")
+                        (0 until data2.length()).map { data2.get(it) as JSONObject }.forEach {
+                            attachItems.add(AttachItem(
+                                    it.getString("filename"),
+                                    it.getString("filesize"),
+                                    //WTF Excuse me?
+                                    it.getString("fileurl") + "&token=$token"
+                            ))
+                        }
+                    }
+                }
+                completionHandler(status, attachItems)
             } else completionHandler(status, null)
         }
     }

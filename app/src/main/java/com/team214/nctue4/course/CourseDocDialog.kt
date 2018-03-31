@@ -7,23 +7,29 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import com.team214.nctue4.R
+import com.team214.nctue4.connect.NewE3Connect
+import com.team214.nctue4.connect.NewE3Interface
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.utility.DataStatus
+import com.team214.nctue4.utility.E3Type
 import com.team214.nctue4.utility.downloadFile
 import kotlinx.android.synthetic.main.dialog_course_doc.*
 
 
 class CourseDocDialog : DialogFragment() {
 
-    private lateinit var oldE3Service: OldE3Connect
+    private var oldE3Service: OldE3Connect? = null
+    private var newE3Service: NewE3Connect? = null
+
     private var dataStatus = DataStatus.INIT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +39,8 @@ class CourseDocDialog : DialogFragment() {
 
     override fun onStop() {
         super.onStop()
-        oldE3Service.cancelPendingRequests()
+        oldE3Service?.cancelPendingRequests()
+        newE3Service?.cancelPendingRequests()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
 
@@ -53,20 +60,38 @@ class CourseDocDialog : DialogFragment() {
     private lateinit var fileName: String
 
     private fun getData() {
-        //TODO NEWe3
-        oldE3Service = (activity as CourseActivity).oldE3Service!!
-        oldE3Service.getAttachFileList(arguments!!.getString("documentId"),
-                arguments!!.getString("courseId"), { status, response ->
-            when (status) {
-                OldE3Interface.Status.SUCCESS -> {
-                    updateList(response!!)
-                }
-                else -> {
-                    Toast.makeText(context, getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                    dismiss()
+        val e3Type = arguments!!.getInt("e3Type")
+        val documentId = arguments!!.getString("documentId")
+        val courseId = arguments!!.getString("courseId")
+        if (e3Type == E3Type.OLD) {
+            oldE3Service = (activity as CourseActivity).oldE3Service
+            oldE3Service!!.getAttachFileList(documentId, courseId) { status, response ->
+                when (status) {
+                    OldE3Interface.Status.SUCCESS -> {
+                        updateList(response!!)
+                    }
+                    else -> {
+                        Toast.makeText(context, getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                        dismiss()
+                    }
                 }
             }
-        })
+        } else {
+            newE3Service = (activity as CourseActivity).newE3Service
+            newE3Service!!.getFiles(courseId, documentId) { status, response ->
+                activity?.runOnUiThread {
+                    when (status) {
+                        NewE3Interface.Status.SUCCESS -> {
+                            updateList(response!!)
+                        }
+                        else -> {
+                            Toast.makeText(context, getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun updateList(docItems: ArrayList<AttachItem>) {
@@ -74,6 +99,7 @@ class CourseDocDialog : DialogFragment() {
         course_doc_dialog_recycler_view?.adapter = CourseDocDialogAdapter(context!!, docItems) {
             uri = it.url
             fileName = it.name
+            Log.d("URLLLLLLLLLLLLLLLLLLLLLLLL",uri)
             downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.snack_bar)) {
                 requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         0)

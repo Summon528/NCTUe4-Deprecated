@@ -19,6 +19,7 @@ import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.DataStatus
+import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_course_ann.*
 import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
@@ -61,41 +62,49 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
 
-        oldE3Service = (activity as CourseActivity).oldE3Service
-        newE3Service = (activity as CourseActivity).newE3Service
         announcement_refreshLayout?.setOnRefreshListener(this)
         val courseId = arguments!!.getString("courseId")
         val courseName = arguments!!.getString("courseName")
+        val e3Type = arguments!!.getInt("e3Type")
         activity!!.title = courseName
 
-        newE3Service?.getCourseAnn(courseId, courseName) { status, response ->
-            when (status) {
-                NewE3Interface.Status.SUCCESS -> {
-                    Log.d("askljdlaksdjalskd", response!!.toString())
-                    update(response!!)
+        if (e3Type == E3Type.NEW) {
+            newE3Service = (activity as CourseActivity).newE3Service
+            newE3Service!!.getCourseAnn(courseId, courseName) { status, response ->
+                activity?.runOnUiThread {
+                    when (status) {
+                        NewE3Interface.Status.SUCCESS -> {
+                            Log.d("askljdlaksdjalskd", response!!.toString())
+                            update(response!!)
+                        }
+                        else -> {
+                            error_request?.visibility = View.VISIBLE
+                            dataStatus = DataStatus.INIT
+                            error_request_retry?.setOnClickListener { getData() }
+
+                        }
+                    }
+                    dataStatus = DataStatus.FINISHED
+                    progress_bar?.visibility = View.GONE
                 }
-                else -> {
-                    error_request?.visibility = View.VISIBLE
-                    dataStatus = DataStatus.INIT
-                    error_request_retry?.setOnClickListener { getData() }
-                }
+
             }
-            dataStatus = DataStatus.FINISHED
-            progress_bar?.visibility = View.GONE
-        }
-        oldE3Service?.getCourseAnn(courseId, courseName) { status, response ->
-            when (status) {
-                OldE3Interface.Status.SUCCESS -> {
-                    update(response!!)
+        } else {
+            oldE3Service = (activity as CourseActivity).oldE3Service
+            oldE3Service!!.getCourseAnn(courseId, courseName) { status, response ->
+                when (status) {
+                    OldE3Interface.Status.SUCCESS -> {
+                        update(response!!)
+                    }
+                    else -> {
+                        error_request?.visibility = View.VISIBLE
+                        dataStatus = DataStatus.INIT
+                        error_request_retry?.setOnClickListener { getData() }
+                    }
                 }
-                else -> {
-                    error_request?.visibility = View.VISIBLE
-                    dataStatus = DataStatus.INIT
-                    error_request_retry?.setOnClickListener { getData() }
-                }
+                dataStatus = DataStatus.FINISHED
+                progress_bar?.visibility = View.GONE
             }
-            dataStatus = DataStatus.FINISHED
-            progress_bar?.visibility = View.GONE
         }
     }
 
@@ -113,6 +122,7 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 startActivity(intent)
             }
             announcement_refreshLayout?.visibility = View.VISIBLE
+
         }
     }
 }

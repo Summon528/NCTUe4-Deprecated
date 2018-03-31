@@ -147,7 +147,6 @@ class OldE3Connect(private var studentId: String = "",
                                 }
                             }
                             annItems.add(AnnItem(
-                                    it.getString("BulType").toInt(),
                                     it.getString("BulletinId"),
                                     it.getString("CourseName"),
                                     it.getString("Caption"),
@@ -195,7 +194,6 @@ class OldE3Connect(private var studentId: String = "",
                                 }
                             }
                             annItems.add(AnnItem(
-                                    it.getInt("BulType"),
                                     it.getString("BulletinId"),
                                     courseName,
                                     it.getString("Caption"),

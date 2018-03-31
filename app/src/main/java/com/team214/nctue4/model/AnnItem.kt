@@ -9,8 +9,7 @@ import java.util.*
 
 
 @Parcelize
-class AnnItem(val bulType: Int,
-              val bulletinId: String,
+class AnnItem(val bulletinId: String,
               val courseName: String,
               val caption: String,
               val content: String,

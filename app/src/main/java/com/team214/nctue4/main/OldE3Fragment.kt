@@ -110,6 +110,7 @@ class OldE3Fragment : Fragment() {
                 intent.putExtra("oldE3Service",oldE3Service)
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
+                intent.putExtra("e3Type",E3Type.OLD)
                 startActivity(intent)
             })
 
