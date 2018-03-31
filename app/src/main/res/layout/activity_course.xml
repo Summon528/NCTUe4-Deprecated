@@ -53,19 +53,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="true"
         android:orientation="vertical">
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/snack_bar"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:layout_marginBottom="1dp"/>
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/course_bottom_nav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:elevation="8dp"
             android:background="?android:attr/windowBackground"
             app:menu="@menu/navigation" />
     </LinearLayout>

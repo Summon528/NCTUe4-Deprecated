@@ -16,6 +16,7 @@ import com.team214.nctue4.R
 import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.CourseDBHelper
 import com.team214.nctue4.model.CourseItem
+import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_couse_list.*
 import kotlinx.android.synthetic.main.item_course.view.*
 import kotlinx.android.synthetic.main.status_empty.*
@@ -61,6 +62,9 @@ class BookmarkedFragment : Fragment() {
                 intent.setClass(activity, CourseActivity::class.java)
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
+                intent.putExtra("e3Type", it.e3Type)
+                intent.putExtra("oldE3Service",(activity as MainActivity).oldE3Service)
+                intent.putExtra("newE3Service",(activity as MainActivity).newE3Service)
                 startActivity(intent)
             }, courseDBHelper)
             val wrappedAdapter = dragDropManager.createWrappedAdapter(courseAdapter)
