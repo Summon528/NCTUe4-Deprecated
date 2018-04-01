@@ -34,6 +34,10 @@ class CourseAdapter(private val dataSet: ArrayList<CourseItem>,
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.new_e3))
             } else view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.blueGrey))
 
+            if (course.e3Type == E3Type.OLD)
+                view.course_item_e3_bar.setBackgroundColor(ContextCompat.getColor(context, R.color.old_e3))
+            else
+                view.course_item_e3_bar.setBackgroundColor(ContextCompat.getColor(context, R.color.new_e3))
             view.course_star?.setOnClickListener {
                 starClickListener(view, course)
             }
