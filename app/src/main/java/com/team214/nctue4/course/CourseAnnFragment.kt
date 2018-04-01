@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,7 +73,7 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 activity?.runOnUiThread {
                     when (status) {
                         NewE3Interface.Status.SUCCESS -> {
-                            update(response!!)
+                            if (response != null) update(response)
                         }
                         else -> {
                             error_request?.visibility = View.VISIBLE

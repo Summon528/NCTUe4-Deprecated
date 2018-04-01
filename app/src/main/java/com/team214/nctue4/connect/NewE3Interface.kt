@@ -1,10 +1,7 @@
 package com.team214.nctue4.connect
 
 import android.content.Context
-import com.team214.nctue4.model.AnnItem
-import com.team214.nctue4.model.AttachItem
-import com.team214.nctue4.model.CourseItem
-import com.team214.nctue4.model.DocGroupItem
+import com.team214.nctue4.model.*
 
 interface NewE3Interface {
     enum class Status {
@@ -27,6 +24,10 @@ interface NewE3Interface {
     fun getFiles(courseId: String, folderId: String,
                  completionHandler: (status: Status,
                                      response: ArrayList<AttachItem>?) -> Unit)
+
+    fun getMemberList(courseId: String,
+                      completionHandler: (status: NewE3Interface.Status, response:
+                      Array<ArrayList<MemberItem>>?) -> Unit)
 
     fun cancelPendingRequests()
 }

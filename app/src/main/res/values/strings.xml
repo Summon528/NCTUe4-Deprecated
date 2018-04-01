@@ -42,6 +42,7 @@
     <string name="course_nav_assignment">Assignment</string>
     <string name="course_nav_score">Score</string>
     <string name="course_nav_other">Others</string>
+    <string name="course_nav_members">Members</string>
     <string name="course_doc_type_handout">Handout</string>
     <string name="course_doc_type_reference">Reference</string>
     <string name="download_start">Start downloading&#8230;</string>
@@ -90,4 +91,6 @@
     <string name="refresh_success">Refresh Success</string>
     <string name="action_goto_course">Goto Course Page</string>
     <string name="wait">Please Wait</string>
+
+    <string name="no_email">no email</string>
 </resources>

@@ -4,17 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
 import com.team214.nctue4.R
-import com.team214.nctue4.model.AnnItem
-import com.team214.nctue4.model.AttachItem
-import com.team214.nctue4.model.CourseItem
-import com.team214.nctue4.model.DocGroupItem
+import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
+import com.team214.nctue4.utility.MemberType
 import kotlinx.android.parcel.Parcelize
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.util.*
@@ -236,8 +235,43 @@ class NewE3Connect(private var studentId: String = "",
         }
     }
 
+    override fun getMemberList(courseId: String,
+                               completionHandler: (status: NewE3Interface.Status,
+                                                   response: Array<ArrayList<MemberItem>>?) -> Unit) {
+        post(null, hashMapOf(
+                "courseid" to courseId,
+                "wsfunction" to "core_enrol_get_enrolled_users"
+        )) { status, response ->
+            if (status == NewE3Interface.Status.SUCCESS) {
+                val memberItems = arrayOf<ArrayList<MemberItem>>(ArrayList(), ArrayList(), ArrayList())
+                val data = JSONArray(response)
+                (0 until data.length()).map { data.get(it) as JSONObject }
+                        .forEach {
+                            val type = when (it.getJSONArray("roles").getJSONObject(0).getInt("roleid")) {
+                                5 -> MemberType.STU
+                                9 -> MemberType.TA
+                                3 -> MemberType.TEA
+                                else -> MemberType.STU
+                            }
+                            memberItems[type].add(MemberItem(
+                                    it.getString("fullname").split(" ").last(),
+                                    it.getString("fullname").split(" ").first(),
+                                    try {
+                                        it.getString("email")
+                                    } catch (e: JSONException) {
+                                        ""
+                                    }, type
+                            ))
+
+                        }
+                completionHandler(status, memberItems)
+            } else completionHandler(status, null)
+        }
+
+    }
+
     override fun cancelPendingRequests() {
-        VolleyHandler.instance?.cancelPendingRequests(tag)
+        client.dispatcher().cancelAll()
     }
 }
 

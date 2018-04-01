@@ -8,18 +8,18 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.team214.nctue4.R
-import com.team214.nctue4.model.AnnItem
-import com.team214.nctue4.model.AttachItem
-import com.team214.nctue4.model.CourseItem
-import com.team214.nctue4.model.DocGroupItem
+import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
+import com.team214.nctue4.utility.MemberType
 import com.team214.nctue4.utility.forceGetJsonArray
 import com.team214.nctue4.utility.htmlCleaner
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import kotlinx.android.parcel.Parcelize
+import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Parcelize
@@ -283,6 +283,74 @@ class OldE3Connect(private var studentId: String = "",
             } else {
                 completionHandler(status, null)
             }
+        }
+    }
+
+    private lateinit var getMemberListStatus: Array<Boolean>
+    private var memberItems: Array<ArrayList<MemberItem>>? = null
+    override fun getMemberList(courseId: String,
+                               completionHandler: (status: OldE3Interface.Status,
+                                                   response: Array<ArrayList<MemberItem>>?) -> Unit) {
+        getMemberListStatus = arrayOf(false, false)
+        memberItems = arrayOf(ArrayList(), ArrayList(), ArrayList())
+        post("/GetMemberList", hashMapOf(
+                "loginTicket" to loginTicket,
+                "courseId" to courseId,
+                "role" to "tea"
+        )) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                getMemberListStatus[0] = true
+                processMembers(0, response!!, completionHandler)
+            } else completionHandler(status, null)
+        }
+        post("/GetMemberList", hashMapOf(
+                "loginTicket" to loginTicket,
+                "courseId" to courseId,
+                "role" to "ta"
+        )) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                getMemberListStatus[1] = true
+                processMembers(1, response!!, completionHandler)
+            } else completionHandler(status, null)
+        }
+    }
+
+    private fun processMembers(which: Int, response: JSONObject,
+                               completionHandler: (status: OldE3Interface.Status,
+                                                   response: Array<ArrayList<MemberItem>>?) -> Unit) {
+        Log.d("RES", response.toString())
+        val data = response.getJSONObject("ArrayOfAccountData").forceGetJsonArray("AccountData")
+        Log.d("DATA", data.toString())
+        when (which) {
+            0 -> {
+                (0 until data.length()).map { data.get(it) as JSONObject }
+                        .forEach {
+                            val type = if (it.getString("RoleName").contains("助教")) MemberType.TA else MemberType.TEA
+                            memberItems!![type].add(MemberItem(
+                                    it.getString("Name"),
+                                    it.getString("DepartId"),
+                                    it.getString("EMail"), type
+                            ))
+                        }
+            }
+            1 -> {
+                (0 until data.length()).map { data.get(it) as JSONObject }
+                        .forEach {
+                            memberItems!![MemberType.STU].add(MemberItem(
+                                    it.getString("Name"),
+                                    it.getString("DepartId"),
+                                    try {
+                                        it.getString("EMail")
+                                    } catch (e: JSONException) {
+                                        ""
+                                    }, MemberType.STU
+                            ))
+                        }
+            }
+        }
+        if (getMemberListStatus[0] && getMemberListStatus[1]) {
+            completionHandler(OldE3Interface.Status.SUCCESS, memberItems)
+            memberItems = null
         }
     }
 

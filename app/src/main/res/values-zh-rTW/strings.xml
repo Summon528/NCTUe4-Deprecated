@@ -78,4 +78,5 @@
     <string name="action_refresh">重新整理</string>
     <string name="action_goto_course">到課程頁面</string>
     <string name="wait">請稍後</string>
+    <string name="no_email">沒有電子郵件</string>
 </resources>

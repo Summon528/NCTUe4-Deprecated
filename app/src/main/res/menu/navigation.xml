@@ -20,7 +20,7 @@
         android:icon="@drawable/ic_check_black_24dp"
         android:title="@string/course_nav_score" />
     <item
-        android:id="@+id/course_nav_other"
-        android:icon="@drawable/ic_more_horiz_black_24dp"
-        android:title="@string/course_nav_other" />
+        android:id="@+id/course_nav_members"
+        android:icon="@drawable/ic_people_black_24dp"
+        android:title="@string/course_nav_members" />
 </menu>
