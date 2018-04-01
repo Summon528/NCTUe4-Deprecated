@@ -52,10 +52,15 @@ class BookmarkedFragment : Fragment() {
                     context, fun(view: View, course: CourseItem) {
                 if (course.bookmarked == 1) {
                     courseDBHelper.bookmarkCourse(course.courseId, 0)
+                    course.toggleBookmark()
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
-                } else {
+                } else if (course.e3Type == E3Type.OLD) {
                     courseDBHelper.bookmarkCourse(course.courseId, 1)
+                    course.toggleBookmark()
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
+                } else {
+                    course.toggleBookmark()
+                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.new_e3))
                 }
             }, {
                 val intent = Intent()
@@ -63,8 +68,8 @@ class BookmarkedFragment : Fragment() {
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
                 intent.putExtra("e3Type", it.e3Type)
-                intent.putExtra("oldE3Service",(activity as MainActivity).oldE3Service)
-                intent.putExtra("newE3Service",(activity as MainActivity).newE3Service)
+                intent.putExtra("oldE3Service", (activity as MainActivity).oldE3Service)
+                intent.putExtra("newE3Service", (activity as MainActivity).newE3Service)
                 startActivity(intent)
             }, courseDBHelper)
             val wrappedAdapter = dragDropManager.createWrappedAdapter(courseAdapter)

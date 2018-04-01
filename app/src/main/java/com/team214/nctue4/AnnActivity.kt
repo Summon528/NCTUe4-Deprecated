@@ -2,36 +2,47 @@ package com.team214.nctue4
 
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
+import android.widget.Toast
+import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.NewE3WebInterface
 import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.AnnItem
-import com.team214.nctue4.utility.*
+import com.team214.nctue4.utility.DataStatus
+import com.team214.nctue4.utility.downloadFile
 import kotlinx.android.synthetic.main.activity_ann.*
 import kotlinx.android.synthetic.main.status_error.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.PatternSyntaxException
 
 
 class AnnActivity : AppCompatActivity() {
     private var oldE3Service: OldE3Connect? = null
-    private var newE3Service: NewE3WebConnect? = null
+    private var newE3WebService: NewE3WebConnect? = null
+    private var newE3Service: NewE3Connect? = null
     private var dataStatus = DataStatus.INIT
+    private var courseId: String? = null
+    private var courseName: String? = null
+    private var e3Type: Int? = null
 
     override fun onStop() {
         super.onStop()
         if (dataStatus != DataStatus.FINISHED) {
             oldE3Service?.cancelPendingRequests()
-            newE3Service?.cancelPendingRequests()
+            newE3WebService?.cancelPendingRequests()
         }
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
     }
@@ -50,6 +61,20 @@ class AnnActivity : AppCompatActivity() {
             android.R.id.home -> {
                 onBackPressed()
                 return true
+            }
+            R.id.action_goto_course -> {
+                if (courseId != null && courseName != null && e3Type != null) {
+                    val intent = Intent()
+                    intent.setClass(this, CourseActivity::class.java)
+                    intent.putExtra("newE3Service", newE3Service)
+                    intent.putExtra("oldE3Service", oldE3Service)
+                    intent.putExtra("courseId", courseId)
+                    intent.putExtra("courseName", courseName)
+                    intent.putExtra("e3Type", e3Type!!)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, R.string.wait, Toast.LENGTH_SHORT).show()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -77,11 +102,22 @@ class AnnActivity : AppCompatActivity() {
         getData()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        if (intent.extras.getBoolean("fromHome", false))
+            menuInflater!!.inflate(R.menu.goto_course, menu)
+        return true
+    }
+
+
     private fun showAnn(annItem: AnnItem) {
         error_request?.visibility = View.GONE
         // replace <img src="/...> to <img src="http://e3.nctu.edu.tw/..."
-        val content = annItem!!.content.replace("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))".toRegex(),
-                "http://e3.nctu.edu.tw/")
+        val content =
+                try {
+                    Regex("(?<=(<img[.\\s\\S^>]{0,300}src[ \n]{0,300}=[ \n]{0,300}\"))(/)(?=([^/]))").replace(annItem.content, "http://e3.nctu.edu.tw/")
+                } catch (e: PatternSyntaxException) {
+                    annItem.content
+                }
         ann_caption.text = annItem.caption
         ann_courseName.text = annItem.courseName
         val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.US)
@@ -107,18 +143,22 @@ class AnnActivity : AppCompatActivity() {
 
     private fun getData() {
         val bundle = intent.extras
-        newE3Service = bundle.getParcelable("newE3WebService")
+        val annItem = bundle.getParcelable<AnnItem>("annItem")
+        newE3WebService = bundle.getParcelable("newE3WebService")
+        newE3Service = bundle.getParcelable("newE3Service")
         oldE3Service = bundle.getParcelable("oldE3Service")
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
-        val annItem = bundle.getParcelable<AnnItem>("annItem")
         if (annItem == null) {
-            newE3Service!!.getAnnDetail(bundle.getString("annUrl")) { status, response ->
+            newE3WebService!!.getAnnDetail(bundle.getString("annUrl")) { status, response ->
                 when (status) {
                     NewE3WebInterface.Status.SUCCESS -> {
+                        courseId = response!!.courseId
+                        courseName = response.courseName
+                        e3Type = response.e3Type
                         this.runOnUiThread {
                             Runnable {
-                                showAnn(response!!)
+                                showAnn(response)
                             }.run()
                         }
                     }
@@ -136,6 +176,9 @@ class AnnActivity : AppCompatActivity() {
                 }
             }
         } else {
+            courseId = annItem.courseId
+            courseName = annItem.courseName
+            e3Type = annItem.e3Type
             showAnn(annItem)
         }
     }

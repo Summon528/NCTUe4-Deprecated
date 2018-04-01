@@ -99,9 +99,11 @@ class OldE3Fragment : Fragment() {
                     context, fun(view: View, course: CourseItem) {
                 if (course.bookmarked == 1) {
                     courseDBHelper.bookmarkCourse(course.courseId, 0)
+                    course.toggleBookmark()
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
                 } else {
                     courseDBHelper.bookmarkCourse(course.courseId, 1)
+                    course.toggleBookmark()
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
                 }
             }, {

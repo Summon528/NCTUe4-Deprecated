@@ -74,7 +74,6 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 activity?.runOnUiThread {
                     when (status) {
                         NewE3Interface.Status.SUCCESS -> {
-                            Log.d("askljdlaksdjalskd", response!!.toString())
                             update(response!!)
                         }
                         else -> {

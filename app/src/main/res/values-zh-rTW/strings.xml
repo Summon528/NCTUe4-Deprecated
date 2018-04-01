@@ -76,4 +76,6 @@
     <string name="ann_new_e3_identifier">新E3</string>
     <string name="refresh_success">重新整理成功</string>
     <string name="action_refresh">重新整理</string>
+    <string name="action_goto_course">到課程頁面</string>
+    <string name="wait">請稍後</string>
 </resources>

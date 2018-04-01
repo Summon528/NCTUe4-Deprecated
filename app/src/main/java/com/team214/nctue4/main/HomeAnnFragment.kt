@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.status_error.*
 
 class HomeAnnFragment : Fragment() {
     private lateinit var oldE3Service: OldE3Connect
-    private lateinit var newE3Service: NewE3WebConnect
+    private lateinit var newE3WebService: NewE3WebConnect
     private var dataStatus = DataStatus.INIT
     private var oldE3get = false
     private var newE3get = false
@@ -35,7 +35,7 @@ class HomeAnnFragment : Fragment() {
         super.onStop()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
         if (dataStatus != DataStatus.FINISHED) oldE3Service.cancelPendingRequests()
-        if (dataStatus != DataStatus.FINISHED) newE3Service.cancelPendingRequests()
+        if (dataStatus != DataStatus.FINISHED) newE3WebService.cancelPendingRequests()
     }
 
     override fun onStart() {
@@ -96,9 +96,9 @@ class HomeAnnFragment : Fragment() {
             }
         }
 
-        newE3Service = (activity as MainActivity).newE3WebService
+        newE3WebService = (activity as MainActivity).newE3WebService
 
-        newE3Service.getAnn { status, response ->
+        newE3WebService.getAnn { status, response ->
             when (status) {
                 NewE3WebInterface.Status.SUCCESS -> {
                     newE3AnnItems = response!!
@@ -133,11 +133,13 @@ class HomeAnnFragment : Fragment() {
                     else annItems.toList(), context!!) {
                 val intent = Intent()
                 intent.setClass(activity, AnnActivity::class.java)
+                intent.putExtra("fromHome",true)
                 if (it.e3Type == E3Type.OLD) {
                     intent.putExtra("annItem", it)
                     intent.putExtra("oldE3Service", oldE3Service)
                 } else {
-                    intent.putExtra("newE3WebService", newE3Service)
+                    intent.putExtra("newE3WebService", newE3WebService)
+                    intent.putExtra("newE3Service", (activity as MainActivity).newE3Service)
                     intent.putExtra("annUrl", it.bulletinId)
                 }
                 startActivity(intent)

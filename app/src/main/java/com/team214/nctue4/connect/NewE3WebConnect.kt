@@ -151,7 +151,7 @@ class NewE3WebConnect(private var studentId: String = "",
                         annPage.select(".content").html(),
                         df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
                         df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
-                        "",
+                        Regex("courseid=([^&]*)").find(annPage.select(".list-group-item-action")[1].attr("href"))!!.groupValues[1],
                         E3Type.NEW,
                         ArrayList()
                 )

@@ -15,7 +15,7 @@ class AnnItem(val bulletinId: String,
               val content: String,
               val beginDate: Date,
               val endDate: Date,
-              val courseId: String,
+              var courseId: String,
               val e3Type: Int,
               val attachItems: ArrayList<AttachItem>
 ) : Parcelable
