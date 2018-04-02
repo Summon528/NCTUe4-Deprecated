@@ -31,6 +31,6 @@ interface OldE3Interface {
 
     fun getMemberList(courseId :String,
                       completionHandler: (status: Status, response:
-                      Array<ArrayList<MemberItem>>?) -> Unit)
+                      ArrayList<MemberItem>?) -> Unit)
     fun cancelPendingRequests()
 }

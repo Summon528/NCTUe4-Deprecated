@@ -27,7 +27,7 @@ interface NewE3Interface {
 
     fun getMemberList(courseId: String,
                       completionHandler: (status: NewE3Interface.Status, response:
-                      Array<ArrayList<MemberItem>>?) -> Unit)
+                      ArrayList<MemberItem>?) -> Unit)
 
     fun cancelPendingRequests()
 }

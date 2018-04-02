@@ -20,5 +20,6 @@ class MemberType {
         const val TEA = 0
         const val TA = 1
         const val STU = 2
+        const val AUDIT = 3
     }
 }

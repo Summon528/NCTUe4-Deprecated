@@ -287,12 +287,12 @@ class OldE3Connect(private var studentId: String = "",
     }
 
     private lateinit var getMemberListStatus: Array<Boolean>
-    private var memberItems: Array<ArrayList<MemberItem>>? = null
+    private var memberItems: ArrayList<MemberItem>? = null
     override fun getMemberList(courseId: String,
                                completionHandler: (status: OldE3Interface.Status,
-                                                   response: Array<ArrayList<MemberItem>>?) -> Unit) {
-        getMemberListStatus = arrayOf(false, false)
-        memberItems = arrayOf(ArrayList(), ArrayList(), ArrayList())
+                                                   response: ArrayList<MemberItem>?) -> Unit) {
+        getMemberListStatus = arrayOf(false, false, false)
+        memberItems = ArrayList()
         post("/GetMemberList", hashMapOf(
                 "loginTicket" to loginTicket,
                 "courseId" to courseId,
@@ -313,11 +313,21 @@ class OldE3Connect(private var studentId: String = "",
                 processMembers(1, response!!, completionHandler)
             } else completionHandler(status, null)
         }
+        post("/GetMemberList", hashMapOf(
+                "loginTicket" to loginTicket,
+                "courseId" to courseId,
+                "role" to "stu"
+        )) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                getMemberListStatus[2] = true
+                processMembers(2, response!!, completionHandler)
+            } else completionHandler(status, null)
+        }
     }
 
     private fun processMembers(which: Int, response: JSONObject,
                                completionHandler: (status: OldE3Interface.Status,
-                                                   response: Array<ArrayList<MemberItem>>?) -> Unit) {
+                                                   response: ArrayList<MemberItem>?) -> Unit) {
         Log.d("RES", response.toString())
         val data = response.getJSONObject("ArrayOfAccountData").forceGetJsonArray("AccountData")
         Log.d("DATA", data.toString())
@@ -326,29 +336,34 @@ class OldE3Connect(private var studentId: String = "",
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
                             val type = if (it.getString("RoleName").contains("助教")) MemberType.TA else MemberType.TEA
-                            memberItems!![type].add(MemberItem(
-                                    it.getString("Name"),
-                                    it.getString("DepartId"),
-                                    it.getString("EMail"), type
-                            ))
-                        }
-            }
-            1 -> {
-                (0 until data.length()).map { data.get(it) as JSONObject }
-                        .forEach {
-                            memberItems!![MemberType.STU].add(MemberItem(
+                            memberItems!!.add(MemberItem(
                                     it.getString("Name"),
                                     it.getString("DepartId"),
                                     try {
                                         it.getString("EMail")
                                     } catch (e: JSONException) {
                                         ""
-                                    }, MemberType.STU
+                                    }, type
+                            ))
+                        }
+            }
+            1, 2 -> {
+                (0 until data.length()).map { data.get(it) as JSONObject }
+                        .forEach {
+                            memberItems!!.add(MemberItem(
+                                    it.getString("Name"),
+                                    it.getString("DepartId"),
+                                    try {
+                                        it.getString("EMail")
+                                    } catch (e: JSONException) {
+                                        ""
+                                    }, if (which == 1) MemberType.STU else MemberType.AUDIT
                             ))
                         }
             }
         }
-        if (getMemberListStatus[0] && getMemberListStatus[1]) {
+        if (getMemberListStatus[0] && getMemberListStatus[1] && getMemberListStatus[2]) {
+            memberItems!!.sortBy { it.type }
             completionHandler(OldE3Interface.Status.SUCCESS, memberItems)
             memberItems = null
         }

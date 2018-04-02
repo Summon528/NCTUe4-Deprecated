@@ -237,13 +237,13 @@ class NewE3Connect(private var studentId: String = "",
 
     override fun getMemberList(courseId: String,
                                completionHandler: (status: NewE3Interface.Status,
-                                                   response: Array<ArrayList<MemberItem>>?) -> Unit) {
+                                                   response: ArrayList<MemberItem>?) -> Unit) {
         post(null, hashMapOf(
                 "courseid" to courseId,
                 "wsfunction" to "core_enrol_get_enrolled_users"
         )) { status, response ->
             if (status == NewE3Interface.Status.SUCCESS) {
-                val memberItems = arrayOf<ArrayList<MemberItem>>(ArrayList(), ArrayList(), ArrayList())
+                val memberItems = ArrayList<MemberItem>()
                 val data = JSONArray(response)
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
@@ -253,7 +253,7 @@ class NewE3Connect(private var studentId: String = "",
                                 3 -> MemberType.TEA
                                 else -> MemberType.STU
                             }
-                            memberItems[type].add(MemberItem(
+                            memberItems.add(MemberItem(
                                     it.getString("fullname").split(" ").last(),
                                     it.getString("fullname").split(" ").first(),
                                     try {
@@ -264,6 +264,7 @@ class NewE3Connect(private var studentId: String = "",
                             ))
 
                         }
+                memberItems.sortBy { it.type }
                 completionHandler(status, memberItems)
             } else completionHandler(status, null)
         }
