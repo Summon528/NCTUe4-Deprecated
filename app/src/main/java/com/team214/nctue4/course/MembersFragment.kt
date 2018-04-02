@@ -33,6 +33,17 @@ class MembersFragment : Fragment() {
     private var dataStatus = DataStatus.INIT
     private var e3Type: Int = -1
     private lateinit var memberItems: ArrayList<MemberItem>
+    override fun onStop() {
+        super.onStop()
+        oldE3Service?.cancelPendingRequests()
+        newE3Service?.cancelPendingRequests()
+        if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (dataStatus == DataStatus.STOPPED) getData()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -53,7 +64,7 @@ class MembersFragment : Fragment() {
                         multiselect = true
                         selectCnt = memberItems.size
                         memberItems.forEach { it.selected = true }
-                    }else{
+                    } else {
                         multiselect = false
                         selectCnt = 0
                         memberItems.forEach { it.selected = false }

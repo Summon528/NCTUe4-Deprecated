@@ -3,6 +3,7 @@ package com.team214.nctue4.course
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,7 @@ class CourseDocListFragment : Fragment() {
     private var oldE3Service: OldE3Connect? = null
     private var newE3Service: NewE3Connect? = null
     private var dataStatus = DataStatus.INIT
-    private var e3Type : Int = -1
+    private var e3Type: Int = -1
 
     override fun onStop() {
         super.onStop()
@@ -102,7 +103,7 @@ class CourseDocListFragment : Fragment() {
                 val bundle = Bundle()
                 bundle.putString("documentId", it.documentId)
                 bundle.putString("courseId", it.courseId)
-                bundle.putInt("e3Type",e3Type)
+                bundle.putInt("e3Type", e3Type)
                 dialog.arguments = bundle
                 dialog.show(fragmentManager, "TAG")
             }

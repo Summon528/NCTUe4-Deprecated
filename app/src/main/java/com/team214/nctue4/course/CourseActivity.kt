@@ -82,11 +82,8 @@ class CourseActivity : AppCompatActivity() {
         oldE3Service = bundle.getParcelable("oldE3Service")
         newE3Service = bundle.getParcelable("newE3Service")
 
-        switchFragment(
-                if (savedInstanceState?.getInt("currentFragment") != null)
-                    savedInstanceState.getInt("currentFragment")
-                else -1)
-
+        if (savedInstanceState?.getInt("currentFragment") == null)
+            switchFragment(-1)
 
         course_bottom_nav?.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }

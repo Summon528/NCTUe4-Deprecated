@@ -59,7 +59,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         newE3Service = NewE3Connect(studentId, studentPortalPassword, newE3UserId, newE3Token)
         currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
             savedInstanceState.getInt("currentFragment") else -1
-        switchFragment(currentFragment)
+        if (savedInstanceState?.getInt("currentFragment") == null)
+            switchFragment(currentFragment)
 
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = studentEmail
