@@ -121,7 +121,7 @@ class CourseDocDialog : DialogFragment() {
             0 -> {
                 if ((grantResults.isNotEmpty() &&
                                 grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.container), null)
+                    downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.container), null, null)
                     dismiss()
                 }
                 return

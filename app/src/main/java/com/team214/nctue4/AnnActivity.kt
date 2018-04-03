@@ -87,7 +87,7 @@ class AnnActivity : AppCompatActivity() {
             0 -> {
                 if ((grantResults.isNotEmpty() &&
                                 grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    downloadFile(fileName, uri, this, this, ann_root, null)
+                    downloadFile(fileName, uri, this, this, ann_root, newE3WebService?.returnE3Cookie(), null)
                 }
                 return
             }
@@ -130,7 +130,7 @@ class AnnActivity : AppCompatActivity() {
         announcement_attach.adapter = AnnAttachmentAdapter(this, annItem.attachItems) {
             uri = it.url
             fileName = it.name
-            downloadFile(fileName, uri, this, this, ann_root) {
+            downloadFile(fileName, uri, this, this, ann_root, newE3WebService?.returnE3Cookie()) {
                 requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         0)
             }

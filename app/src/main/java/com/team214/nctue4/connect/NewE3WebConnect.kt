@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Parcelable
 import android.util.Log
 import com.team214.nctue4.model.AnnItem
+import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.utility.E3Type
 import kotlinx.android.parcel.Parcelize
 import okhttp3.*
@@ -24,6 +25,8 @@ class NewE3WebConnect(private var studentId: String = "",
         private const val HOST = "e3new.nctu.edu.tw"
         private const val loginPath = "/login/index.php?lang=en"
     }
+
+    fun returnE3Cookie() = cookieStore[HOST]
 
     private val client = OkHttpClient().newBuilder().followRedirects(false)
             .followSslRedirects(false).cookieJar(
@@ -144,6 +147,16 @@ class NewE3WebConnect(private var studentId: String = "",
                 } else {
                     annPage.select(".subject").text().substring(5)
                 }
+                val attachItems = ArrayList<AttachItem>()
+                annPage.select(".attachments").forEach {
+                    attachItems.add(AttachItem(
+                            it.select("a").last().text(),
+                            "?",
+                            it.select("a").last().attr("href")
+                    ))
+                    Log.d("ATTACH", it.select("a").last().attr("href"))
+                }
+
                 val annItem = AnnItem(
                         bulletinId,
                         annPage.select(".page-header-headings").text().replace("【.*】\\d*".toRegex(), "").replace(" .*".toRegex(), ""),
@@ -153,7 +166,7 @@ class NewE3WebConnect(private var studentId: String = "",
                         df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
                         Regex("courseid=([^&]*)").find(annPage.select(".list-group-item-action")[1].attr("href"))!!.groupValues[1],
                         E3Type.NEW,
-                        ArrayList()
+                        attachItems
                 )
                 completionHandler(NewE3WebInterface.Status.SUCCESS, annItem)
             } else {

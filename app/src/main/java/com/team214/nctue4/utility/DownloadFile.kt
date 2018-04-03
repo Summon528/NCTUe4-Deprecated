@@ -15,6 +15,7 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import com.team214.nctue4.R
+import okhttp3.Cookie
 import java.io.File
 
 fun openFile(fileName: String, file: File, context: Context, activity: Activity) {
@@ -37,7 +38,7 @@ fun openFile(fileName: String, file: File, context: Context, activity: Activity)
 }
 
 fun downloadFile(fileName: String, uri: String, context: Context, activity: Activity, view: View,
-                 requestPermissions: (() -> Unit?)?) {
+                 e3WebCookie: MutableList<Cookie>? = null, requestPermissions: (() -> Unit?)?) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
@@ -52,7 +53,7 @@ fun downloadFile(fileName: String, uri: String, context: Context, activity: Acti
                     .setMessage(context.getString(R.string.detect_same_file))
                     .setPositiveButton(R.string.download_again, { _, _ ->
                         file.delete()
-                        downloadFile(fileName, uri, context, activity, view, requestPermissions)
+                        downloadFile(fileName, uri, context, activity, view, e3WebCookie, requestPermissions)
                     })
                     .setNegativeButton(R.string.open_existed, { _, _ ->
                         openFile(fileName, file, context, activity)
@@ -60,6 +61,11 @@ fun downloadFile(fileName: String, uri: String, context: Context, activity: Acti
                     .show()
         } else {
             val request = DownloadManager.Request(Uri.parse(uri))
+            if (e3WebCookie != null) {
+                var cookieString = ""
+                e3WebCookie.forEach { cookieString += "${it.name()}=${it.value()};" }
+                request.addRequestHeader("Cookie", cookieString)
+            }
             request.setTitle(fileName)
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
