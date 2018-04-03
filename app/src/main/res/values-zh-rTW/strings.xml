@@ -82,4 +82,7 @@
     <string name="course_nav_members">成員</string>
     <string name="action_select_all">全選</string>
     <string name="feedback">意見回饋</string>
+    <string name="title_activity_assign">作業</string>
+    <string name="start_time">開始時間：</string>
+    <string name="end_time">結束時間：</string>
 </resources>

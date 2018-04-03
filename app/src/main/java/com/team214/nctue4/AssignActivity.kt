@@ -88,7 +88,8 @@ class AssignActivity : AppCompatActivity() {
         ann_caption.text = assignItem.name
 //        ann_courseName.text = assignItem.courseName
         val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss", Locale.TAIWAN)
-        ann_date.text = sdf.format(assignItem.startDate) + sdf.format(assignItem.endDate)
+        assign_start_date.text = sdf.format(assignItem.startDate)
+        assign_end_date.text = sdf.format(assignItem.endDate)
         ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
         Log.d("assignItem", assignItem.content)
@@ -151,7 +152,6 @@ class AssignActivity : AppCompatActivity() {
                 this.runOnUiThread {
                     when (status) {
                         OldE3Interface.Status.SUCCESS -> {
-                            Log.d("QQQQ", response!!.sentItem.toString())
                             showAnn(response!!)
                         }
                         else -> {

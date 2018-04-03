@@ -101,7 +101,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/announcement_attach"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:paddingTop="8dp" />
 
             <WebView
                 android:id="@+id/ann_content_web_view"
