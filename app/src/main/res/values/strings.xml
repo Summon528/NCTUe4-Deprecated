@@ -95,4 +95,6 @@
     <string name="no_email">no email</string>
     <string name="action_select_all">Select All</string>
     <string name="feedback">FeedBack</string>
+
+    <string name="title_activity_assign">Assignment</string>
 </resources>

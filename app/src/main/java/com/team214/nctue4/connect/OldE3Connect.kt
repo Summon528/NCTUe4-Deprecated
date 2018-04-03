@@ -441,13 +441,72 @@ class OldE3Connect(private var studentId: String = "",
                                 it.getString("DisplayName"),
                                 it.getString("HomeworkId"),
                                 df.parse(it.getString("BeginDate")),
-                                df.parse(it.getString("EndDate"))
+                                df.parse(it.getString("EndDate")),
+                                submitId = it.getString("HwkSubmitId")
                         ))
                     }
         }
         if (assignStatus.all { it }) {
             completionHandler(OldE3Interface.Status.SUCCESS, assignItems)
         }
+    }
+
+    private lateinit var assignDetailStatus: Array<Boolean>
+    private var assignDetailItem: AssignItem? = null
+    override fun getAssignDetail(assId: String, courseId: String, submitId: String,
+                                 completionHandler: (status: OldE3Interface.Status,
+                                                     response: AssignItem?) -> Unit) {
+        assignDetailStatus = Array(3, { false })
+        assignDetailItem = AssignItem()
+        assignDetailItem!!.assignId = assId
+        post("/GetHomeworkInfo", hashMapOf(
+                "hwkId" to assId
+        )) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                assignDetailStatus[0] = true
+                processAssignDetail(response!!, 0, completionHandler)
+            } else completionHandler(status, null)
+        }
+        getAttachFileList(assId, courseId) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                assignDetailStatus[1] = true
+                processAssignDetail(response!!, 1, completionHandler)
+            } else completionHandler(status, null)
+        }
+        if (submitId != "") {
+            getAttachFileList(submitId, courseId) { status, response ->
+                if (status == OldE3Interface.Status.SUCCESS) {
+                    assignDetailStatus[2] = true
+                    processAssignDetail(response!!, 2, completionHandler)
+                } else completionHandler(status, null)
+            }
+        } else {
+            assignDetailStatus[2] = true
+            processAssignDetail(ArrayList<AttachItem>(), 2, completionHandler)
+        }
+    }
+
+    private fun processAssignDetail(response: Any, which: Int,
+                                    completionHandler: (status: OldE3Interface.Status,
+                                                        response: AssignItem?) -> Unit) {
+        Log.d("response", response.toString())
+        when (which) {
+            0 -> {
+                val data = (response as JSONObject).getJSONObject("HomeworkData")
+                val df = SimpleDateFormat("yyyy/M/d hh:mm:ss", Locale.TAIWAN)
+                assignDetailItem!!.name = data.getString("DisplayName")
+                assignDetailItem!!.content = data.getString("Content")
+                assignDetailItem!!.startDate = df.parse(data.getString("BeginDate"))
+                assignDetailItem!!.endDate = df.parse(data.getString("EndDate"))
+            }
+            1 -> {
+                assignDetailItem!!.attachItem = response as ArrayList<AttachItem>
+            }
+            2 -> {
+                assignDetailItem!!.sentItem = response as ArrayList<AttachItem>
+            }
+        }
+        if (assignDetailStatus.all { it }) completionHandler(OldE3Interface.Status.SUCCESS, assignDetailItem)
     }
 
     override fun cancelPendingRequests() {

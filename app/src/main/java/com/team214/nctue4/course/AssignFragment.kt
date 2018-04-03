@@ -1,6 +1,7 @@
 package com.team214.nctue4.course
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
@@ -9,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.team214.nctue4.AssignActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3Interface
@@ -100,7 +102,16 @@ class AssignFragment : Fragment() {
             course_score_recycler_view?.layoutManager = LinearLayoutManager(context)
             course_score_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
-            course_score_recycler_view?.adapter = AssignAdapter(assignItems)
+            course_score_recycler_view?.adapter = AssignAdapter(assignItems) {
+                val intent = Intent()
+                intent.setClass(activity, AssignActivity::class.java)
+                intent.putExtra("courseId", arguments!!.getString("courseId"))
+                intent.putExtra("courseName", arguments!!.getString("courseName"))
+                intent.putExtra("assignItem", it)
+                intent.putExtra("newE3Service", newE3Service)
+                intent.putExtra("oldE3Service", oldE3Service)
+                startActivity(intent)
+            }
         }
     }
 }

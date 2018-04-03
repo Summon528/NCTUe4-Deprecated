@@ -3,6 +3,7 @@ package com.team214.nctue4.connect
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
+import android.util.Log
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
@@ -313,11 +314,23 @@ class NewE3Connect(private var studentId: String = "",
                         .getJSONArray("assignments")
                 val assignItems = ArrayList<AssignItem>()
                 (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
+                    val attachItems = ArrayList<AttachItem>()
+                    val attachItemJson = it.getJSONArray("introattachments")
+                    (0 until attachItemJson.length()).map { attachItemJson.get(it) as JSONObject }
+                            .forEach {
+                                attachItems.add(AttachItem(
+                                        it.getString("filename"),
+                                        it.getString("filesize"),
+                                        it.getString("fileurl") + "?token=$token"
+                                ))
+                            }
                     assignItems.add(AssignItem(
                             it.getString("name"),
                             it.getString("id"),
                             Date(it.getLong("allowsubmissionsfromdate") * 1000),
-                            Date(it.getLong("duedate") * 1000)
+                            Date(it.getLong("duedate") * 1000),
+                            it.getString("intro"),
+                            attachItems
                     ))
                 }
                 completionHandler(status, assignItems)
@@ -325,6 +338,33 @@ class NewE3Connect(private var studentId: String = "",
         }
 
 
+    }
+
+    override fun getAssignSubmission(assignId: String,
+                                     completionHandler: (status: NewE3Interface.Status,
+                                                         response: ArrayList<AttachItem>?) -> Unit) {
+        post(null, hashMapOf(
+                "assignid" to assignId,
+                "userid" to userId,
+                "wsfunction" to "mod_assign_get_submission_status"
+        )) { status, response ->
+            if (status == NewE3Interface.Status.SUCCESS) {
+                val attachItems = ArrayList<AttachItem>()
+                Log.d("respnse", response)
+                val data = JSONObject(response).getJSONObject("lastattempt").getJSONObject("submission")
+                        .getJSONArray("plugins").getJSONObject(0).getJSONArray("fileareas")
+                        .getJSONObject(0).getJSONArray("files")
+                (0 until data.length()).map { data.get(it) as JSONObject }
+                        .forEach {
+                            attachItems.add(AttachItem(
+                                    it.getString("filename"),
+                                    it.getString("filesize"),
+                                    it.getString("fileurl") + "?token=$token"
+                            ))
+                        }
+                completionHandler(status, attachItems)
+            } else completionHandler(status, null)
+        }
     }
 
     override fun cancelPendingRequests() {

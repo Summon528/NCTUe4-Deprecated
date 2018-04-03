@@ -35,5 +35,9 @@ interface NewE3Interface {
     fun getAssign(courseId: String,
                   completionHandler: (status: NewE3Interface.Status, response: ArrayList<AssignItem>?) -> Unit)
 
+    fun getAssignSubmission(assignId: String,
+                            completionHandler: (status: Status, response: ArrayList<AttachItem>?) -> Unit)
+
+
     fun cancelPendingRequests()
 }

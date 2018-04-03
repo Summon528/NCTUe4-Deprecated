@@ -46,6 +46,8 @@ class FileNameToColor {
                 "xml" to R.color.md_purple_500,
                 "htm" to R.color.md_purple_500,
                 "html" to R.color.md_purple_500,
+                "f90" to R.color.md_purple_500,
+                "h" to R.color.md_purple_500,
                 "xls" to R.color.msExcel,
                 "xlsx" to R.color.msExcel,
                 "ods" to R.color.msExcel,

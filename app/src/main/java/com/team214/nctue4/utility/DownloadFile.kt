@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -39,6 +40,7 @@ fun openFile(fileName: String, file: File, context: Context, activity: Activity)
 
 fun downloadFile(fileName: String, uri: String, context: Context, activity: Activity, view: View,
                  e3WebCookie: MutableList<Cookie>? = null, requestPermissions: (() -> Unit?)?) {
+    Log.d("DOWNLOADALKSDJ",uri)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {

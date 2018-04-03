@@ -10,17 +10,18 @@ import kotlinx.android.synthetic.main.item_assign.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AssignAdapter(private val dataSet: ArrayList<AssignItem>) :
+class AssignAdapter(private val dataSet: ArrayList<AssignItem>,
+                    private val itemClickListener: (AssignItem) -> Unit) :
         RecyclerView.Adapter<AssignAdapter.ViewHolder>() {
 
-    class ViewHolder(val view: View) :
+    class ViewHolder(val view: View, private val itemClickListener: (AssignItem) -> Unit) :
             RecyclerView.ViewHolder(view) {
-        val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
-
+        private val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
         fun bind(assign: AssignItem) {
             view.assign_name.text = assign.name
             view.assign_start.text = df.format(assign.startDate)
             view.assign_end.text = df.format(assign.endDate)
+            view.assign_item.setOnClickListener { itemClickListener(assign) }
         }
     }
 
@@ -28,7 +29,7 @@ class AssignAdapter(private val dataSet: ArrayList<AssignItem>) :
                                     viewType: Int): AssignAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_assign, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, itemClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

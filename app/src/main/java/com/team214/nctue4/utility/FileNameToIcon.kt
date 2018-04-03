@@ -43,6 +43,8 @@ class FileNameToIcon {
                 "js" to R.drawable.file_code,
                 "ts" to R.drawable.file_code,
                 "json" to R.drawable.file_code,
+                "f90" to R.drawable.file_code,
+                "h" to R.drawable.file_code,
                 "xml" to R.drawable.file_code,
                 "htm" to R.drawable.file_code,
                 "html" to R.drawable.file_code,
