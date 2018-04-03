@@ -65,13 +65,15 @@ class CourseDocDialog : DialogFragment() {
         if (e3Type == E3Type.OLD) {
             oldE3Service = (activity as CourseActivity).oldE3Service
             oldE3Service!!.getAttachFileList(documentId, courseId) { status, response ->
-                when (status) {
-                    OldE3Interface.Status.SUCCESS -> {
-                        updateList(response!!)
-                    }
-                    else -> {
-                        Toast.makeText(context, getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                        dismiss()
+                activity?.runOnUiThread {
+                    when (status) {
+                        OldE3Interface.Status.SUCCESS -> {
+                            updateList(response!!)
+                        }
+                        else -> {
+                            Toast.makeText(context, getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                            dismiss()
+                        }
                     }
                 }
             }

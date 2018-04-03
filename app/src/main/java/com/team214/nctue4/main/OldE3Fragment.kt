@@ -65,24 +65,26 @@ class OldE3Fragment : Fragment() {
     private fun getData() {
         progress_bar.visibility = View.VISIBLE
         oldE3Service.getCourseList { status, response ->
-            when (status) {
-                OldE3Interface.Status.SUCCESS -> {
-                    courseDBHelper.refreshCourses(response!!, E3Type.OLD)
-                    if (course_list_recycler_view.adapter == null) {
-                        courseItems = response
-                        updateList()
-                    } else {
-                        courseItems.clear()
-                        courseItems.addAll(courseDBHelper.readCourses(E3Type.OLD))
-                        course_list_recycler_view.adapter.notifyDataSetChanged()
-                    }
-                    Snackbar.make(course_list_root, getString(R.string.refresh_success), Snackbar.LENGTH_SHORT).show()
-                    progress_bar.visibility = View.INVISIBLE
+            activity?.runOnUiThread {
+                when (status) {
+                    OldE3Interface.Status.SUCCESS -> {
+                        courseDBHelper.refreshCourses(response!!, E3Type.OLD)
+                        if (course_list_recycler_view.adapter == null) {
+                            courseItems = response
+                            updateList()
+                        } else {
+                            courseItems.clear()
+                            courseItems.addAll(courseDBHelper.readCourses(E3Type.OLD))
+                            course_list_recycler_view.adapter.notifyDataSetChanged()
+                        }
+                        Snackbar.make(course_list_root, getString(R.string.refresh_success), Snackbar.LENGTH_SHORT).show()
+                        progress_bar.visibility = View.INVISIBLE
 
-                }
-                else -> {
-                    Snackbar.make(course_list_root, getString(R.string.generic_error), Snackbar.LENGTH_SHORT).show()
-                    progress_bar.visibility = View.INVISIBLE
+                    }
+                    else -> {
+                        Snackbar.make(course_list_root, getString(R.string.generic_error), Snackbar.LENGTH_SHORT).show()
+                        progress_bar.visibility = View.INVISIBLE
+                    }
                 }
             }
         }
@@ -109,10 +111,10 @@ class OldE3Fragment : Fragment() {
             }, {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)
-                intent.putExtra("oldE3Service",oldE3Service)
+                intent.putExtra("oldE3Service", oldE3Service)
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
-                intent.putExtra("e3Type",E3Type.OLD)
+                intent.putExtra("e3Type", E3Type.OLD)
                 startActivity(intent)
             })
 

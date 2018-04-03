@@ -101,16 +101,18 @@ class MembersFragment : Fragment() {
         if (e3Type == E3Type.OLD) {
             oldE3Service = (activity as CourseActivity).oldE3Service
             oldE3Service!!.getMemberList(courseId) { status, response ->
-                if (status == OldE3Interface.Status.SUCCESS) {
-                    memberItems = response!!
-                    updateList()
-                } else {
-                    error_request?.visibility = View.VISIBLE
-                    dataStatus = DataStatus.INIT
-                    error_request_retry?.setOnClickListener { getData() }
+                activity?.runOnUiThread {
+                    if (status == OldE3Interface.Status.SUCCESS) {
+                        memberItems = response!!
+                        updateList()
+                    } else {
+                        error_request?.visibility = View.VISIBLE
+                        dataStatus = DataStatus.INIT
+                        error_request_retry?.setOnClickListener { getData() }
+                    }
+                    dataStatus = DataStatus.FINISHED
+                    progress_bar?.visibility = View.GONE
                 }
-                dataStatus = DataStatus.FINISHED
-                progress_bar?.visibility = View.GONE
             }
         } else {
             newE3Service = (activity as CourseActivity).newE3Service

@@ -20,6 +20,7 @@ import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_couse_list.*
 import kotlinx.android.synthetic.main.item_course.view.*
 import kotlinx.android.synthetic.main.status_empty.*
+import kotlinx.android.synthetic.main.status_empty_compact.*
 
 
 class BookmarkedFragment : Fragment() {
@@ -45,7 +46,8 @@ class BookmarkedFragment : Fragment() {
 
 
     private fun updateList() {
-        if (courseItems.isEmpty()) empty_request?.visibility = View.VISIBLE
+        if (courseItems.isEmpty())
+            (if (arguments?.getBoolean("home") != null) empty_request_compact else empty_request)?.visibility = View.VISIBLE
         else {
             val dragDropManager = RecyclerViewDragDropManager()
             val courseAdapter = CourseDragDropAdapter(courseItems,

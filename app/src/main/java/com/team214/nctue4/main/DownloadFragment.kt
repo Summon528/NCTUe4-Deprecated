@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.team214.nctue4.R
 import com.team214.nctue4.utility.openFile
 import kotlinx.android.synthetic.main.fragment_download.*
 import kotlinx.android.synthetic.main.status_empty.*
+import kotlinx.android.synthetic.main.status_empty_compact.*
 import java.io.File
 
 class DownloadFragment : Fragment() {
@@ -25,14 +25,17 @@ class DownloadFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_download, container, false)
     }
 
+
     private var files = ArrayList<File>()
+    private lateinit var emptyRequest: View
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        emptyRequest = if (arguments?.getBoolean("home") != null) empty_request_compact else empty_request
         val path = activity!!.getExternalFilesDir(null)
         val dir = File(path, "Download")
         if (dir.exists()) {
             val fileList = dir.listFiles()
-            if (fileList.isEmpty()) empty_request?.visibility = View.VISIBLE
+            if (fileList.isEmpty()) emptyRequest?.visibility = View.VISIBLE
             if (arguments?.getBoolean("home") != null) {
                 files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })
             } else files.addAll(fileList.filter { it != null })
@@ -48,7 +51,7 @@ class DownloadFragment : Fragment() {
                     },
                     fun(it) {
                         val dialog = DownloadDialog()
-                        dialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
+                        dialog.setOnDismissListener(object : DialogInterface.OnDismissListener {
                             override fun onDismiss(dialog: DialogInterface?) {
                                 updateList()
                             }
@@ -61,7 +64,7 @@ class DownloadFragment : Fragment() {
                     })
 
         } else {
-            empty_request?.visibility = View.VISIBLE
+            emptyRequest?.visibility = View.VISIBLE
         }
     }
 
@@ -71,7 +74,7 @@ class DownloadFragment : Fragment() {
         files.clear()
         val fileList = dir.listFiles()
         if (fileList.isEmpty()) {
-            empty_request?.visibility = View.VISIBLE
+            emptyRequest?.visibility = View.VISIBLE
             download_recycler?.visibility = View.GONE
         } else {
             if (arguments?.getBoolean("home") != null) {

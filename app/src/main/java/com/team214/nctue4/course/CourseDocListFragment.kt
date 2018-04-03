@@ -3,7 +3,6 @@ package com.team214.nctue4.course
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,18 +58,20 @@ class CourseDocListFragment : Fragment() {
         if (e3Type == E3Type.OLD) {
             oldE3Service = (activity as CourseActivity).oldE3Service
             oldE3Service!!.getMaterialDocList(courseId, context!!) { status, response ->
-                when (status) {
-                    OldE3Interface.Status.SUCCESS -> {
-                        updateList(response!!)
+                activity?.runOnUiThread {
+                    when (status) {
+                        OldE3Interface.Status.SUCCESS -> {
+                            updateList(response!!)
+                        }
+                        else -> {
+                            error_request?.visibility = View.VISIBLE
+                            dataStatus = DataStatus.INIT
+                            error_request_retry?.setOnClickListener { getData() }
+                        }
                     }
-                    else -> {
-                        error_request?.visibility = View.VISIBLE
-                        dataStatus = DataStatus.INIT
-                        error_request_retry?.setOnClickListener { getData() }
-                    }
+                    dataStatus = DataStatus.FINISHED
+                    progress_bar?.visibility = View.GONE
                 }
-                dataStatus = DataStatus.FINISHED
-                progress_bar?.visibility = View.GONE
             }
         } else {
             newE3Service = (activity as CourseActivity).newE3Service

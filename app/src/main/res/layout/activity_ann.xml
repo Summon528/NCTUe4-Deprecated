@@ -69,7 +69,7 @@
                         android:layout_height="wrap_content"
                         android:text="公告標題"
                         android:textColor="#303030"
-                        android:textSize="26sp" />
+                        android:textSize="22sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

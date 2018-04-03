@@ -6,6 +6,7 @@
 
     <include layout="@layout/status_empty" />
 
+    <include layout="@layout/status_empty_compact" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/download_recycler"

@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
 import android.util.Log
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
@@ -15,8 +12,13 @@ import com.team214.nctue4.utility.forceGetJsonArray
 import com.team214.nctue4.utility.htmlCleaner
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import kotlinx.android.parcel.Parcelize
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -33,6 +35,9 @@ class OldE3Connect(private var studentId: String = "",
         private val tag = OldE3Connect::class.java.simpleName
         private const val loginPath = "/Login"
     }
+
+    private val client = OkHttpClient().newBuilder().followRedirects(false)
+            .followSslRedirects(false).build()
 
     private fun post(path: String, params: HashMap<String, String>,
                      secondTry: Boolean = false,
@@ -52,23 +57,28 @@ class OldE3Connect(private var studentId: String = "",
         } else {
             val url = "http://e3.nctu.edu.tw/mService/Service.asmx$path"
             Log.d("OldE3URL", url)
-            val stringRequest = object : StringRequest(Request.Method.POST, url,
-                    Response.Listener<String> { response ->
-                        val xmlToJson = (XmlToJson.Builder(response).build()).toJson()
-                        completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
-                    },
-                    Response.ErrorListener { error ->
-                        if (!secondTry && path != loginPath) {
-                            getLoginTicket { _, _ ->
-                                post(path, params, true, completionHandler)
-                            }
-                        } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
-                    }) {
-                override fun getParams(): Map<String, String> {
-                    return params
+            val formBodyBuilder = FormBody.Builder()
+            params.forEach { entry -> formBodyBuilder.add(entry.key, entry.value) }
+            val formBody = formBodyBuilder.build()
+
+            val request = okhttp3.Request.Builder().url(url).post(formBody).build()
+
+            val call = client.newCall(request)
+
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    if (!secondTry && path != loginPath) {
+                        getLoginTicket { _, _ ->
+                            post(path, params, true, completionHandler)
+                        }
+                    } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
-            }
-            VolleyHandler.instance?.addToRequestQueue(stringRequest, tag)
+
+                override fun onResponse(call: Call, response: okhttp3.Response) {
+                    val xmlToJson = (XmlToJson.Builder(response.body().string()).build()).toJson()
+                    completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                }
+            })
         }
     }
 
@@ -370,7 +380,7 @@ class OldE3Connect(private var studentId: String = "",
     }
 
     override fun cancelPendingRequests() {
-        VolleyHandler.instance?.cancelPendingRequests(tag)
+        client.dispatcher().cancelAll()
     }
 }
 

@@ -19,6 +19,7 @@ import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_ann.*
 import kotlinx.android.synthetic.main.status_empty.*
+import kotlinx.android.synthetic.main.status_empty_compact.*
 import kotlinx.android.synthetic.main.status_error.*
 
 
@@ -75,8 +76,7 @@ class HomeAnnFragment : Fragment() {
         progress_bar?.visibility = View.VISIBLE
         oldE3Service = (activity as MainActivity).oldE3Service
         oldE3Service.getAnnouncementListLogin(
-                if (arguments?.getBoolean("home") != null) 5 else 100
-        ) { status, response ->
+                if (arguments?.getBoolean("home") != null) 5 else 100) { status, response ->
             when (status) {
                 OldE3Interface.Status.SUCCESS -> {
                     oldE3AnnItems = response!!
@@ -121,7 +121,7 @@ class HomeAnnFragment : Fragment() {
 
     private fun updateList(annItems: ArrayList<AnnItem>) {
         if (annItems.size == 0) {
-            empty_request?.visibility = View.VISIBLE
+            (if (arguments?.getBoolean("home") != null) empty_request_compact else empty_request)?.visibility = View.VISIBLE
         } else {
             ann_login_recycler_view?.layoutManager = LinearLayoutManager(context)
             ann_login_recycler_view?.addItemDecoration(DividerItemDecoration(context,

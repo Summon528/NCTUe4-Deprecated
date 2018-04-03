@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
 
 
-class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class CourseAnnFragment : Fragment() {
     private var oldE3Service: OldE3Connect? = null
     private var newE3Service: NewE3Connect? = null
     private var dataStatus = DataStatus.INIT
@@ -42,11 +42,6 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    override fun onRefresh() {
-        announcement_refreshLayout.isRefreshing = false
-        announcement_course_recycler_view.adapter?.notifyDataSetChanged()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_course_ann, container, false)
@@ -61,7 +56,6 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
 
-        announcement_refreshLayout?.setOnRefreshListener(this)
         val courseId = arguments!!.getString("courseId")
         val courseName = arguments!!.getString("courseName")
         val e3Type = arguments!!.getInt("e3Type")
@@ -90,18 +84,20 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         } else {
             oldE3Service = (activity as CourseActivity).oldE3Service
             oldE3Service!!.getCourseAnn(courseId, courseName) { status, response ->
-                when (status) {
-                    OldE3Interface.Status.SUCCESS -> {
-                        update(response!!)
+                activity?.runOnUiThread {
+                    when (status) {
+                        OldE3Interface.Status.SUCCESS -> {
+                            update(response!!)
+                        }
+                        else -> {
+                            error_request?.visibility = View.VISIBLE
+                            dataStatus = DataStatus.INIT
+                            error_request_retry?.setOnClickListener { getData() }
+                        }
                     }
-                    else -> {
-                        error_request?.visibility = View.VISIBLE
-                        dataStatus = DataStatus.INIT
-                        error_request_retry?.setOnClickListener { getData() }
-                    }
+                    dataStatus = DataStatus.FINISHED
+                    progress_bar?.visibility = View.GONE
                 }
-                dataStatus = DataStatus.FINISHED
-                progress_bar?.visibility = View.GONE
             }
         }
     }
@@ -119,7 +115,7 @@ class CourseAnnFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 intent.putExtra("annItem", it)
                 startActivity(intent)
             }
-            announcement_refreshLayout?.visibility = View.VISIBLE
+            announcement_course_recycler_view?.visibility = View.VISIBLE
 
         }
     }
