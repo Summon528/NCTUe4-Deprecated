@@ -3,7 +3,6 @@ package com.team214.nctue4.connect
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
-import android.util.Log
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
@@ -300,6 +299,31 @@ class NewE3Connect(private var studentId: String = "",
                 completionHandler(status, scoreItems)
             } else completionHandler(status, null)
         }
+    }
+
+    override fun getAssign(courseId: String,
+                           completionHandler: (status: NewE3Interface.Status,
+                                               response: ArrayList<AssignItem>?) -> Unit) {
+        post(null, hashMapOf(
+                "courseids[0]" to courseId,
+                "wsfunction" to "mod_assign_get_assignments"
+        )) { status, response ->
+            if (status == NewE3Interface.Status.SUCCESS) {
+                val data = JSONObject(response).getJSONArray("courses").getJSONObject(0)
+                        .getJSONArray("assignments")
+                val assignItems = ArrayList<AssignItem>()
+                (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
+                    assignItems.add(AssignItem(
+                            it.getString("name"),
+                            it.getString("id"),
+                            Date(it.getLong("allowsubmissionsfromdate") * 1000),
+                            Date(it.getLong("duedate") * 1000)
+                    ))
+                }
+                completionHandler(status, assignItems)
+            } else completionHandler(status, null)
+        }
+
 
     }
 

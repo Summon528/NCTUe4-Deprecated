@@ -54,7 +54,7 @@ class CourseActivity : AppCompatActivity() {
                 CourseDocListFragment()
             }
             R.id.course_nav_assignment -> {
-                BlankFragment()
+                AssignFragment()
             }
             R.id.course_nav_score -> {
                 ScoreFragment()

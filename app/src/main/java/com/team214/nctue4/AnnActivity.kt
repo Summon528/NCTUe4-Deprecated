@@ -120,7 +120,7 @@ class AnnActivity : AppCompatActivity() {
                 }
         ann_caption.text = annItem.caption
         ann_courseName.text = annItem.courseName
-        val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.US)
+        val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
         ann_date.text = sdf.format(annItem.beginDate)
         ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE

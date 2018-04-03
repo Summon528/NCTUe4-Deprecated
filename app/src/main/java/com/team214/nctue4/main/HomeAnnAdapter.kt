@@ -22,7 +22,7 @@ class HomeAnnAdapter(private val dataSet: List<AnnItem>, private val context: Co
         fun bind(ann: AnnItem) {
             view.announcement_name.text = ann.courseName
             view.announcement_caption.text = ann.caption
-            val sdf = SimpleDateFormat("MM/dd", Locale.US)
+            val sdf = SimpleDateFormat("MM/dd", Locale.TAIWAN)
             view.announcement_beginDate.text = sdf.format(ann.beginDate)
             view.setOnClickListener {
                 itemClickListener(ann)

@@ -32,5 +32,8 @@ interface NewE3Interface {
     fun getScoreData(courseId: String,
                      completionHandler: (status: NewE3Interface.Status, response: ArrayList<ScoreItem>?) -> Unit)
 
+    fun getAssign(courseId: String,
+                  completionHandler: (status: NewE3Interface.Status, response: ArrayList<AssignItem>?) -> Unit)
+
     fun cancelPendingRequests()
 }

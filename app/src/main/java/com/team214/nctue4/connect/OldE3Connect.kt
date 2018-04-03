@@ -67,16 +67,20 @@ class OldE3Connect(private var studentId: String = "",
 
             call.enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    if (!secondTry && path != loginPath) {
-                        getLoginTicket { _, _ ->
-                            post(path, params, true, completionHandler)
-                        }
-                    } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
 
                 override fun onResponse(call: Call, response: okhttp3.Response) {
-                    val xmlToJson = (XmlToJson.Builder(response.body().string()).build()).toJson()
-                    completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                    if (response.code() == 500) { // the server explode if out login ticket expired
+                        if (!secondTry && path != loginPath) {
+                            getLoginTicket { _, _ ->
+                                post(path, params, true, completionHandler)
+                            }
+                        } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                    } else {
+                        val xmlToJson = (XmlToJson.Builder(response.body().string()).build()).toJson()
+                        completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                    }
                 }
             })
         }
@@ -139,7 +143,7 @@ class OldE3Connect(private var studentId: String = "",
                 val annData = response!!.getJSONObject("ArrayOfBulletinData")
                         .forceGetJsonArray("BulletinData")
                 val annItems = ArrayList<AnnItem>()
-                val df = SimpleDateFormat("yyyy/M/d", Locale.US)
+                val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
                 (0 until annData.length()).map { annData.get(it) as JSONObject }
                         .forEach {
                             val attachItemList = ArrayList<AttachItem>()
@@ -186,7 +190,7 @@ class OldE3Connect(private var studentId: String = "",
                 val arrayOfBulletinData = response!!.getJSONObject("ArrayOfBulletinData")
                 val data = arrayOfBulletinData.forceGetJsonArray("BulletinData")
                 val annItems = ArrayList<AnnItem>()
-                val df = SimpleDateFormat("yyyy/M/d", Locale.US)
+                val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
                 (0 until data.length()).map { data.get(it) as JSONObject }
                         .forEach {
                             val attachItemList = ArrayList<AttachItem>()
@@ -405,6 +409,45 @@ class OldE3Connect(private var studentId: String = "",
             } else completionHandler(status, null)
         }
 
+    }
+
+    private lateinit var assignStatus: Array<Boolean>
+    private var assignItems: ArrayList<AssignItem>? = null
+    override fun getAssign(courseId: String,
+                           completionHandler: (status: OldE3Interface.Status, response: ArrayList<AssignItem>?) -> Unit) {
+        assignStatus = Array(4, { false })
+        assignItems = ArrayList()
+        for (i in 1..4) {
+            post("/GetStuHomeworkList", hashMapOf(
+                    "courseId" to courseId,
+                    "listType" to i.toString()
+            )) { status, response ->
+                if (status == OldE3Interface.Status.SUCCESS) {
+                    assignStatus[i - 1] = true
+                    processAssign(response!!, completionHandler)
+                } else completionHandler(status, null)
+            }
+        }
+    }
+
+    private fun processAssign(response: JSONObject, completionHandler:
+    (status: OldE3Interface.Status, response: ArrayList<AssignItem>?) -> Unit) {
+        val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
+        if (response.has("ArrayOfHomeworkData")) {
+            val homeworkData = response.getJSONObject("ArrayOfHomeworkData").forceGetJsonArray("HomeworkData")
+            (0 until homeworkData.length()).map { homeworkData.get(it) as JSONObject }
+                    .forEach {
+                        assignItems!!.add(AssignItem(
+                                it.getString("DisplayName"),
+                                it.getString("HomeworkId"),
+                                df.parse(it.getString("BeginDate")),
+                                df.parse(it.getString("EndDate"))
+                        ))
+                    }
+        }
+        if (assignStatus.all { it }) {
+            completionHandler(OldE3Interface.Status.SUCCESS, assignItems)
+        }
     }
 
     override fun cancelPendingRequests() {

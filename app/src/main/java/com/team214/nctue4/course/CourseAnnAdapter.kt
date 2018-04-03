@@ -27,7 +27,7 @@ class CourseAnnAdapter(private val dataSet: ArrayList<AnnItem>,
                 view.announcement_content.text = Html.fromHtml(htmlCleaner(ann.content),
                         Html.FROM_HTML_MODE_COMPACT).replace("\\s+".toRegex(), " ")
             }
-            val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.US)
+            val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
             view.announcement_beginDate.text = sdf.format(ann.beginDate)
             view?.setOnClickListener {
                 itemClickListener(ann)
