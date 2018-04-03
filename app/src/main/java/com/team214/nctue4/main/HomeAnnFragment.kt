@@ -34,8 +34,8 @@ class HomeAnnFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
-        if (dataStatus != DataStatus.FINISHED) oldE3Service.cancelPendingRequests()
-        if (dataStatus != DataStatus.FINISHED) newE3WebService.cancelPendingRequests()
+        oldE3Service.cancelPendingRequests()
+        newE3WebService.cancelPendingRequests()
     }
 
     override fun onStart() {
@@ -133,7 +133,7 @@ class HomeAnnFragment : Fragment() {
                     else annItems.toList(), context!!) {
                 val intent = Intent()
                 intent.setClass(activity, AnnActivity::class.java)
-                intent.putExtra("fromHome",true)
+                intent.putExtra("fromHome", true)
                 if (it.e3Type == E3Type.OLD) {
                     intent.putExtra("annItem", it)
                     intent.putExtra("oldE3Service", oldE3Service)

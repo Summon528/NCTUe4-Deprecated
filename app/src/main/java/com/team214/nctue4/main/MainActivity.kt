@@ -1,6 +1,7 @@
 package com.team214.nctue4.main
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import com.team214.nctue4.BuildConfig
 import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
@@ -124,6 +126,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         }.setNegativeButton(R.string.cancel) { dialog, _ ->
                             dialog.cancel()
                         }.show()
+                null
+            }
+            R.id.nav_feedback -> {
+                val emailUri = "mailto: team214@gmail.com?subject=NCTUE4Feedback&body=" +
+                        "\n\n\nAPI Level: ${android.os.Build.VERSION.SDK_INT}\n" +
+                        "Device: ${android.os.Build.DEVICE}\n" +
+                        "Model: ${android.os.Build.MODEL}\n" +
+                        "Build: ${android.os.Build.DISPLAY}\n" +
+                        "App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+                val intent = Intent(Intent.ACTION_SENDTO)
+                intent.data = Uri.parse(emailUri)
+                startActivity(intent)
                 null
             }
             R.id.nav_about -> {
