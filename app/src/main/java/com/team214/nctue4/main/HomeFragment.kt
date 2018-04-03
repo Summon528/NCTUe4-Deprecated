@@ -25,7 +25,7 @@ class HomeFragment : Fragment() {
         home_swipe_refresh?.setOnRefreshListener {
             loadFragments()
             val handler = Handler()
-            handler.postDelayed({ home_swipe_refresh.isRefreshing = false }, 1000)
+            handler.postDelayed({ home_swipe_refresh?.isRefreshing = false }, 1000)
         }
         loadFragments()
 
