@@ -3,6 +3,7 @@ package com.team214.nctue4.connect
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
+import android.util.Log
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
@@ -266,6 +267,37 @@ class NewE3Connect(private var studentId: String = "",
                         }
                 memberItems.sortBy { it.type }
                 completionHandler(status, memberItems)
+            } else completionHandler(status, null)
+        }
+
+    }
+
+    override fun getScoreData(courseId: String,
+                              completionHandler: (status: NewE3Interface.Status,
+                                                  response: ArrayList<ScoreItem>?) -> Unit) {
+        post(null, hashMapOf(
+                "courseid" to courseId,
+                "userid" to userId,
+                "wsfunction" to "gradereport_user_get_grades_table"
+        )) { status, response ->
+            if (status == NewE3Interface.Status.SUCCESS) {
+                val scoreItems = ArrayList<ScoreItem>()
+                val data = JSONObject(response!!).getJSONArray("tables")
+                        .getJSONObject(0).getJSONArray("tabledata")
+                for (i in 1 until data.length()) {
+                    val tmp =
+                            try {
+                                data.getJSONObject(i)
+                            } catch (e: JSONException) {
+                                continue
+                            }
+                    scoreItems.add(ScoreItem(
+                            Regex("/<([^>]*)").find(tmp.getJSONObject("itemname").getString("content").reversed())
+                            !!.groupValues.last().reversed(),
+                            tmp.getJSONObject("grade").getString("content")
+                    ))
+                }
+                completionHandler(status, scoreItems)
             } else completionHandler(status, null)
         }
 

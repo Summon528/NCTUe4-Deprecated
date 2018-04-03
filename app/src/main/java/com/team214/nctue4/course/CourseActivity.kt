@@ -57,7 +57,7 @@ class CourseActivity : AppCompatActivity() {
                 BlankFragment()
             }
             R.id.course_nav_score -> {
-                BlankFragment()
+                ScoreFragment()
             }
             R.id.course_nav_members -> {
                 MembersFragment()

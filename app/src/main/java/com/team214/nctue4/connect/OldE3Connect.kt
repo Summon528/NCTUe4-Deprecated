@@ -379,6 +379,34 @@ class OldE3Connect(private var studentId: String = "",
         }
     }
 
+    override fun getScoreData(courseId: String,
+                              completionHandler: (status: OldE3Interface.Status,
+                                                  response: ArrayList<ScoreItem>?) -> Unit) {
+        post("/GetScoreData", hashMapOf(
+                "courseId" to courseId
+        )) { status, response ->
+            if (status == OldE3Interface.Status.SUCCESS) {
+                Log.d("RESP", response.toString())
+                val data = response!!.getJSONObject("ScoreData")
+                val types = arrayOf("Office", "Exam", "Ques", "Hwk", "Discuss", "OneSelf",
+                        "Score", "AdjustToScoreForAll", "Absence", "AdjustToScore", "Attendance", "FinalScore")
+                val scoreItems = ArrayList<ScoreItem>()
+                types.forEach {
+                    if (data.has(it)) {
+                        val scoreData = data.getJSONObject(it).forceGetJsonArray("ScoreItemData")
+                        (0 until scoreData.length()).map { scoreData.get(it) as JSONObject }
+                                .forEach {
+                                    scoreItems.add(ScoreItem(it.getString("DisplayName"),
+                                            it.getString("Score3")))
+                                }
+                    }
+                }
+                completionHandler(status, scoreItems)
+            } else completionHandler(status, null)
+        }
+
+    }
+
     override fun cancelPendingRequests() {
         client.dispatcher().cancelAll()
     }

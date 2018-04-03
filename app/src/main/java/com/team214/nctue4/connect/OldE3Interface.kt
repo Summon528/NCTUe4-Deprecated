@@ -29,8 +29,12 @@ interface OldE3Interface {
                           completionHandler: (status: Status,
                                               response: ArrayList<AttachItem>?) -> Unit)
 
-    fun getMemberList(courseId :String,
+    fun getMemberList(courseId: String,
                       completionHandler: (status: Status, response:
                       ArrayList<MemberItem>?) -> Unit)
+
+    fun getScoreData(courseId: String,
+                     completionHandler: (status: Status, response: ArrayList<ScoreItem>?) -> Unit)
+
     fun cancelPendingRequests()
 }
