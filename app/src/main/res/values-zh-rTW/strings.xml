@@ -88,4 +88,6 @@
     <string name="wrong_credential">登入資訊錯誤</string>
     <string name="login_again">重新登入</string>
     <string name="drag_drop_tip">長按即可重新排序</string>
+    <string name="action_download_assign">已繳交的檔案</string>
+    <string name="no_submitted_assign">沒有以繳交的檔案</string>
 </resources>
