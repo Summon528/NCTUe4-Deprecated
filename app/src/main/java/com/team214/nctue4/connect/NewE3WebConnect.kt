@@ -1,6 +1,5 @@
 package com.team214.nctue4.connect
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import android.util.Log
 import com.team214.nctue4.model.AnnItem
@@ -16,7 +15,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 @Parcelize
-@SuppressLint("ParcelCreator")
 class NewE3WebConnect(private var studentId: String = "",
                       private var studentPassword: String = "",
                       private var newE3Cookie: String = "") : NewE3WebInterface, Parcelable {
@@ -110,7 +108,7 @@ class NewE3WebConnect(private var studentId: String = "",
         ) { status, response ->
             if (status == NewE3WebInterface.Status.SUCCESS) {
                 val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
-                var annItems = ArrayList<AnnItem>()
+                val annItems = ArrayList<AnnItem>()
                 val df = SimpleDateFormat("d LLL,  yyyy", Locale.US)
                 (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
                         .forEach {
@@ -120,8 +118,8 @@ class NewE3WebConnect(private var studentId: String = "",
                                         it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
                                         it.select("h4").text(),
                                         it.select("a").text(),
-                                        df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[\\.|\\:,][0-9]*)".toRegex(), "") + "2018"),
-                                        df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[\\.|\\:,][0-9]*)".toRegex(), "") + "2018"),
+                                        df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[.|:,][0-9]*)".toRegex(), "") + "2018"),
+                                        df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[.|:,][0-9]*)".toRegex(), "") + "2018"),
                                         "",
                                         E3Type.NEW,
                                         ArrayList()

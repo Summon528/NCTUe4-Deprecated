@@ -8,9 +8,9 @@ import com.team214.nctue4.R
 import com.team214.nctue4.model.DocGroupItem
 import kotlinx.android.synthetic.main.item_course_doc_group.view.*
 
-class CourseDocListAdapter(private val dataSet: ArrayList<DocGroupItem>,
-                           private val itemClickListener: (DocGroupItem) -> Unit) :
-        RecyclerView.Adapter<CourseDocListAdapter.ViewHolder>() {
+class DocListAdapter(private val dataSet: ArrayList<DocGroupItem>,
+                     private val itemClickListener: (DocGroupItem) -> Unit) :
+        RecyclerView.Adapter<DocListAdapter.ViewHolder>() {
 
     class ViewHolder(private  val view: View,
                      private val itemClickListener: (DocGroupItem) -> Unit) : RecyclerView.ViewHolder(view) {
@@ -24,7 +24,7 @@ class CourseDocListAdapter(private val dataSet: ArrayList<DocGroupItem>,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): CourseDocListAdapter.ViewHolder {
+                                    viewType: Int): DocListAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_course_doc_group, parent, false)
         return ViewHolder(view, itemClickListener)

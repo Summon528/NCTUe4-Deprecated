@@ -96,7 +96,7 @@
                         android:id="@+id/home_download"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="-8dp" />
+                        android:layout_marginStart="-8dp" />
 
                     <TextView
                         android:id="@+id/home_more_download"
@@ -108,7 +108,7 @@
                         android:focusableInTouchMode="false"
                         android:gravity="center"
                         android:padding="8dp"
-                        android:text="@string/more_downloadhistory"
+                        android:text="@string/more_download_history"
                         android:textSize="16sp" />
 
                 </LinearLayout>

@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.team214.nctue4.AssignActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3Interface
@@ -19,7 +17,7 @@ import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.model.AssignItem
 import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.E3Type
-import kotlinx.android.synthetic.main.fragment_score.*
+import kotlinx.android.synthetic.main.fragment_assign.*
 import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_error.*
 
@@ -98,10 +96,10 @@ class AssignFragment : Fragment() {
         if (assignItems.isEmpty()) {
             empty_request?.visibility = View.VISIBLE
         } else {
-            course_score_recycler_view?.layoutManager = LinearLayoutManager(context)
-            course_score_recycler_view?.addItemDecoration(DividerItemDecoration(context,
+            assign_recycler_view?.layoutManager = LinearLayoutManager(context)
+            assign_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
-            course_score_recycler_view?.adapter = AssignAdapter(assignItems) {
+            assign_recycler_view?.adapter = AssignAdapter(assignItems) {
                 val intent = Intent()
                 intent.setClass(activity, AssignActivity::class.java)
                 intent.putExtra("courseId", arguments!!.getString("courseId"))

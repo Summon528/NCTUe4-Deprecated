@@ -45,7 +45,7 @@ class CourseDBHelper(context: Context)
 
     }
 
-    fun delTable(){
+    fun delTable() {
         writableDatabase.delete("courses", null, null)
     }
 

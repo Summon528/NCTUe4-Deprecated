@@ -20,7 +20,7 @@
 
     <!--Login Activity-->
     <string name="student_id">Student ID</string>
-    <string name="student_olde3_password">Old E3 Password</string>
+    <string name="student_old_e3_password">Old E3 Password</string>
     <string name="portal_password">Portal Password (For New e3)</string>
     <string name="login_hint">Please enter ID and e3 password.</string>
     <string name="login">LogIn</string>
@@ -69,7 +69,7 @@
     <!--Home Fragment-->
     <string name="more">More&#8230;</string>
     <string name="more_ann">More announcement</string>
-    <string name="more_downloadhistory">More history</string>
+    <string name="more_download_history">More history</string>
     <string name="more_bookmarked_course">More bookmarked</string>
 
     <!--Download Fragment-->

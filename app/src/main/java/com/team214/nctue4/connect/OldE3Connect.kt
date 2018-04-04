@@ -1,6 +1,5 @@
 package com.team214.nctue4.connect
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
 import android.util.Log
@@ -25,7 +24,6 @@ import kotlin.collections.ArrayList
 
 
 @Parcelize
-@SuppressLint("ParcelCreator")
 class OldE3Connect(private var studentId: String = "",
                    private var studentPassword: String = "",
                    private var loginTicket: String = "",

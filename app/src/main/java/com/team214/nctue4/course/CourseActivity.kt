@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import com.team214.nctue4.BlankFragment
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.OldE3Connect

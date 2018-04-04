@@ -54,7 +54,7 @@
             android:label="@string/title_activity_ann"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.team214.nctue4.AssignActivity"
+            android:name="com.team214.nctue4.course.AssignActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_assign"
             android:theme="@style/AppTheme.NoActionBar"/>

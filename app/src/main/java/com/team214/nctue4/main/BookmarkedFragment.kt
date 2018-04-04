@@ -28,12 +28,18 @@ import kotlinx.android.synthetic.main.status_empty_compact.*
 class BookmarkedFragment : Fragment() {
     private lateinit var courseDBHelper: CourseDBHelper
     private var courseItems = ArrayList<CourseItem>()
+    private var snackBar: Snackbar? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         courseDBHelper = CourseDBHelper(context!!)
         if (arguments?.getBoolean("home") == null)
             activity!!.setTitle(R.string.bookmarked_courses)
         return inflater.inflate(R.layout.fragment_couse_list, container, false)
+    }
+
+    override fun onDestroy() {
+        snackBar?.dismiss()
+        super.onDestroy()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,17 +60,21 @@ class BookmarkedFragment : Fragment() {
             val dragDropManager = RecyclerViewDragDropManager()
             val courseAdapter = CourseDragDropAdapter(courseItems,
                     context, fun(view: View, course: CourseItem) {
-                if (course.bookmarked == 1) {
-                    courseDBHelper.bookmarkCourse(course.courseId, 0)
-                    course.toggleBookmark()
-                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
-                } else if (course.e3Type == E3Type.OLD) {
-                    courseDBHelper.bookmarkCourse(course.courseId, 1)
-                    course.toggleBookmark()
-                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
-                } else {
-                    course.toggleBookmark()
-                    view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.new_e3))
+                when {
+                    course.bookmarked == 1 -> {
+                        courseDBHelper.bookmarkCourse(course.courseId, 0)
+                        course.toggleBookmark()
+                        view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.md_grey_500))
+                    }
+                    course.e3Type == E3Type.OLD -> {
+                        courseDBHelper.bookmarkCourse(course.courseId, 1)
+                        course.toggleBookmark()
+                        view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.old_e3))
+                    }
+                    else -> {
+                        course.toggleBookmark()
+                        view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.new_e3))
+                    }
                 }
             }, {
                 val intent = Intent()
@@ -89,7 +99,8 @@ class BookmarkedFragment : Fragment() {
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
             if (arguments?.getBoolean("home") == null && courseItems.size >= 2 &&
                     !pref.getBoolean("dragDropTipped", false)) {
-                Snackbar.make(course_list_root, getString(R.string.drag_drop_tip), Snackbar.LENGTH_INDEFINITE).show()
+                snackBar = Snackbar.make(course_list_root, getString(R.string.drag_drop_tip), Snackbar.LENGTH_INDEFINITE)
+                snackBar!!.show()
                 pref.edit().putBoolean("dragDropTipped", true).apply()
             }
         }

@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.course
 
 
 import android.Manifest
@@ -8,12 +8,13 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
 import android.widget.Toast
+import com.team214.nctue4.AnnAttachmentAdapter
+import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
@@ -118,8 +119,10 @@ class AssignActivity : AppCompatActivity() {
             uri = it.url
             fileName = it.name
             downloadFile(fileName, uri, this, this, assign_root) {
-                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        0)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                            0)
+                }
             }
 
         }

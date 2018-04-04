@@ -30,51 +30,8 @@ class LoginActivity : AppCompatActivity() {
         if (::newE3Service.isInitialized) newE3Service.cancelPendingRequests()
     }
 
-    private fun loginSuccess() {
-        if (oldE3Success and newE3Success) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-            if (Looper.myLooper() == null) Looper.prepare()
-            Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
-            Looper.loop()
-        }
-    }
-
-    private var isWrongCredentials = false
-    private fun showWrongCredentials() {
-        if (isWrongCredentials) return
-        isWrongCredentials = true
-        runOnUiThread {
-            login_error_text_view.text = getString(R.string.login_id_or_password_error)
-            login_error_text_view?.visibility = View.VISIBLE
-            login_progressbar?.visibility = View.GONE
-            login_button?.text = getString(R.string.login)
-            student_id.isEnabled = true
-            student_password.isEnabled = true
-            student_portal_password.isEnabled = true
-            login_button?.isEnabled = true
-        }
-    }
-
-    private var isServiceError = false
-    private fun showServiceError() {
-        if (isServiceError) return
-        isServiceError = true
-        runOnUiThread {
-            login_error_text_view.text = getString(R.string.generic_error)
-            login_error_text_view?.visibility = View.VISIBLE
-            login_progressbar?.visibility = View.GONE
-            login_button?.text = getString(R.string.login)
-            student_id.isEnabled = true
-            student_password.isEnabled = true
-            student_portal_password.isEnabled = true
-            login_button?.isEnabled = true
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme_NoActionBar)
+        setTheme(R.style.AppTheme_NoActionBar)  //End Splash Screen
         super.onCreate(savedInstanceState)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (intent.getBooleanExtra("reLogin", false)) {
@@ -96,8 +53,7 @@ class LoginActivity : AppCompatActivity() {
             val studentPassword = prefs.getString("studentPassword", "")
             val studentPortalPassword = prefs.getString("studentPortalPassword", "")
             val versionCode = prefs.getInt("versionCode", -1)
-            if (studentId != "" && studentPassword != "" && studentPortalPassword != "" &&
-                    versionCode >= 18) {
+            if (studentId != "" && studentPassword != "" && studentPortalPassword != "" && versionCode >= 18) {
                 prefs.edit().putInt("versionCode", packageManager.getPackageInfo(packageName, 0).versionCode).apply()
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
@@ -106,11 +62,11 @@ class LoginActivity : AppCompatActivity() {
         }
         prefs.edit().putInt("versionCode", packageManager.getPackageInfo(packageName, 0).versionCode).apply()
         setContentView(R.layout.activity_login)
-        student_id.setText(prefs.getString("studentId",""))
+        student_id.setText(prefs.getString("studentId", ""))
 
         //detect soft keyboard
-        login_layout.viewTreeObserver.addOnGlobalLayoutListener {
-            val heightDiff = login_layout.rootView.height - login_layout.height
+        login_root.viewTreeObserver.addOnGlobalLayoutListener {
+            val heightDiff = login_root.rootView.height - login_root.height
             if (heightDiff > dpToPx(200f)) {
                 login_scroll_view.smoothScrollBy(0, heightDiff)
             }
@@ -177,6 +133,50 @@ class LoginActivity : AppCompatActivity() {
 
         }
     }
+
+    private fun loginSuccess() {
+        if (oldE3Success and newE3Success) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+            if (Looper.myLooper() == null) Looper.prepare()
+            Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+            Looper.loop()
+        }
+    }
+
+    private var isWrongCredentials = false
+    private fun showWrongCredentials() {
+        if (isWrongCredentials) return
+        isWrongCredentials = true
+        runOnUiThread {
+            login_error_text_view.text = getString(R.string.login_id_or_password_error)
+            login_error_text_view?.visibility = View.VISIBLE
+            login_progressbar?.visibility = View.GONE
+            login_button?.text = getString(R.string.login)
+            student_id.isEnabled = true
+            student_password.isEnabled = true
+            student_portal_password.isEnabled = true
+            login_button?.isEnabled = true
+        }
+    }
+
+    private var isServiceError = false
+    private fun showServiceError() {
+        if (isServiceError) return
+        isServiceError = true
+        runOnUiThread {
+            login_error_text_view.text = getString(R.string.generic_error)
+            login_error_text_view?.visibility = View.VISIBLE
+            login_progressbar?.visibility = View.GONE
+            login_button?.text = getString(R.string.login)
+            student_id.isEnabled = true
+            student_password.isEnabled = true
+            student_portal_password.isEnabled = true
+            login_button?.isEnabled = true
+        }
+    }
+
 
     private fun dpToPx(valueInDp: Float): Float {
         val metrics = resources.displayMetrics

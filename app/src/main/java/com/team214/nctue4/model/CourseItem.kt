@@ -7,8 +7,7 @@ class CourseItem(val courseNo: String,
                  val e3Type: Int,
                  var bookmarked: Int = 0,
                  val bookmarkIdx: Int = 10000,
-                 val id: Int? = null
-) {
+                 val id: Int? = null) {
     fun toggleBookmark() {
         bookmarked = if (bookmarked == 1) 0 else 1
     }

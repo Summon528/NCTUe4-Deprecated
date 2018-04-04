@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/login_layout"
+    android:id="@+id/login_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
@@ -42,42 +42,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/edittext"
-                android:drawableStart="@drawable/ic_account_circle_black_24dp"
+                android:autofillHints="username"
+                android:background="@drawable/edit_text"
                 android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_account_circle_black_24dp"
                 android:hint="@string/student_id"
                 android:inputType="number"
                 android:maxLines="1"
-                android:padding="10dp"
-                android:autofillHints="username"/>
+                android:padding="10dp" />
 
             <EditText
                 android:id="@+id/student_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/edittext"
-                android:drawableStart="@drawable/ic_key_black_24dp"
+                android:autofillHints="password"
+                android:background="@drawable/edit_text"
                 android:drawablePadding="8dp"
-                android:hint="@string/student_olde3_password"
+                android:drawableStart="@drawable/ic_key_black_24dp"
+                android:hint="@string/student_old_e3_password"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:padding="10dp"
-                android:autofillHints="password"/>
+                android:padding="10dp" />
 
             <EditText
                 android:id="@+id/student_portal_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@drawable/edittext"
-                android:drawableStart="@drawable/ic_key_black_24dp"
+                android:autofillHints="password"
+                android:background="@drawable/edit_text"
                 android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_key_black_24dp"
                 android:hint="@string/portal_password"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:padding="10dp"
-                android:autofillHints="password"/>
+                android:padding="10dp" />
 
             <TextView
                 android:id="@+id/login_error_text_view"

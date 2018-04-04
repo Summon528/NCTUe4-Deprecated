@@ -24,7 +24,7 @@ import com.team214.nctue4.utility.downloadFile
 import kotlinx.android.synthetic.main.dialog_course_doc.*
 
 
-class CourseDocDialog : DialogFragment() {
+class DocDialog : DialogFragment() {
 
     private var oldE3Service: OldE3Connect? = null
     private var newE3Service: NewE3Connect? = null
@@ -97,7 +97,7 @@ class CourseDocDialog : DialogFragment() {
 
     private fun updateList(docItems: ArrayList<AttachItem>) {
         course_doc_dialog_recycler_view?.layoutManager = LinearLayoutManager(context)
-        course_doc_dialog_recycler_view?.adapter = CourseDocDialogAdapter(context!!, docItems) {
+        course_doc_dialog_recycler_view?.adapter = DocDialogAdapter(context!!, docItems) {
             uri = it.url
             fileName = it.name
             downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.container)) {

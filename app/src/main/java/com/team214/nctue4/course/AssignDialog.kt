@@ -1,4 +1,4 @@
-package com.team214.nctue4
+package com.team214.nctue4.course
 
 
 import android.Manifest
@@ -12,9 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3WebInterface
-import com.team214.nctue4.course.CourseDocDialogAdapter
 import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.downloadFile
@@ -83,8 +83,8 @@ class AssignDialog : DialogFragment() {
             Toast.makeText(context!!, getString(R.string.no_submitted_assign), Toast.LENGTH_SHORT).show()
             dismiss()
         } else {
-            course_doc_dialog_recycler_view?.layoutManager = LinearLayoutManager(context)
-            course_doc_dialog_recycler_view?.adapter = CourseDocDialogAdapter(context!!, assignFileItems) {
+            assign_dialog_recycler_view?.layoutManager = LinearLayoutManager(context)
+            assign_dialog_recycler_view?.adapter = DocDialogAdapter(context!!, assignFileItems) {
                 uri = it.url
                 fileName = it.name
                 downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.assign_root)) {

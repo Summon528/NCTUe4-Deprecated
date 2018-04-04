@@ -12,9 +12,9 @@ import com.team214.nctue4.utility.FileNameToColor
 import com.team214.nctue4.utility.FileNameToIcon
 import kotlinx.android.synthetic.main.item_course_doc.view.*
 
-class CourseDocDialogAdapter(val context: Context, private val dataSet: ArrayList<AttachItem>,
-                             private val itemClickListener: (AttachItem) -> Unit) :
-        RecyclerView.Adapter<CourseDocDialogAdapter.ViewHolder>() {
+class DocDialogAdapter(val context: Context, private val dataSet: ArrayList<AttachItem>,
+                       private val itemClickListener: (AttachItem) -> Unit) :
+        RecyclerView.Adapter<DocDialogAdapter.ViewHolder>() {
     class ViewHolder(val context: Context, val view: View, private val itemClickListener: (AttachItem) -> Unit) :
             RecyclerView.ViewHolder(view) {
         fun bind(attach: AttachItem) {
@@ -29,7 +29,7 @@ class CourseDocDialogAdapter(val context: Context, private val dataSet: ArrayLis
     }
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): CourseDocDialogAdapter.ViewHolder {
+                                    viewType: Int): DocDialogAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_course_doc, parent, false)
         return ViewHolder(context, view, itemClickListener)

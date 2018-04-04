@@ -17,7 +17,7 @@
 
     <!--Login Activity-->
     <string name="student_id">學號</string>
-    <string name="student_olde3_password">舊e3密碼</string>
+    <string name="student_old_e3_password">舊e3密碼</string>
     <string name="portal_password">單一入口密碼 (新e3用)</string>
     <string name="login_hint">請輸入學號以及 e3 密碼</string>
     <string name="login">登入</string>
@@ -61,7 +61,7 @@
     <string name="download_history">下載紀錄</string>
     <string name="more">更多</string>
     <string name="more_ann">更多公告</string>
-    <string name="more_downloadhistory">更多下載紀錄</string>
+    <string name="more_download_history">更多下載紀錄</string>
     <string name="more_bookmarked_course">更多收藏課程</string>
     <string name="confirm_delete">你確定要刪除%s嗎？</string>
     <string name="delete">刪除</string>
@@ -89,5 +89,5 @@
     <string name="login_again">重新登入</string>
     <string name="drag_drop_tip">長按即可重新排序</string>
     <string name="action_download_assign">已繳交的檔案</string>
-    <string name="no_submitted_assign">沒有以繳交的檔案</string>
+    <string name="no_submitted_assign">沒有已繳交的檔案</string>
 </resources>

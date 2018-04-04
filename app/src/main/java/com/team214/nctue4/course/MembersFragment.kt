@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import com.team214.nctue4.R
@@ -61,11 +60,11 @@ class MembersFragment : Fragment() {
             R.id.action_select_all -> {
                 if (course_member_recycler_view.adapter != null) {
                     if (!selectAll) {
-                        multiselect = true
+                        multiSelect = true
                         selectCnt = memberItems.size
                         memberItems.forEach { it.selected = true }
                     } else {
-                        multiselect = false
+                        multiSelect = false
                         selectCnt = 0
                         memberItems.forEach { it.selected = false }
                     }
@@ -135,7 +134,7 @@ class MembersFragment : Fragment() {
     }
 
     private var selectCnt = 0
-    private var multiselect = false
+    private var multiSelect = false
     private var lstIndex: Int = -1
     private fun updateList() {
         if (memberItems.isEmpty()) {
@@ -147,16 +146,16 @@ class MembersFragment : Fragment() {
             course_member_recycler_view?.adapter = MembersAdapter(context!!,
                     memberItems, fun(view: View, member: MemberItem, position: Int) {
                 if (member.selected) selectCnt-- else selectCnt++
-                if (!multiselect && lstIndex != -1 && lstIndex != position) {
+                if (!multiSelect && lstIndex != -1 && lstIndex != position) {
                     memberItems[lstIndex].selected = false
                     selectCnt--
                     course_member_recycler_view.adapter.notifyItemChanged(lstIndex)
                 }
                 lstIndex = position
                 if (selectCnt == 0) {
-                    multiselect = false
+                    multiSelect = false
                     lstIndex = -1
-                } else if (selectCnt > 1) multiselect = true
+                } else if (selectCnt > 1) multiSelect = true
                 member.selected = !member.selected
                 view.member_item.setBackgroundColor(
                         if (member.selected)
@@ -165,14 +164,14 @@ class MembersFragment : Fragment() {
                 setupFab()
 
             }, fun(view: View, member: MemberItem) {
-                multiselect = true
+                multiSelect = true
                 if (member.selected) selectCnt-- else selectCnt++
                 member.selected = !member.selected
                 view.member_item.setBackgroundColor(
                         if (member.selected)
                             ContextCompat.getColor(context!!, R.color.md_grey_300)
                         else Color.parseColor("#ffffff"))
-                multiselect = selectCnt != 0
+                multiSelect = selectCnt != 0
                 setupFab()
             })
         }

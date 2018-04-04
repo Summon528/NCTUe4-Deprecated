@@ -1,10 +1,7 @@
 package com.team214.nctue4.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
-import java.text.DateFormat
 import java.util.*
 
 

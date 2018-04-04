@@ -102,8 +102,8 @@ class CourseDocListFragment : Fragment() {
             course_doc_list_recycler_view?.layoutManager = LinearLayoutManager(context)
             course_doc_list_recycler_view?.addItemDecoration(DividerItemDecoration(context,
                     LinearLayoutManager.VERTICAL))
-            course_doc_list_recycler_view?.adapter = CourseDocListAdapter(docGroupItems) {
-                val dialog = CourseDocDialog()
+            course_doc_list_recycler_view?.adapter = DocListAdapter(docGroupItems) {
+                val dialog = DocDialog()
                 val bundle = Bundle()
                 bundle.putString("documentId", it.documentId)
                 bundle.putString("courseId", it.courseId)

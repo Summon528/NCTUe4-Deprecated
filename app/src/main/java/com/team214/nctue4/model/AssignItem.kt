@@ -6,7 +6,6 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
-@SuppressLint("ParcelCreator")
 class AssignItem(var name: String = "", var assignId: String = "",
                  var startDate: Date = Date(), var endDate: Date = Date(),
                  var content: String = "",

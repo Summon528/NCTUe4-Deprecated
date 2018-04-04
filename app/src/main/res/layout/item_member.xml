@@ -4,7 +4,6 @@
     android:id="@+id/member_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
     android:clickable="true"
     android:focusable="false"
     android:focusableInTouchMode="false"
@@ -20,7 +19,7 @@
         android:id="@+id/course_member_thumb"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_account_circle_black_24dp" />
 
     <LinearLayout

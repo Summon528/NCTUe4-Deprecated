@@ -131,8 +131,10 @@ class AnnActivity : AppCompatActivity() {
             uri = it.url
             fileName = it.name
             downloadFile(fileName, uri, this, this, ann_root, newE3WebService?.returnE3Cookie()) {
-                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        0)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                            0)
+                }
             }
 
         }

@@ -1,2 +1,2 @@
 # NCTUe4
-nctu app
+NCTU app

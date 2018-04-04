@@ -3,7 +3,6 @@ package com.team214.nctue4.connect
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
-import android.util.Log
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
@@ -22,7 +21,6 @@ import kotlin.collections.ArrayList
 
 
 @Parcelize
-@SuppressLint("ParcelCreator")
 class NewE3Connect(private var studentId: String = "",
                    private var studentPassword: String = "",
                    private var userId: String = "",
@@ -187,7 +185,7 @@ class NewE3Connect(private var studentId: String = "",
                 val docGroupItems = ArrayList<DocGroupItem>()
                 (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
                     var name = it.getString("name")
-                    var which = if (name.startsWith("[參考資料]")) {
+                    val which = if (name.startsWith("[參考資料]")) {
                         name = name.drop(6)
                         1
                     } else 0

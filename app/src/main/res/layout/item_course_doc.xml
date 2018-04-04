@@ -11,8 +11,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="8dp">
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp">
 
 
         <ImageView
@@ -36,7 +36,7 @@
         android:id="@+id/doc_display_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="18dp"
+        android:paddingEnd="18dp"
         android:text="檔案名稱檔案名稱檔案名稱檔案名稱檔案名稱"
         android:maxLines="2"
         android:ellipsize="end"

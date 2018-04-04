@@ -13,7 +13,7 @@
     <include layout="@layout/status_error" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/course_score_recycler_view"
+        android:id="@+id/assign_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

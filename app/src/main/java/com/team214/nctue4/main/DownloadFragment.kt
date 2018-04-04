@@ -51,11 +51,7 @@ class DownloadFragment : Fragment() {
                     },
                     fun(it) {
                         val dialog = DownloadDialog()
-                        dialog.setOnDismissListener(object : DialogInterface.OnDismissListener {
-                            override fun onDismiss(dialog: DialogInterface?) {
-                                updateList()
-                            }
-                        })
+                        dialog.setOnDismissListener(DialogInterface.OnDismissListener { updateList() })
                         val bundle = Bundle()
                         bundle.putSerializable("file", it)
                         dialog.arguments = bundle

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:minWidth="300dp"
     android:orientation="vertical"
-    tools:context="com.team214.nctue4.course.CourseDocDialog">
+    tools:context="com.team214.nctue4.course.DocDialog">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/course_doc_dialog_recycler_view"
+            android:id="@+id/assign_dialog_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
