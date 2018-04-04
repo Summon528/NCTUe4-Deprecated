@@ -77,7 +77,12 @@ class LoginActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        if (intent.getBooleanExtra("logout", false)) {
+        if (intent.getBooleanExtra("reLogin", false)) {
+            val prefsEditor = prefs.edit()
+            prefsEditor.remove("studentPassword")
+            prefsEditor.remove("studentPortalPassword")
+            prefsEditor.apply()
+        } else if (intent.getBooleanExtra("logout", false)) {
             Toast.makeText(this, getString(R.string.logout_success), Toast.LENGTH_SHORT).show()
             val prefsEditor = prefs.edit()
             prefsEditor.clear().apply()
@@ -101,6 +106,7 @@ class LoginActivity : AppCompatActivity() {
         }
         prefs.edit().putInt("versionCode", packageManager.getPackageInfo(packageName, 0).versionCode).apply()
         setContentView(R.layout.activity_login)
+        student_id.setText(prefs.getString("studentId",""))
 
         //detect soft keyboard
         login_layout.viewTreeObserver.addOnGlobalLayoutListener {

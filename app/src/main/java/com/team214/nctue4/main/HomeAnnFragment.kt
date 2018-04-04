@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.team214.nctue4.AnnActivity
+import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.NewE3WebInterface
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_ann.*
 import kotlinx.android.synthetic.main.status_empty.*
 import kotlinx.android.synthetic.main.status_empty_compact.*
 import kotlinx.android.synthetic.main.status_error.*
+import kotlinx.android.synthetic.main.status_wrong_credential.*
 
 
 class HomeAnnFragment : Fragment() {
@@ -60,37 +62,44 @@ class HomeAnnFragment : Fragment() {
             val annItems = ArrayList<AnnItem>()
             annItems.addAll(newE3AnnItems)
             annItems.addAll(oldE3AnnItems)
-            activity?.runOnUiThread {
-                Runnable {
-                    annItems.sortByDescending { it.beginDate }
-                    updateList(annItems)
-                    dataStatus = DataStatus.FINISHED
-                    progress_bar?.visibility = View.GONE
-                }.run()
-            }
+            annItems.sortByDescending { it.beginDate }
+            updateList(annItems)
+            dataStatus = DataStatus.FINISHED
+            progress_bar?.visibility = View.GONE
         }
     }
 
     private fun getData() {
         error_request?.visibility = View.GONE
+        error_wrong_credential?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
         oldE3Service = (activity as MainActivity).oldE3Service
         oldE3Service.getAnnouncementListLogin(
                 if (arguments?.getBoolean("home") != null) 5 else 100) { status, response ->
-            when (status) {
-                OldE3Interface.Status.SUCCESS -> {
-                    oldE3AnnItems = response!!
-                    oldE3get = true
-                    race()
-                }
-                else -> {
-                    activity?.runOnUiThread {
-                        Runnable {
-                            error_request?.visibility = View.VISIBLE
-                            progress_bar?.visibility = View.GONE
-                            dataStatus = DataStatus.INIT
-                            error_request_retry?.setOnClickListener { getData() }
-                        }.run()
+            activity?.runOnUiThread {
+                when (status) {
+                    OldE3Interface.Status.SUCCESS -> {
+                        oldE3AnnItems = response!!
+                        oldE3get = true
+                        race()
+                    }
+                    OldE3Interface.Status.WRONG_CREDENTIALS -> {
+                        error_wrong_credential?.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.GONE
+                        dataStatus = DataStatus.FINISHED
+                        login_again_button?.setOnClickListener {
+                            val intent = Intent()
+                            intent.setClass(context, LoginActivity::class.java)
+                            intent.putExtra("reLogin", true)
+                            startActivity(intent)
+                            activity!!.finish()
+                        }
+                    }
+                    else -> {
+                        error_request?.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.GONE
+                        dataStatus = DataStatus.INIT
+                        error_request_retry?.setOnClickListener { getData() }
                     }
                 }
             }
@@ -99,20 +108,31 @@ class HomeAnnFragment : Fragment() {
         newE3WebService = (activity as MainActivity).newE3WebService
 
         newE3WebService.getAnn { status, response ->
-            when (status) {
-                NewE3WebInterface.Status.SUCCESS -> {
-                    newE3AnnItems = response!!
-                    newE3get = true
-                    race()
-                }
-                else -> {
-                    activity?.runOnUiThread {
-                        Runnable {
-                            error_request?.visibility = View.VISIBLE
-                            progress_bar?.visibility = View.GONE
-                            dataStatus = DataStatus.INIT
-                            error_request_retry?.setOnClickListener { getData() }
-                        }.run()
+            activity?.runOnUiThread {
+                when (status) {
+                    NewE3WebInterface.Status.SUCCESS -> {
+                        newE3AnnItems = response!!
+                        newE3get = true
+                        race()
+                    }
+                    NewE3WebInterface.Status.WRONG_CREDENTIALS -> {
+                        error_wrong_credential?.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.GONE
+                        dataStatus = DataStatus.FINISHED
+                        login_again_button?.setOnClickListener {
+                            val intent = Intent()
+                            intent.setClass(context, LoginActivity::class.java)
+                            intent.putExtra("reLogin", true)
+                            startActivity(intent)
+                            activity!!.finish()
+                        }
+                    }
+                    else -> {
+                        error_request?.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.GONE
+                        dataStatus = DataStatus.INIT
+                        error_request_retry?.setOnClickListener { getData() }
+
                     }
                 }
             }

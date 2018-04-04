@@ -12,6 +12,8 @@
 
     <include layout="@layout/status_empty" />
 
+    <include layout="@layout/status_wrong_credential" />
+
     <include layout="@layout/status_error" />
 
     <include layout="@layout/status_empty_compact" />
