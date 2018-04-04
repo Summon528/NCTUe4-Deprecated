@@ -93,7 +93,6 @@ class ScoreFragment : Fragment() {
     }
 
     private fun updateList() {
-        Log.d("DATA", scoreItems.toString())
         if (scoreItems.isEmpty()) {
             empty_request?.visibility = View.VISIBLE
         } else {

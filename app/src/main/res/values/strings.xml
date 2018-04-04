@@ -99,7 +99,11 @@
     <string name="title_activity_assign">Assignment</string>
     <string name="start_time">Start: </string>
     <string name="end_time">End: </string>
-    
+
     <string name="wrong_credential">Wrong Credentials</string>
     <string name="login_again">Login Again</string>
+    <string name="drag_drop_tip">Long press to rearrange items.</string>
+
+    <string name="action_download_assign">Submitted Files</string>
+    <string name="no_submitted_assign">No submitted files</string>
 </resources>

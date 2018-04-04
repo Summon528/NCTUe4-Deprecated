@@ -3,6 +3,8 @@ package com.team214.nctue4.main
 import android.content.Intent
 import android.graphics.drawable.NinePatchDrawable
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -84,7 +86,12 @@ class BookmarkedFragment : Fragment() {
             dragDropManager.setInitiateOnMove(false)
             course_list_recycler_view.itemAnimator = DraggableItemAnimator()
             dragDropManager.attachRecyclerView(course_list_recycler_view)
-
+            val pref = PreferenceManager.getDefaultSharedPreferences(context)
+            if (arguments?.getBoolean("home") == null && courseItems.size >= 2 &&
+                    !pref.getBoolean("dragDropTipped", false)) {
+                Snackbar.make(course_list_root, getString(R.string.drag_drop_tip), Snackbar.LENGTH_INDEFINITE).show()
+                pref.edit().putBoolean("dragDropTipped", true).apply()
+            }
         }
     }
 }

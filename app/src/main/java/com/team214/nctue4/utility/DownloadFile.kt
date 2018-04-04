@@ -40,7 +40,6 @@ fun openFile(fileName: String, file: File, context: Context, activity: Activity)
 
 fun downloadFile(fileName: String, uri: String, context: Context, activity: Activity, view: View,
                  e3WebCookie: MutableList<Cookie>? = null, requestPermissions: (() -> Unit?)?) {
-    Log.d("DOWNLOADALKSDJ",uri)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {

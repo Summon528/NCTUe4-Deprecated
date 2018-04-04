@@ -77,14 +77,15 @@
     <string name="refresh_success">重新整理成功</string>
     <string name="action_refresh">重新整理</string>
     <string name="action_goto_course">到課程頁面</string>
-    <string name="wait">請稍後</string>
+    <string name="wait">請稍候</string>
     <string name="no_email">沒有電子郵件</string>
     <string name="course_nav_members">成員</string>
     <string name="action_select_all">全選</string>
     <string name="feedback">意見回饋</string>
     <string name="title_activity_assign">作業</string>
-    <string name="start_time">開始時間：</string>
-    <string name="end_time">結束時間：</string>
+    <string name="start_time">開始：</string>
+    <string name="end_time">結束：</string>
     <string name="wrong_credential">登入資訊錯誤</string>
     <string name="login_again">重新登入</string>
+    <string name="drag_drop_tip">長按即可重新排序</string>
 </resources>

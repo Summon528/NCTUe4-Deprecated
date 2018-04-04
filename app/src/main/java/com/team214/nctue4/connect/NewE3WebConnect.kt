@@ -154,7 +154,6 @@ class NewE3WebConnect(private var studentId: String = "",
                             "?",
                             it.select("a").last().attr("href")
                     ))
-                    Log.d("ATTACH", it.select("a").last().attr("href"))
                 }
 
                 val annItem = AnnItem(

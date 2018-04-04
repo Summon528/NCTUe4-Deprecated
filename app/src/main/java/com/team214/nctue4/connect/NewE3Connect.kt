@@ -350,7 +350,6 @@ class NewE3Connect(private var studentId: String = "",
         )) { status, response ->
             if (status == NewE3Interface.Status.SUCCESS) {
                 val attachItems = ArrayList<AttachItem>()
-                Log.d("respnse", response)
                 val data = JSONObject(response).getJSONObject("lastattempt").getJSONObject("submission")
                         .getJSONArray("plugins").getJSONObject(0).getJSONArray("fileareas")
                         .getJSONObject(0).getJSONArray("files")

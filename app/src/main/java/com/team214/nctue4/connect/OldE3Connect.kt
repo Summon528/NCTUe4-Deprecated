@@ -342,9 +342,7 @@ class OldE3Connect(private var studentId: String = "",
     private fun processMembers(which: Int, response: JSONObject,
                                completionHandler: (status: OldE3Interface.Status,
                                                    response: ArrayList<MemberItem>?) -> Unit) {
-        Log.d("RES", response.toString())
         val data = response.getJSONObject("ArrayOfAccountData").forceGetJsonArray("AccountData")
-        Log.d("DATA", data.toString())
         when (which) {
             0 -> {
                 (0 until data.length()).map { data.get(it) as JSONObject }
@@ -390,7 +388,6 @@ class OldE3Connect(private var studentId: String = "",
                 "courseId" to courseId
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                Log.d("RESP", response.toString())
                 val data = response!!.getJSONObject("ScoreData")
                 val types = arrayOf("Office", "Exam", "Ques", "Hwk", "Discuss", "OneSelf",
                         "Score", "AdjustToScoreForAll", "Absence", "AdjustToScore", "Attendance", "FinalScore")
@@ -489,7 +486,6 @@ class OldE3Connect(private var studentId: String = "",
     private fun processAssignDetail(response: Any, which: Int,
                                     completionHandler: (status: OldE3Interface.Status,
                                                         response: AssignItem?) -> Unit) {
-        Log.d("response", response.toString())
         when (which) {
             0 -> {
                 val data = (response as JSONObject).getJSONObject("HomeworkData")

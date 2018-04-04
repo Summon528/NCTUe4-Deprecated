@@ -95,7 +95,6 @@ class AssignFragment : Fragment() {
     }
 
     private fun updateList() {
-        Log.d("DATA", assignItems.toString())
         if (assignItems.isEmpty()) {
             empty_request?.visibility = View.VISIBLE
         } else {

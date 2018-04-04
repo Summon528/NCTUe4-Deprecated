@@ -3,25 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:padding="10dp">
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingLeft="10dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/announcement_caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/announcement_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="123123123"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/announcement_beginDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="10/23"
+                android:textColor="#424242"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/announcement_content"
@@ -29,30 +47,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@android:color/black"
+            android:minLines="2"
+            android:text="qeqweqwe"
             android:textSize="16sp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="2dp"
-                android:contentDescription="TODO"
-                android:src="@drawable/ic_timeline_black_24dp" />
-
-            <TextView
-                android:id="@+id/announcement_beginDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="2002/10/23"
-                android:textSize="16sp" />
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

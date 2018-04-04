@@ -146,7 +146,6 @@ class MembersFragment : Fragment() {
                     LinearLayoutManager.VERTICAL))
             course_member_recycler_view?.adapter = MembersAdapter(context!!,
                     memberItems, fun(view: View, member: MemberItem, position: Int) {
-                Log.d("CNT", multiselect.toString())
                 if (member.selected) selectCnt-- else selectCnt++
                 if (!multiselect && lstIndex != -1 && lstIndex != position) {
                     memberItems[lstIndex].selected = false
@@ -175,7 +174,6 @@ class MembersFragment : Fragment() {
                         else Color.parseColor("#ffffff"))
                 multiselect = selectCnt != 0
                 setupFab()
-                Log.d("CNT", selectCnt.toString())
             })
         }
 

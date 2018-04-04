@@ -9,14 +9,16 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
+import android.widget.Toast
 import com.team214.nctue4.connect.NewE3Connect
-import com.team214.nctue4.connect.NewE3WebInterface
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.model.AssignItem
+import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.downloadFile
 import kotlinx.android.synthetic.main.activity_assign.*
@@ -29,9 +31,8 @@ class AssignActivity : AppCompatActivity() {
     private var oldE3Service: OldE3Connect? = null
     private var newE3Service: NewE3Connect? = null
     private var dataStatus = DataStatus.INIT
-    private var courseId: String? = null
-    private var courseName: String? = null
-    private var e3Type: Int? = null
+    private var submittedFiles: ArrayList<AttachItem>? = null
+    private var assignId = ""
 
     override fun onStop() {
         super.onStop()
@@ -47,6 +48,7 @@ class AssignActivity : AppCompatActivity() {
         if (dataStatus == DataStatus.STOPPED) getData()
     }
 
+
     private lateinit var uri: String
     private lateinit var fileName: String
 
@@ -55,6 +57,19 @@ class AssignActivity : AppCompatActivity() {
             android.R.id.home -> {
                 onBackPressed()
                 return true
+            }
+            R.id.action_download_assign -> {
+                if (oldE3Service != null && submittedFiles == null) {
+                    Toast.makeText(this, getString(R.string.wait), Toast.LENGTH_SHORT).show()
+                } else {
+                    val dialog = AssignDialog()
+                    val bundle = Bundle()
+                    bundle.putParcelableArrayList("submittedFiles", submittedFiles)
+                    bundle.putParcelable("newE3Service", newE3Service)
+                    bundle.putString("assignId", assignId)
+                    dialog.arguments = bundle
+                    dialog.show(supportFragmentManager, "TAG")
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -67,7 +82,7 @@ class AssignActivity : AppCompatActivity() {
             0 -> {
                 if ((grantResults.isNotEmpty() &&
                                 grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    downloadFile(fileName, uri, this, this, ann_root, null, null)
+                    downloadFile(fileName, uri, this, this, assign_root, null, null)
                 }
                 return
             }
@@ -83,33 +98,26 @@ class AssignActivity : AppCompatActivity() {
     }
 
 
-    private fun showAnn(assignItem: AssignItem) {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.download_asign, menu)
+        return true
+    }
+
+    private fun showAssign(assignItem: AssignItem) {
         error_request?.visibility = View.GONE
         ann_caption.text = assignItem.name
-//        ann_courseName.text = assignItem.courseName
-        val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss", Locale.TAIWAN)
+        val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm", Locale.TAIWAN)
         assign_start_date.text = sdf.format(assignItem.startDate)
         assign_end_date.text = sdf.format(assignItem.endDate)
         ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ann_content_web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-        Log.d("assignItem", assignItem.content)
         ann_content_web_view.loadData(assignItem.content, "text/html; charset=utf-8", "UTF-8")
         ann_content_web_view.setBackgroundColor(Color.TRANSPARENT)
         assign_attach.layoutManager = LinearLayoutManager(this)
         assign_attach.adapter = AnnAttachmentAdapter(this, assignItem.attachItem) {
             uri = it.url
             fileName = it.name
-            downloadFile(fileName, uri, this, this, ann_root) {
-                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        0)
-            }
-
-        }
-        assign_submit.layoutManager = LinearLayoutManager(this)
-        assign_submit.adapter = AnnAttachmentAdapter(this, assignItem.sentItem) {
-            uri = it.url
-            fileName = it.name
-            downloadFile(fileName, uri, this, this, ann_root) {
+            downloadFile(fileName, uri, this, this, assign_root) {
                 requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         0)
             }
@@ -122,37 +130,23 @@ class AssignActivity : AppCompatActivity() {
 
     private fun getData() {
         val bundle = intent.extras
+        toolbar.title = bundle.getString("courseName")
         val courseId = bundle.getString("courseId")
         val assignItem = bundle.getParcelable<AssignItem>("assignItem")
+        assignId = assignItem.assignId
         newE3Service = bundle.getParcelable("newE3Service")
         oldE3Service = bundle.getParcelable("oldE3Service")
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE
         if (newE3Service != null) {
-            newE3Service!!.getAssignSubmission(assignItem.assignId) { status, response ->
-                this.runOnUiThread {
-                    when (status) {
-                        NewE3WebInterface.Status.SUCCESS -> {
-                            assignItem.sentItem = response!!
-                            showAnn(assignItem)
-                        }
-                        else -> {
-                            error_request?.visibility = View.VISIBLE
-                            dataStatus = DataStatus.INIT
-                            error_request_retry?.setOnClickListener { getData() }
-                            progress_bar?.visibility = View.GONE
-                            dataStatus = DataStatus.FINISHED
-                        }
-                    }
-                }
-            }
-
+            showAssign(assignItem)
         } else {
             oldE3Service!!.getAssignDetail(assignItem.assignId, courseId, assignItem.submitId) { status, response ->
                 this.runOnUiThread {
                     when (status) {
                         OldE3Interface.Status.SUCCESS -> {
-                            showAnn(response!!)
+                            submittedFiles = response!!.sentItem
+                            showAssign(response)
                         }
                         else -> {
                             error_request?.visibility = View.VISIBLE

@@ -19,26 +19,29 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="作業一 bla"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
-
-    <TextView
-        android:id="@+id/assign_start"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="7.00"
-        android:textColor="@android:color/black"
-        android:textSize="18dp" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/assign_end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="7.00"
-        android:textColor="@android:color/black"
-        android:textSize="18dp" />
+        <TextView
+            android:id="@+id/assign_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" ~ " />
+
+        <TextView
+            android:id="@+id/assign_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

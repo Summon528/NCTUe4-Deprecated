@@ -2,6 +2,7 @@ package com.team214.nctue4.course
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -99,6 +100,8 @@ class CourseDocListFragment : Fragment() {
             empty_request?.visibility = View.VISIBLE
         } else {
             course_doc_list_recycler_view?.layoutManager = LinearLayoutManager(context)
+            course_doc_list_recycler_view?.addItemDecoration(DividerItemDecoration(context,
+                    LinearLayoutManager.VERTICAL))
             course_doc_list_recycler_view?.adapter = CourseDocListAdapter(docGroupItems) {
                 val dialog = CourseDocDialog()
                 val bundle = Bundle()

@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 null
             }
             R.id.nav_feedback -> {
-                val emailUri = "mailto: team214@gmail.com?subject=NCTUE4Feedback&body=" +
+                val emailUri = "mailto: team214.csv06@gmail.com?subject=NCTUE4Feedback&body=" +
                         "\n\n\nAPI Level: ${android.os.Build.VERSION.SDK_INT}\n" +
                         "Device: ${android.os.Build.DEVICE}\n" +
                         "Model: ${android.os.Build.MODEL}\n" +
