@@ -1,6 +1,7 @@
 package com.team214.nctue4.connect
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Parcelable
 import android.util.Log
 import com.team214.nctue4.R
@@ -501,6 +502,82 @@ class OldE3Connect(private var studentId: String = "",
             }
         }
         if (assignDetailStatus.all { it }) completionHandler(OldE3Interface.Status.SUCCESS, assignDetailItem)
+    }
+
+
+    private lateinit var timeTableStatus: Array<Boolean>
+    private var timeTableItems: Array<ArrayList<TimeTableItem>>? = null
+    private val colorStringArray = mutableListOf("#E57373", "#F06292", "#CE93D8", "#B39DDB", "#9FA8DA", "#2196F3", "#039BE5", "#00ACC1", "#26A69A",
+            "#4CAF50", "#689F38", "#9E9D24", "#F57F17", "#FF8F00", "#EF6C00", "#FF5722", "#BCAAA4")
+
+    override fun getTimeTable(courses: ArrayList<CourseItem>,
+                              completionHandler: (status: OldE3Interface.Status,
+                                                  response: Array<ArrayList<TimeTableItem>>?) -> Unit) {
+        timeTableStatus = Array(courses.size, { false })
+        timeTableItems = Array(7, { ArrayList<TimeTableItem>() })
+        colorStringArray.shuffle()
+        courses.forEachIndexed { index, courseItem ->
+            post("/GetCourseTime", hashMapOf(
+                    "courseId" to courseItem.courseId
+            )) { status, response ->
+                if (status == OldE3Interface.Status.SUCCESS) {
+                    processTimeTable(index, response!!, completionHandler)
+                } else completionHandler(status, null)
+            }
+        }
+    }
+
+    private fun processTimeTable(which: Int, response: JSONObject,
+                                 completionHandler: (status: OldE3Interface.Status,
+                                                     response: Array<ArrayList<TimeTableItem>>?) -> Unit) {
+        if (response.getJSONObject("ArrayOfCourseTimeData").has("CourseTimeData")) {
+            val data = response.getJSONObject("ArrayOfCourseTimeData").forceGetJsonArray("CourseTimeData")
+            (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
+                var weekDay = it.getInt("WeekDay")
+                val section = it.getString("Section").single()
+                val roomNo = it.getString("RoomNo").trim()
+                val courseName = it.getString("CourseName")
+                if (weekDay == 7) weekDay = 0
+                val sectionInt = when (section) {
+                    'M', 'N' -> section.minus('M')
+                    'A', 'B', 'C', 'D' -> section.minus('A') + 2
+                    'Y' -> 11
+                    'X' -> 6
+                    'E', 'F', 'G', 'H' -> section.minus('A') + 3
+                    else -> section.minus('A') + 4
+                }
+                timeTableItems!![weekDay].add(TimeTableItem(
+                        courseName,
+                        weekDay,
+                        sectionInt,
+                        roomNo,
+                        1,
+                        Color.parseColor(colorStringArray[which % colorStringArray.size])
+                ))
+            }
+        }
+        timeTableStatus[which] = true
+        if (timeTableStatus.all { it }) {
+            timeTableItems!!.forEach { it.sortBy { it.section } }
+            val timeTableItemsResult = Array(7, { ArrayList<TimeTableItem>() })
+            timeTableItems!!.forEachIndexed { weekDay, arrayList ->
+                var idx = 0
+                while (idx < arrayList.size) {
+                    var courseLength = 0
+                    val curr = arrayList[idx]
+                    while (idx < arrayList.size && curr.courseName == arrayList[idx].courseName) {
+                        courseLength++
+                        idx++
+                    }
+                    curr.length = courseLength
+                    timeTableItemsResult[weekDay].add(curr)
+                }
+            }
+            timeTableItems = null
+            Log.d("STRING", timeTableItemsResult.contentDeepToString())
+            completionHandler(OldE3Interface.Status.SUCCESS, timeTableItemsResult)
+        }
+
     }
 
     override fun cancelPendingRequests() {

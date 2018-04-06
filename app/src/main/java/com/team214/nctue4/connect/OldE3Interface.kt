@@ -42,5 +42,8 @@ interface OldE3Interface {
     fun getAssignDetail(assId: String, courseId: String, submitId: String,
                         completionHandler: (status: Status, response: AssignItem?) -> Unit)
 
+    fun getTimeTable(courses: ArrayList<CourseItem>,
+                      completionHandler: (status: Status, response: Array<ArrayList<TimeTableItem>>?) -> Unit)
+
     fun cancelPendingRequests()
 }

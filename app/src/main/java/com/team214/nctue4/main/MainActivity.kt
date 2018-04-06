@@ -99,6 +99,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 currentFragment = id
                 DownloadFragment()
             }
+            R.id.nav_timetable ->{
+                currentFragment = id
+                TimetableFragment()
+            }
             R.id.nav_old_e3 -> {
                 currentFragment = id
                 OldE3Fragment()
