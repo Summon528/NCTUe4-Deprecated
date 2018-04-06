@@ -1,8 +1,8 @@
 package com.team214.nctue4.connect
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
+import android.util.Log
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
@@ -53,6 +53,7 @@ class NewE3Connect(private var studentId: String = "",
         } else {
             val url = if (path == loginPath) "https://e3new.nctu.edu.tw$path"
             else "https://e3new.nctu.edu.tw/webservice/rest/server.php?moodlewsrestformat=json"
+            Log.d("NewE3URL", url)
             val formBodyBuilder = FormBody.Builder()
             params.forEach { entry -> formBodyBuilder.add(entry.key, entry.value) }
             val formBody = formBodyBuilder.build()

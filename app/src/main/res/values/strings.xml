@@ -107,4 +107,13 @@
 
     <string name="action_download_assign">Submitted Files</string>
     <string name="no_submitted_assign">No submitted files</string>
+
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+
 </resources>

@@ -574,7 +574,6 @@ class OldE3Connect(private var studentId: String = "",
                 }
             }
             timeTableItems = null
-            Log.d("STRING", timeTableItemsResult.contentDeepToString())
             completionHandler(OldE3Interface.Status.SUCCESS, timeTableItemsResult)
         }
 

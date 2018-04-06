@@ -60,7 +60,7 @@ class NewE3WebConnect(private var studentId: String = "",
             }
         } else {
             val url = "https://e3new.nctu.edu.tw$path"
-            Log.d("NewE3URL", url)
+            Log.d("NewWebE3URL", url)
             val formBody = FormBody.Builder()
                     .add("username", studentId)
                     .add("password", studentPassword).build()

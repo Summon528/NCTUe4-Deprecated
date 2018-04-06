@@ -90,4 +90,12 @@
     <string name="drag_drop_tip">長按即可重新排序</string>
     <string name="action_download_assign">已繳交的檔案</string>
     <string name="no_submitted_assign">沒有已繳交的檔案</string>
+    <string name="timetable">課表</string>
+    <string name="mon">一</string>
+    <string name="tue">二</string>
+    <string name="sun">日</string>
+    <string name="sat">六</string>
+    <string name="fri">五</string>
+    <string name="thu">四</string>
+    <string name="wed">三</string>
 </resources>
