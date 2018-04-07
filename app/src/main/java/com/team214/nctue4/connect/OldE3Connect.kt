@@ -507,8 +507,8 @@ class OldE3Connect(private var studentId: String = "",
 
     private lateinit var timeTableStatus: Array<Boolean>
     private var timeTableItems: Array<ArrayList<TimeTableItem>>? = null
-    private val colorStringArray = mutableListOf("#E57373", "#F06292", "#CE93D8", "#B39DDB", "#9FA8DA", "#2196F3", "#039BE5", "#00ACC1", "#26A69A",
-            "#4CAF50", "#689F38", "#9E9D24", "#F57F17", "#FF8F00", "#EF6C00", "#FF5722", "#BCAAA4")
+    private val colorStringArray = mutableListOf("#E57373", "#F48FB1", "#CE93D8", "#9FA8DA", "#03A9F4", "#26A69A",
+            "#4CAF50", "#AED581", "#AFB42B", "#FFA000", "#FFF176", "#FF5722", "#BCAAA4", "#90A4AE", "#90CAF9", "#E0E0E0")
 
     override fun getTimeTable(courses: ArrayList<CourseItem>,
                               completionHandler: (status: OldE3Interface.Status,

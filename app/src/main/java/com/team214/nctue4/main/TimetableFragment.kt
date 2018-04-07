@@ -76,8 +76,8 @@ class TimetableFragment : Fragment() {
     }
 
     private fun getData() {
-        progress_bar.visibility = View.VISIBLE
-        error_request.visibility = View.GONE
+        progress_bar?.visibility = View.VISIBLE
+        error_request?.visibility = View.GONE
         if (courseItems.isEmpty()) getCourseList()
         else getTimeTable()
     }
@@ -91,10 +91,10 @@ class TimetableFragment : Fragment() {
                         getTimeTable()
                     }
                     else -> {
-                        progress_bar.visibility = View.INVISIBLE
-                        error_request.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.INVISIBLE
+                        error_request?.visibility = View.VISIBLE
                         dataStatus = DataStatus.INIT
-                        error_request.error_request_retry.setOnClickListener {
+                        error_request_retry?.setOnClickListener {
                             getData()
                         }
                     }
@@ -111,15 +111,15 @@ class TimetableFragment : Fragment() {
                     OldE3Interface.Status.SUCCESS -> {
                         timeTableItems = response!!
                         updateView()
-                        progress_bar.visibility = View.INVISIBLE
-                        course_weekday.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.INVISIBLE
+                        course_weekday?.visibility = View.VISIBLE
                         dataStatus = DataStatus.FINISHED
                     }
                     else -> {
-                        progress_bar.visibility = View.INVISIBLE
-                        error_request.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.INVISIBLE
+                        error_request?.visibility = View.VISIBLE
                         dataStatus = DataStatus.INIT
-                        error_request.error_request_retry.setOnClickListener {
+                        error_request_retry?.setOnClickListener {
                             getData()
                         }
                     }
@@ -139,11 +139,11 @@ class TimetableFragment : Fragment() {
 
         for (day in 0 until 7) {
             if (day == 0 && timeTableItems[day].size == 0) {
-                sun.visibility = View.GONE
+                sun?.visibility = View.GONE
                 continue
             }
             if (day == 6 && timeTableItems[day].size == 0) {
-                sat.visibility = View.GONE
+                sat?.visibility = View.GONE
                 continue
             }
             val linearLayout = LinearLayout(context)
