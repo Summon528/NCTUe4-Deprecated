@@ -19,7 +19,6 @@ import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_timetable.*
 import kotlinx.android.synthetic.main.status_error.*
-import kotlinx.android.synthetic.main.status_error.view.*
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -88,6 +87,7 @@ class TimetableFragment : Fragment() {
                 when (status) {
                     OldE3Interface.Status.SUCCESS -> {
                         courseDBHelper.refreshCourses(response!!, E3Type.OLD)
+                        courseItems = response
                         getTimeTable()
                     }
                     else -> {
