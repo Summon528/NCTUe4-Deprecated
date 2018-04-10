@@ -81,7 +81,7 @@ class AssignDialog : DialogFragment() {
     private fun updateList(assignFileItems: ArrayList<AttachItem>) {
         if (assignFileItems.isEmpty()) {
             Toast.makeText(context!!, getString(R.string.no_submitted_assign), Toast.LENGTH_SHORT).show()
-            dismiss()
+            dismissAllowingStateLoss()
         } else {
             assign_dialog_recycler_view?.layoutManager = LinearLayoutManager(context)
             assign_dialog_recycler_view?.adapter = DocDialogAdapter(context!!, assignFileItems) {
@@ -93,7 +93,7 @@ class AssignDialog : DialogFragment() {
                 }
                 if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_GRANTED) {
-                    dismiss()
+                    dismissAllowingStateLoss()
                 }
 
             }
@@ -109,7 +109,7 @@ class AssignDialog : DialogFragment() {
                 if ((grantResults.isNotEmpty() &&
                                 grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.assign_root), null, null)
-                    dismiss()
+                    dismissAllowingStateLoss()
                 }
                 return
             }

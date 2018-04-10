@@ -72,7 +72,7 @@ class DocDialog : DialogFragment() {
                         }
                         else -> {
                             Toast.makeText(context, getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                            dismiss()
+                            dismissAllowingStateLoss()
                         }
                     }
                 }
@@ -87,7 +87,7 @@ class DocDialog : DialogFragment() {
                         }
                         else -> {
                             Toast.makeText(context, getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                            dismiss()
+                            dismissAllowingStateLoss()
                         }
                     }
                 }
@@ -106,7 +106,7 @@ class DocDialog : DialogFragment() {
             }
             if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                dismiss()
+                dismissAllowingStateLoss()
             }
 
         }
@@ -122,7 +122,7 @@ class DocDialog : DialogFragment() {
                 if ((grantResults.isNotEmpty() &&
                                 grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.container), null, null)
-                    dismiss()
+                    dismissAllowingStateLoss()
                 }
                 return
             }
