@@ -153,7 +153,6 @@ class NewE3WebConnect(private var studentId: String = "",
                             it.select("a").last().attr("href")
                     ))
                 }
-
                 val annItem = AnnItem(
                         bulletinId,
                         annPage.select(".page-header-headings").text().replace("【.*】\\d*".toRegex(), "").replace(" .*".toRegex(), ""),
@@ -161,7 +160,7 @@ class NewE3WebConnect(private var studentId: String = "",
                         annPage.select(".content").html(),
                         df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
                         df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
-                        Regex("courseid=([^&]*)").find(annPage.select(".list-group-item-action")[1].attr("href"))!!.groupValues[1],
+                        Regex("(courseid|id)=([^&]*)").find(annPage.select(".list-group-item-action")[3].attr("href"))!!.groupValues[2],
                         E3Type.NEW,
                         attachItems
                 )

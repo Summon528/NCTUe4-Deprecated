@@ -64,7 +64,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="課堂標題"
-                android:textColor="@android:color/black"
+                android:textColor="@color/blackText"
                 android:textSize="18sp" />
 
 

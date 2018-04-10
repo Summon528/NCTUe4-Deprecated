@@ -11,4 +11,5 @@
     <color name="adobePdf">#780000</color>
     <color name="new_e3">#0277BD</color>
     <color name="old_e3">#104698</color>
+    <color name="blackText">#212121</color>
 </resources>

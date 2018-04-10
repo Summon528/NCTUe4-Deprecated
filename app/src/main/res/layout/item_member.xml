@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="8dp"
                 android:text="多拉美"
-                android:textColor="@android:color/black"
+                android:textColor="@color/blackText"
                 android:textSize="18sp" />
 
             <TextView
