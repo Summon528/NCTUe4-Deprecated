@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_home_announcement.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeAnnAdapter(private val dataSet: List<AnnItem>, private val context: Context,
+class HomeAnnAdapter(private val dataSet: ArrayList<AnnItem>, private val context: Context,
                      private val itemClickListener: (AnnItem) -> Unit) :
         RecyclerView.Adapter<HomeAnnAdapter.ViewHolder>() {
 

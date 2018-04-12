@@ -116,6 +116,6 @@
     <string name="sat">Sat</string>
     <string name="sun">Sun</string>
 
-    <string name="new_e3_ann_error">Can\'t display new e3 announcements at the moment.</string>
-    <string name="old_e3_ann_error">Can\'t display old e3 announcements at the moment.</string>
+    <string name="new_e3_ann_error">Can\'t display new e3 announcements at the moment.\nPull to retry.</string>
+    <string name="old_e3_ann_error">Can\'t display old e3 announcements at the moment.\nPull to retry.</string>
 </resources>
