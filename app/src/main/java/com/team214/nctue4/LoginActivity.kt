@@ -16,6 +16,9 @@ import com.team214.nctue4.main.MainActivity
 import com.team214.nctue4.model.CourseDBHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
+import com.google.firebase.analytics.FirebaseAnalytics
+
+
 
 
 class LoginActivity : AppCompatActivity() {
@@ -23,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var newE3Service: NewE3Connect
     private var oldE3Success = false
     private var newE3Success = false
+    private var mFirebaseAnalytics: FirebaseAnalytics? = null
 
     override fun onStop() {
         super.onStop()
@@ -33,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)  //End Splash Screen
         super.onCreate(savedInstanceState)
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (intent.getBooleanExtra("reLogin", false)) {
             val prefsEditor = prefs.edit()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Parcelable
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
@@ -31,7 +32,6 @@ class OldE3Connect(private var studentId: String = "",
                    private var accountId: String = "") : OldE3Interface, Parcelable {
 
     companion object {
-        private val tag = OldE3Connect::class.java.simpleName
         private const val loginPath = "/Login"
     }
 
@@ -55,7 +55,7 @@ class OldE3Connect(private var studentId: String = "",
             }
         } else {
             val url = "http://e3.nctu.edu.tw/mService/Service.asmx$path"
-            Log.d("OldE3URL", url)
+            Crashlytics.log(Log.DEBUG, "OldE3URL", url)
             val formBodyBuilder = FormBody.Builder()
             params.forEach { entry -> formBodyBuilder.add(entry.key, entry.value) }
             val formBody = formBodyBuilder.build()
@@ -93,15 +93,20 @@ class OldE3Connect(private var studentId: String = "",
                 "password" to studentPassword
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                val accountData = response!!.getJSONObject("AccountData")
-                if (accountData.has("LoginTicket")) {
-                    val studentName = accountData.getString("Name")
-                    val studentEmail = accountData.getString("EMail")
-                    loginTicket = accountData.getString("LoginTicket")
-                    accountId = accountData.getString("AccountId")
-                    completionHandler(OldE3Interface.Status.SUCCESS, Pair(studentName, studentEmail))
-                } else {
-                    completionHandler(OldE3Interface.Status.WRONG_CREDENTIALS, null)
+                try {
+                    val accountData = response!!.getJSONObject("AccountData")
+                    if (accountData.has("LoginTicket")) {
+                        val studentName = accountData.getString("Name")
+                        val studentEmail = accountData.getString("EMail")
+                        loginTicket = accountData.getString("LoginTicket")
+                        accountId = accountData.getString("AccountId")
+                        completionHandler(OldE3Interface.Status.SUCCESS, Pair(studentName, studentEmail))
+                    } else {
+                        completionHandler(OldE3Interface.Status.WRONG_CREDENTIALS, null)
+                    }
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
                 completionHandler(status, null)
@@ -115,18 +120,23 @@ class OldE3Connect(private var studentId: String = "",
                 "role" to "stu"
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                val data = response!!.getJSONObject("ArrayOfCourseData")
-                        .forceGetJsonArray("CourseData")
-                val courseItems = ArrayList<CourseItem>()
-                (0 until data.length()).map { data.get(it) as JSONObject }
-                        .forEach {
-                            courseItems.add(CourseItem(it.getString("CourseNo"),
-                                    it.getString("CourseName"),
-                                    it.getString("TeacherName"),
-                                    it.getString("CourseId"),
-                                    E3Type.OLD))
-                        }
-                completionHandler(status, courseItems)
+                try {
+                    val data = response!!.getJSONObject("ArrayOfCourseData")
+                            .forceGetJsonArray("CourseData")
+                    val courseItems = ArrayList<CourseItem>()
+                    (0 until data.length()).map { data.get(it) as JSONObject }
+                            .forEach {
+                                courseItems.add(CourseItem(it.getString("CourseNo"),
+                                        it.getString("CourseName"),
+                                        it.getString("TeacherName"),
+                                        it.getString("CourseId"),
+                                        E3Type.OLD))
+                            }
+                    completionHandler(status, courseItems)
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                }
             } else {
                 completionHandler(status, null)
             }
@@ -139,39 +149,44 @@ class OldE3Connect(private var studentId: String = "",
                 "ShowCount" to count.toString()
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                val annData = response!!.getJSONObject("ArrayOfBulletinData")
-                        .forceGetJsonArray("BulletinData")
-                val annItems = ArrayList<AnnItem>()
-                val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
-                (0 until annData.length()).map { annData.get(it) as JSONObject }
-                        .forEach {
-                            val attachItemList = ArrayList<AttachItem>()
-                            val attachNames = it.forceGetJsonArray("AttachFileName")
-                            val attachUrls = it.forceGetJsonArray("AttachFileURL")
-                            val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
-                            if ((attachNames.get(0) as JSONObject).getString("string") != "") {
-                                (0 until attachNames.length()).map {
-                                    AttachItem(
-                                            (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
-                                            (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
-                                            (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
-                                }.forEach {
-                                    attachItemList.add(it)
+                try {
+                    val annData = response!!.getJSONObject("ArrayOfBulletinData")
+                            .forceGetJsonArray("BulletinData")
+                    val annItems = ArrayList<AnnItem>()
+                    val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
+                    (0 until annData.length()).map { annData.get(it) as JSONObject }
+                            .forEach {
+                                val attachItemList = ArrayList<AttachItem>()
+                                val attachNames = it.forceGetJsonArray("AttachFileName")
+                                val attachUrls = it.forceGetJsonArray("AttachFileURL")
+                                val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
+                                if ((attachNames.get(0) as JSONObject).getString("string") != "") {
+                                    (0 until attachNames.length()).map {
+                                        AttachItem(
+                                                (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
+                                                (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
+                                                (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
+                                    }.forEach {
+                                        attachItemList.add(it)
+                                    }
                                 }
+                                annItems.add(AnnItem(
+                                        it.getString("BulletinId"),
+                                        it.getString("CourseName"),
+                                        it.getString("Caption"),
+                                        it.getString("Content"),
+                                        df.parse(it.getString("BeginDate")),
+                                        df.parse(it.getString("EndDate")),
+                                        it.getString("CourseId"),
+                                        E3Type.OLD,
+                                        attachItemList
+                                ))
                             }
-                            annItems.add(AnnItem(
-                                    it.getString("BulletinId"),
-                                    it.getString("CourseName"),
-                                    it.getString("Caption"),
-                                    it.getString("Content"),
-                                    df.parse(it.getString("BeginDate")),
-                                    df.parse(it.getString("EndDate")),
-                                    it.getString("CourseId"),
-                                    E3Type.OLD,
-                                    attachItemList
-                            ))
-                        }
-                completionHandler(status, annItems)
+                    completionHandler(status, annItems)
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                }
             } else {
                 completionHandler(status, null)
             }
@@ -186,39 +201,44 @@ class OldE3Connect(private var studentId: String = "",
                 "bulType" to "1"
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                val arrayOfBulletinData = response!!.getJSONObject("ArrayOfBulletinData")
-                val data = arrayOfBulletinData.forceGetJsonArray("BulletinData")
-                val annItems = ArrayList<AnnItem>()
-                val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
-                (0 until data.length()).map { data.get(it) as JSONObject }
-                        .forEach {
-                            val attachItemList = ArrayList<AttachItem>()
-                            val attachNames = it.forceGetJsonArray("AttachFileName")
-                            val attachUrls = it.forceGetJsonArray("AttachFileURL")
-                            val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
-                            if ((attachNames.get(0) as JSONObject).getString("string") != "") {
-                                (0 until attachNames.length()).map {
-                                    AttachItem(
-                                            (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
-                                            (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
-                                            (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
-                                }.forEach {
-                                    attachItemList.add(it)
+                try {
+                    val arrayOfBulletinData = response!!.getJSONObject("ArrayOfBulletinData")
+                    val data = arrayOfBulletinData.forceGetJsonArray("BulletinData")
+                    val annItems = ArrayList<AnnItem>()
+                    val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
+                    (0 until data.length()).map { data.get(it) as JSONObject }
+                            .forEach {
+                                val attachItemList = ArrayList<AttachItem>()
+                                val attachNames = it.forceGetJsonArray("AttachFileName")
+                                val attachUrls = it.forceGetJsonArray("AttachFileURL")
+                                val attachFileSizes = it.forceGetJsonArray("AttachFileFileSize")
+                                if ((attachNames.get(0) as JSONObject).getString("string") != "") {
+                                    (0 until attachNames.length()).map {
+                                        AttachItem(
+                                                (attachNames.get(it) as JSONObject).getString("string").dropLast(1),
+                                                (attachFileSizes.get(it) as JSONObject).getString("string").dropLast(1),
+                                                (attachUrls.get(it) as JSONObject).getString("string").dropLast(1))
+                                    }.forEach {
+                                        attachItemList.add(it)
+                                    }
                                 }
+                                annItems.add(AnnItem(
+                                        it.getString("BulletinId"),
+                                        courseName,
+                                        it.getString("Caption"),
+                                        htmlCleaner(it.getString("Content")),
+                                        df.parse(it.getString("BeginDate")),
+                                        df.parse(it.getString("EndDate")),
+                                        it.getString("CourseId"),
+                                        E3Type.OLD,
+                                        attachItemList
+                                ))
                             }
-                            annItems.add(AnnItem(
-                                    it.getString("BulletinId"),
-                                    courseName,
-                                    it.getString("Caption"),
-                                    htmlCleaner(it.getString("Content")),
-                                    df.parse(it.getString("BeginDate")),
-                                    df.parse(it.getString("EndDate")),
-                                    it.getString("CourseId"),
-                                    E3Type.OLD,
-                                    attachItemList
-                            ))
-                        }
-                completionHandler(status, annItems)
+                    completionHandler(status, annItems)
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                }
             } else {
                 completionHandler(status, null)
             }
@@ -251,48 +271,57 @@ class OldE3Connect(private var studentId: String = "",
     private fun processMaterialDocList(which: Int, response: JSONObject, context: Context,
                                        completionHandler: (status: OldE3Interface.Status,
                                                            response: ArrayList<DocGroupItem>?) -> Unit) {
-
-        val arrayOfMaterialDocData = response.getJSONObject("ArrayOfMaterialDocData")
-        val data = arrayOfMaterialDocData.forceGetJsonArray("MaterialDocData")
-        (0 until data.length()).map { data.get(it) as JSONObject }
-                .forEach {
-                    var dateArray: List<String> = it.getString("BeginDate").split("/")
-                    docGroupItems!!.add(DocGroupItem(
-                            it.getString("DisplayName"),
-                            it.getString("DocumentId"),
-                            it.getString("CourseId"),
-                            if (which == 0) context.getString(R.string.course_doc_type_handout)
-                            else context.getString(R.string.course_doc_type_reference)
-                    ))
-                }
-        getMaterialDocListStatus[which] = true
-        if (getMaterialDocListStatus[0] && getMaterialDocListStatus[1]) {
-            docGroupItems?.sortByDescending { it.docType }
-            completionHandler(OldE3Interface.Status.SUCCESS, docGroupItems)
-            docGroupItems = null
+        try {
+            val arrayOfMaterialDocData = response.getJSONObject("ArrayOfMaterialDocData")
+            val data = arrayOfMaterialDocData.forceGetJsonArray("MaterialDocData")
+            (0 until data.length()).map { data.get(it) as JSONObject }
+                    .forEach {
+                        var dateArray: List<String> = it.getString("BeginDate").split("/")
+                        docGroupItems!!.add(DocGroupItem(
+                                it.getString("DisplayName"),
+                                it.getString("DocumentId"),
+                                it.getString("CourseId"),
+                                if (which == 0) context.getString(R.string.course_doc_type_handout)
+                                else context.getString(R.string.course_doc_type_reference)
+                        ))
+                    }
+            getMaterialDocListStatus[which] = true
+            if (getMaterialDocListStatus[0] && getMaterialDocListStatus[1]) {
+                docGroupItems?.sortByDescending { it.docType }
+                completionHandler(OldE3Interface.Status.SUCCESS, docGroupItems)
+                docGroupItems = null
+            }
+        } catch (e: Exception) {
+            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
 
-    override fun getAttachFileList(documentId: String, courseId: String,
+    override fun getAttachFileList(documentId: String, courseId: String, metaType: Int,
                                    completionHandler: (status: OldE3Interface.Status,
                                                        response: ArrayList<AttachItem>?) -> Unit) {
         post("/GetAttachFileList", hashMapOf(
                 "resId" to documentId,
-                "metaType" to "10", //No idea what is this for
+                "metaType" to metaType.toString(), //No idea what is this for
                 "courseId" to courseId
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                val data = response!!.getJSONObject("ArrayOfAttachFileInfoData")
-                        .forceGetJsonArray("AttachFileInfoData")
-                val attachItems = ArrayList<AttachItem>()
-                (0 until data.length()).map { data.get(it) as JSONObject }
-                        .forEach {
-                            attachItems.add(AttachItem(
-                                    it.getString("DisplayFileName"),
-                                    it.getString("FileSize"),
-                                    it.getString("RealityFileName")))
-                        }
-                completionHandler(status, attachItems)
+                try {
+                    val data = response!!.getJSONObject("ArrayOfAttachFileInfoData")
+                            .forceGetJsonArray("AttachFileInfoData")
+                    val attachItems = ArrayList<AttachItem>()
+                    (0 until data.length()).map { data.get(it) as JSONObject }
+                            .forEach {
+                                attachItems.add(AttachItem(
+                                        it.getString("DisplayFileName"),
+                                        it.getString("FileSize"),
+                                        it.getString("RealityFileName")))
+                            }
+                    completionHandler(status, attachItems)
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                }
             } else {
                 completionHandler(status, null)
             }
@@ -341,42 +370,47 @@ class OldE3Connect(private var studentId: String = "",
     private fun processMembers(which: Int, response: JSONObject,
                                completionHandler: (status: OldE3Interface.Status,
                                                    response: ArrayList<MemberItem>?) -> Unit) {
-        val data = response.getJSONObject("ArrayOfAccountData").forceGetJsonArray("AccountData")
-        when (which) {
-            0 -> {
-                (0 until data.length()).map { data.get(it) as JSONObject }
-                        .forEach {
-                            val type = if (it.getString("RoleName").contains("助教")) MemberType.TA else MemberType.TEA
-                            memberItems!!.add(MemberItem(
-                                    it.getString("Name"),
-                                    it.getString("DepartId"),
-                                    try {
-                                        it.getString("EMail")
-                                    } catch (e: JSONException) {
-                                        ""
-                                    }, type
-                            ))
-                        }
+        try {
+            val data = response.getJSONObject("ArrayOfAccountData").forceGetJsonArray("AccountData")
+            when (which) {
+                0 -> {
+                    (0 until data.length()).map { data.get(it) as JSONObject }
+                            .forEach {
+                                val type = if (it.getString("RoleName").contains("助教")) MemberType.TA else MemberType.TEA
+                                memberItems!!.add(MemberItem(
+                                        it.getString("Name"),
+                                        it.getString("DepartId"),
+                                        try {
+                                            it.getString("EMail")
+                                        } catch (e: JSONException) {
+                                            ""
+                                        }, type
+                                ))
+                            }
+                }
+                1, 2 -> {
+                    (0 until data.length()).map { data.get(it) as JSONObject }
+                            .forEach {
+                                memberItems!!.add(MemberItem(
+                                        it.getString("Name"),
+                                        it.getString("DepartId"),
+                                        try {
+                                            it.getString("EMail")
+                                        } catch (e: JSONException) {
+                                            ""
+                                        }, if (which == 1) MemberType.STU else MemberType.AUDIT
+                                ))
+                            }
+                }
             }
-            1, 2 -> {
-                (0 until data.length()).map { data.get(it) as JSONObject }
-                        .forEach {
-                            memberItems!!.add(MemberItem(
-                                    it.getString("Name"),
-                                    it.getString("DepartId"),
-                                    try {
-                                        it.getString("EMail")
-                                    } catch (e: JSONException) {
-                                        ""
-                                    }, if (which == 1) MemberType.STU else MemberType.AUDIT
-                            ))
-                        }
+            if (getMemberListStatus[0] && getMemberListStatus[1] && getMemberListStatus[2]) {
+                memberItems!!.sortBy { it.type }
+                completionHandler(OldE3Interface.Status.SUCCESS, memberItems)
+                memberItems = null
             }
-        }
-        if (getMemberListStatus[0] && getMemberListStatus[1] && getMemberListStatus[2]) {
-            memberItems!!.sortBy { it.type }
-            completionHandler(OldE3Interface.Status.SUCCESS, memberItems)
-            memberItems = null
+        } catch (e: Exception) {
+            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
 
@@ -387,21 +421,26 @@ class OldE3Connect(private var studentId: String = "",
                 "courseId" to courseId
         )) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
-                val data = response!!.getJSONObject("ScoreData")
-                val types = arrayOf("Office", "Exam", "Ques", "Hwk", "Discuss", "OneSelf",
-                        "Score", "AdjustToScoreForAll", "Absence", "AdjustToScore", "Attendance", "FinalScore")
-                val scoreItems = ArrayList<ScoreItem>()
-                types.forEach {
-                    if (data.has(it)) {
-                        val scoreData = data.getJSONObject(it).forceGetJsonArray("ScoreItemData")
-                        (0 until scoreData.length()).map { scoreData.get(it) as JSONObject }
-                                .forEach {
-                                    scoreItems.add(ScoreItem(it.getString("DisplayName"),
-                                            it.getString("Score3")))
-                                }
+                try {
+                    val data = response!!.getJSONObject("ScoreData")
+                    val types = arrayOf("Office", "Exam", "Ques", "Hwk", "Discuss", "OneSelf",
+                            "Score", "AdjustToScoreForAll", "Absence", "AdjustToScore", "Attendance", "FinalScore")
+                    val scoreItems = ArrayList<ScoreItem>()
+                    types.forEach {
+                        if (data.has(it)) {
+                            val scoreData = data.getJSONObject(it).forceGetJsonArray("ScoreItemData")
+                            (0 until scoreData.length()).map { scoreData.get(it) as JSONObject }
+                                    .forEach {
+                                        scoreItems.add(ScoreItem(it.getString("DisplayName"),
+                                                it.getString("Score3")))
+                                    }
+                        }
                     }
+                    completionHandler(status, scoreItems)
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
-                completionHandler(status, scoreItems)
             } else completionHandler(status, null)
         }
 
@@ -428,22 +467,27 @@ class OldE3Connect(private var studentId: String = "",
 
     private fun processAssign(response: JSONObject, completionHandler:
     (status: OldE3Interface.Status, response: ArrayList<AssignItem>?) -> Unit) {
-        val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
-        if (response.has("ArrayOfHomeworkData")) {
-            val homeworkData = response.getJSONObject("ArrayOfHomeworkData").forceGetJsonArray("HomeworkData")
-            (0 until homeworkData.length()).map { homeworkData.get(it) as JSONObject }
-                    .forEach {
-                        assignItems!!.add(AssignItem(
-                                it.getString("DisplayName"),
-                                it.getString("HomeworkId"),
-                                df.parse(it.getString("BeginDate")),
-                                df.parse(it.getString("EndDate")),
-                                submitId = it.getString("HwkSubmitId")
-                        ))
-                    }
-        }
-        if (assignStatus.all { it }) {
-            completionHandler(OldE3Interface.Status.SUCCESS, assignItems)
+        try {
+            val df = SimpleDateFormat("yyyy/M/d", Locale.TAIWAN)
+            if (response.has("ArrayOfHomeworkData")) {
+                val homeworkData = response.getJSONObject("ArrayOfHomeworkData").forceGetJsonArray("HomeworkData")
+                (0 until homeworkData.length()).map { homeworkData.get(it) as JSONObject }
+                        .forEach {
+                            assignItems!!.add(AssignItem(
+                                    it.getString("DisplayName"),
+                                    it.getString("HomeworkId"),
+                                    df.parse(it.getString("BeginDate")),
+                                    df.parse(it.getString("EndDate")),
+                                    submitId = it.getString("HwkSubmitId")
+                            ))
+                        }
+            }
+            if (assignStatus.all { it }) {
+                completionHandler(OldE3Interface.Status.SUCCESS, assignItems)
+            }
+        } catch (e: Exception) {
+            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
 
@@ -463,14 +507,14 @@ class OldE3Connect(private var studentId: String = "",
                 processAssignDetail(response!!, 0, completionHandler)
             } else completionHandler(status, null)
         }
-        getAttachFileList(assId, courseId) { status, response ->
+        getAttachFileList(assId, courseId, 20) { status, response ->
             if (status == OldE3Interface.Status.SUCCESS) {
                 assignDetailStatus[1] = true
                 processAssignDetail(response!!, 1, completionHandler)
             } else completionHandler(status, null)
         }
         if (submitId != "") {
-            getAttachFileList(submitId, courseId) { status, response ->
+            getAttachFileList(submitId, courseId, 21) { status, response ->
                 if (status == OldE3Interface.Status.SUCCESS) {
                     assignDetailStatus[2] = true
                     processAssignDetail(response!!, 2, completionHandler)
@@ -485,23 +529,28 @@ class OldE3Connect(private var studentId: String = "",
     private fun processAssignDetail(response: Any, which: Int,
                                     completionHandler: (status: OldE3Interface.Status,
                                                         response: AssignItem?) -> Unit) {
-        when (which) {
-            0 -> {
-                val data = (response as JSONObject).getJSONObject("HomeworkData")
-                val df = SimpleDateFormat("yyyy/M/d hh:mm:ss", Locale.TAIWAN)
-                assignDetailItem!!.name = data.getString("DisplayName")
-                assignDetailItem!!.content = data.getString("Content")
-                assignDetailItem!!.startDate = df.parse(data.getString("BeginDate"))
-                assignDetailItem!!.endDate = df.parse(data.getString("EndDate"))
+        try {
+            when (which) {
+                0 -> {
+                    val data = (response as JSONObject).getJSONObject("HomeworkData")
+                    val df = SimpleDateFormat("yyyy/M/d hh:mm:ss", Locale.TAIWAN)
+                    assignDetailItem!!.name = data.getString("DisplayName")
+                    assignDetailItem!!.content = data.getString("Content")
+                    assignDetailItem!!.startDate = df.parse(data.getString("BeginDate"))
+                    assignDetailItem!!.endDate = df.parse(data.getString("EndDate"))
+                }
+                1 -> {
+                    assignDetailItem!!.attachItem = response as ArrayList<AttachItem>
+                }
+                2 -> {
+                    assignDetailItem!!.sentItem = response as ArrayList<AttachItem>
+                }
             }
-            1 -> {
-                assignDetailItem!!.attachItem = response as ArrayList<AttachItem>
-            }
-            2 -> {
-                assignDetailItem!!.sentItem = response as ArrayList<AttachItem>
-            }
+            if (assignDetailStatus.all { it }) completionHandler(OldE3Interface.Status.SUCCESS, assignDetailItem)
+        } catch (e: Exception) {
+            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
-        if (assignDetailStatus.all { it }) completionHandler(OldE3Interface.Status.SUCCESS, assignDetailItem)
     }
 
 
@@ -530,53 +579,57 @@ class OldE3Connect(private var studentId: String = "",
     private fun processTimeTable(which: Int, response: JSONObject,
                                  completionHandler: (status: OldE3Interface.Status,
                                                      response: Array<ArrayList<TimeTableItem>>?) -> Unit) {
-        if (response.getJSONObject("ArrayOfCourseTimeData").has("CourseTimeData")) {
-            val data = response.getJSONObject("ArrayOfCourseTimeData").forceGetJsonArray("CourseTimeData")
-            (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
-                var weekDay = it.getInt("WeekDay")
-                val section = it.getString("Section").single()
-                val roomNo = it.getString("RoomNo").trim()
-                val courseName = it.getString("CourseName")
-                if (weekDay == 7) weekDay = 0
-                val sectionInt = when (section) {
-                    'M', 'N' -> section.minus('M')
-                    'A', 'B', 'C', 'D' -> section.minus('A') + 2
-                    'Y' -> 11
-                    'X' -> 6
-                    'E', 'F', 'G', 'H' -> section.minus('A') + 3
-                    else -> section.minus('A') + 4
-                }
-                timeTableItems!![weekDay].add(TimeTableItem(
-                        courseName,
-                        weekDay,
-                        sectionInt,
-                        roomNo,
-                        1,
-                        Color.parseColor(colorStringArray[which % colorStringArray.size])
-                ))
-            }
-        }
-        timeTableStatus[which] = true
-        if (timeTableStatus.all { it }) {
-            timeTableItems!!.forEach { it.sortBy { it.section } }
-            val timeTableItemsResult = Array(7, { ArrayList<TimeTableItem>() })
-            timeTableItems!!.forEachIndexed { weekDay, arrayList ->
-                var idx = 0
-                while (idx < arrayList.size) {
-                    var courseLength = 0
-                    val curr = arrayList[idx]
-                    while (idx < arrayList.size && curr.courseName == arrayList[idx].courseName) {
-                        courseLength++
-                        idx++
+        try {
+            if (response.getJSONObject("ArrayOfCourseTimeData").has("CourseTimeData")) {
+                val data = response.getJSONObject("ArrayOfCourseTimeData").forceGetJsonArray("CourseTimeData")
+                (0 until data.length()).map { data.get(it) as JSONObject }.forEach {
+                    var weekDay = it.getInt("WeekDay")
+                    val section = it.getString("Section").single()
+                    val roomNo = it.getString("RoomNo").trim()
+                    val courseName = it.getString("CourseName")
+                    if (weekDay == 7) weekDay = 0
+                    val sectionInt = when (section) {
+                        'M', 'N' -> section.minus('M')
+                        'A', 'B', 'C', 'D' -> section.minus('A') + 2
+                        'Y' -> 11
+                        'X' -> 6
+                        'E', 'F', 'G', 'H' -> section.minus('A') + 3
+                        else -> section.minus('A') + 4
                     }
-                    curr.length = courseLength
-                    timeTableItemsResult[weekDay].add(curr)
+                    timeTableItems!![weekDay].add(TimeTableItem(
+                            courseName,
+                            weekDay,
+                            sectionInt,
+                            roomNo,
+                            1,
+                            Color.parseColor(colorStringArray[which % colorStringArray.size])
+                    ))
                 }
             }
-            timeTableItems = null
-            completionHandler(OldE3Interface.Status.SUCCESS, timeTableItemsResult)
+            timeTableStatus[which] = true
+            if (timeTableStatus.all { it }) {
+                timeTableItems!!.forEach { it.sortBy { it.section } }
+                val timeTableItemsResult = Array(7, { ArrayList<TimeTableItem>() })
+                timeTableItems!!.forEachIndexed { weekDay, arrayList ->
+                    var idx = 0
+                    while (idx < arrayList.size) {
+                        var courseLength = 0
+                        val curr = arrayList[idx]
+                        while (idx < arrayList.size && curr.courseName == arrayList[idx].courseName) {
+                            courseLength++
+                            idx++
+                        }
+                        curr.length = courseLength
+                        timeTableItemsResult[weekDay].add(curr)
+                    }
+                }
+                timeTableItems = null
+                completionHandler(OldE3Interface.Status.SUCCESS, timeTableItemsResult)
+            }
+        } catch (e: Exception) {
+            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
-
     }
 
     override fun cancelPendingRequests() {

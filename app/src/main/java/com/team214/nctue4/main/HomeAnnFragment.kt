@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.team214.nctue4.AnnActivity
 import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
@@ -16,6 +17,7 @@ import com.team214.nctue4.connect.NewE3WebInterface
 import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.connect.OldE3Interface
 import com.team214.nctue4.model.AnnItem
+import com.team214.nctue4.utility.AnnGet
 import com.team214.nctue4.utility.DataStatus
 import com.team214.nctue4.utility.E3Type
 import kotlinx.android.synthetic.main.fragment_ann.*
@@ -29,8 +31,8 @@ class HomeAnnFragment : Fragment() {
     private lateinit var oldE3Service: OldE3Connect
     private lateinit var newE3WebService: NewE3WebConnect
     private var dataStatus = DataStatus.INIT
-    private var oldE3get = false
-    private var newE3get = false
+    private var oldE3get = AnnGet.START
+    private var newE3get = AnnGet.START
     private var oldE3AnnItems = ArrayList<AnnItem>()
     private var newE3AnnItems = ArrayList<AnnItem>()
 
@@ -58,7 +60,16 @@ class HomeAnnFragment : Fragment() {
     }
 
     private fun race() {
-        if (oldE3get && newE3get) {
+        if (oldE3get == AnnGet.FAIL && newE3get == AnnGet.FAIL) {
+            error_request?.visibility = View.VISIBLE
+            progress_bar?.visibility = View.GONE
+            dataStatus = DataStatus.INIT
+            error_request_retry?.setOnClickListener { getData() }
+            return
+        }
+        if (oldE3get == AnnGet.FAIL) Toast.makeText(context!!, getString(R.string.old_e3_ann_error), Toast.LENGTH_LONG).show()
+        if (newE3get == AnnGet.FAIL) Toast.makeText(context!!, getString(R.string.new_e3_ann_error), Toast.LENGTH_LONG).show()
+        if (oldE3get != AnnGet.START && newE3get != AnnGet.START) {
             val annItems = ArrayList<AnnItem>()
             annItems.addAll(newE3AnnItems)
             annItems.addAll(oldE3AnnItems)
@@ -80,7 +91,7 @@ class HomeAnnFragment : Fragment() {
                 when (status) {
                     OldE3Interface.Status.SUCCESS -> {
                         oldE3AnnItems = response!!
-                        oldE3get = true
+                        oldE3get = AnnGet.SUCCESS
                         race()
                     }
                     OldE3Interface.Status.WRONG_CREDENTIALS -> {
@@ -96,10 +107,8 @@ class HomeAnnFragment : Fragment() {
                         }
                     }
                     else -> {
-                        error_request?.visibility = View.VISIBLE
-                        progress_bar?.visibility = View.GONE
-                        dataStatus = DataStatus.INIT
-                        error_request_retry?.setOnClickListener { getData() }
+                        oldE3get = AnnGet.FAIL
+                        race()
                     }
                 }
             }
@@ -112,7 +121,7 @@ class HomeAnnFragment : Fragment() {
                 when (status) {
                     NewE3WebInterface.Status.SUCCESS -> {
                         newE3AnnItems = response!!
-                        newE3get = true
+                        newE3get = AnnGet.SUCCESS
                         race()
                     }
                     NewE3WebInterface.Status.WRONG_CREDENTIALS -> {
@@ -128,11 +137,8 @@ class HomeAnnFragment : Fragment() {
                         }
                     }
                     else -> {
-                        error_request?.visibility = View.VISIBLE
-                        progress_bar?.visibility = View.GONE
-                        dataStatus = DataStatus.INIT
-                        error_request_retry?.setOnClickListener { getData() }
-
+                        newE3get = AnnGet.FAIL
+                        race()
                     }
                 }
             }
@@ -166,8 +172,8 @@ class HomeAnnFragment : Fragment() {
             }
             ann_login_recycler_view?.visibility = View.VISIBLE
         }
-        oldE3get = false
-        newE3get = false
+        oldE3get = AnnGet.START
+        newE3get = AnnGet.START
     }
 }
 

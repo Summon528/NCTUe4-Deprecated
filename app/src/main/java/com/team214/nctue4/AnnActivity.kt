@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.NewE3WebInterface
@@ -30,6 +31,7 @@ import java.util.regex.PatternSyntaxException
 
 
 class AnnActivity : AppCompatActivity() {
+    private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var oldE3Service: OldE3Connect? = null
     private var newE3WebService: NewE3WebConnect? = null
     private var newE3Service: NewE3Connect? = null
@@ -96,6 +98,7 @@ class AnnActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         setContentView(R.layout.activity_ann)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

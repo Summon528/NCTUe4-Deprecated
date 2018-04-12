@@ -64,7 +64,7 @@ class DocDialog : DialogFragment() {
         val courseId = arguments!!.getString("courseId")
         if (e3Type == E3Type.OLD) {
             oldE3Service = (activity as CourseActivity).oldE3Service
-            oldE3Service!!.getAttachFileList(documentId, courseId) { status, response ->
+            oldE3Service!!.getAttachFileList(documentId, courseId, 10) { status, response ->
                 activity?.runOnUiThread {
                     when (status) {
                         OldE3Interface.Status.SUCCESS -> {

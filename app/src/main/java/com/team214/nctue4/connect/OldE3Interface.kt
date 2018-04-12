@@ -25,7 +25,7 @@ interface OldE3Interface {
                            completionHandler: (status: Status,
                                                response: ArrayList<DocGroupItem>?) -> Unit)
 
-    fun getAttachFileList(documentId: String, courseId: String,
+    fun getAttachFileList(documentId: String, courseId: String, metaType: Int,
                           completionHandler: (status: Status,
                                               response: ArrayList<AttachItem>?) -> Unit)
 
@@ -43,7 +43,7 @@ interface OldE3Interface {
                         completionHandler: (status: Status, response: AssignItem?) -> Unit)
 
     fun getTimeTable(courses: ArrayList<CourseItem>,
-                      completionHandler: (status: Status, response: Array<ArrayList<TimeTableItem>>?) -> Unit)
+                     completionHandler: (status: Status, response: Array<ArrayList<TimeTableItem>>?) -> Unit)
 
     fun cancelPendingRequests()
 }

@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.TextView
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.team214.nctue4.BuildConfig
 import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
@@ -22,7 +23,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+    private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var currentFragment = -1
     lateinit var oldE3Service: OldE3Connect
     lateinit var newE3WebService: NewE3WebConnect
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_Main)
         super.onCreate(savedInstanceState)
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 currentFragment = id
                 DownloadFragment()
             }
-            R.id.nav_timetable ->{
+            R.id.nav_timetable -> {
                 currentFragment = id
                 TimetableFragment()
             }

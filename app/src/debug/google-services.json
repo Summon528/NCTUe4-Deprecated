@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "943847422438",
+    "firebase_url": "https://nctu-e4.firebaseio.com",
+    "project_id": "nctu-e4",
+    "storage_bucket": "nctu-e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943847422438:android:88888aa6e96b0704",
+        "android_client_info": {
+          "package_name": "com.team214.nctue4.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943847422438-nsme5ano1kpofimbgejvndaqluraid53.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.team214.nctue4.dev",
+            "certificate_hash": "6addd3a17b1a741e24f93f5b601b7a3b113801f9"
+          }
+        },
+        {
+          "client_id": "943847422438-s9feakut8sn4vareg1lioehd3bvrmamo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXMWqbyTt0olnflZwg_234PjPEpcm0Dh0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943847422438-s9feakut8sn4vareg1lioehd3bvrmamo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

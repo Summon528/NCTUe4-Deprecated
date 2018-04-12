@@ -23,3 +23,11 @@ class MemberType {
         const val AUDIT = 3
     }
 }
+
+class AnnGet{
+    companion object {
+        const val START = 0
+        const val FAIL = 1
+        const val SUCCESS = 2
+    }
+}

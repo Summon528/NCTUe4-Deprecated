@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.team214.nctue4.AnnAttachmentAdapter
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
@@ -29,6 +30,7 @@ import java.util.*
 
 
 class AssignActivity : AppCompatActivity() {
+    private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var oldE3Service: OldE3Connect? = null
     private var newE3Service: NewE3Connect? = null
     private var dataStatus = DataStatus.INIT
@@ -92,6 +94,7 @@ class AssignActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         setContentView(R.layout.activity_assign)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

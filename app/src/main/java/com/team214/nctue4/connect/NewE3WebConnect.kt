@@ -2,6 +2,7 @@ package com.team214.nctue4.connect
 
 import android.os.Parcelable
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.utility.E3Type
@@ -10,7 +11,7 @@ import okhttp3.*
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -60,7 +61,7 @@ class NewE3WebConnect(private var studentId: String = "",
             }
         } else {
             val url = "https://e3new.nctu.edu.tw$path"
-            Log.d("NewWebE3URL", url)
+            Crashlytics.log(Log.DEBUG, "NewWebE3URL", url)
             val formBody = FormBody.Builder()
                     .add("username", studentId)
                     .add("password", studentPassword).build()
@@ -107,27 +108,39 @@ class NewE3WebConnect(private var studentId: String = "",
         post("/my/index.php?lang=en", HashMap()
         ) { status, response ->
             if (status == NewE3WebInterface.Status.SUCCESS) {
-                val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
-                val annItems = ArrayList<AnnItem>()
-                val df = SimpleDateFormat("d LLL,  yyyy", Locale.US)
-                (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
-                        .forEach {
-                            if (it.select("b").text() != "System") {
-                                annItems.add(AnnItem(
-                                        it.select("a").attr("href").substring(25) + "&lang=en",
-                                        it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
-                                        it.select("h4").text(),
-                                        it.select("a").text(),
-                                        df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[.|:,][0-9]*)".toRegex(), "") + "2018"),
-                                        df.parse(it.select(".media div")[0].text().substring(0, 20).replace("([0-9]+[.|:,][0-9]*)".toRegex(), "") + "2018"),
-                                        "",
-                                        E3Type.NEW,
-                                        ArrayList()
-                                ))
-                            }
+                try {
+                    val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
+                    val annItems = ArrayList<AnnItem>()
+                    val df = SimpleDateFormat("d MMM, HH:mm", Locale.US)
+                    (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
+                            .forEach {
+                                if (it.select("b").text() != "System") {
+                                    val date = df.parse(it.select(".media div")[0].text())
+                                    val now = Calendar.getInstance()
+                                    val baseYear =
+                                            if (now.get(Calendar.MONTH) >= 7) now.get(Calendar.YEAR) + 1 - 1900
+                                            else now.get(Calendar.YEAR) - 1900
+                                    date.year = if (date.month >= 7) baseYear - 1
+                                    else baseYear
+                                    annItems.add(AnnItem(
+                                            it.select("a").attr("href").substring(25) + "&lang=en",
+                                            it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
+                                            it.select("h4").text(),
+                                            it.select("a").text(),
+                                            date,
+                                            date,
+                                            "",
+                                            E3Type.NEW,
+                                            ArrayList()
+                                    ))
+                                }
 
-                        }
-                completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
+                            }
+                    completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "NewE3WebError", response)
+                    completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)
+                }
             } else {
                 completionHandler(status, null)
             }
@@ -138,33 +151,38 @@ class NewE3WebConnect(private var studentId: String = "",
         post(bulletinId, HashMap()
         ) { status, response ->
             if (status == NewE3WebInterface.Status.SUCCESS) {
-                val annPage = Jsoup.parse(response)
-                val df = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.US)
-                val caption = if (annPage.select(".name").size > 0) {
-                    annPage.select(".name").text().substring(5)
-                } else {
-                    annPage.select(".subject").text().substring(5)
+                try {
+                    val annPage = Jsoup.parse(response)
+                    val df = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.US)
+                    val caption = if (annPage.select(".name").size > 0) {
+                        annPage.select(".name").text().substring(5)
+                    } else {
+                        annPage.select(".subject").text().substring(5)
+                    }
+                    val attachItems = ArrayList<AttachItem>()
+                    annPage.select(".attachments").forEach {
+                        attachItems.add(AttachItem(
+                                it.select("a").last().text(),
+                                "?",
+                                it.select("a").last().attr("href")
+                        ))
+                    }
+                    val annItem = AnnItem(
+                            bulletinId,
+                            annPage.select(".page-header-headings").text().replace("【.*】\\d*".toRegex(), "").replace(" .*".toRegex(), ""),
+                            caption,
+                            annPage.select(".content").html(),
+                            df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
+                            df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
+                            Regex("(courseid|id)=([^&]*)").find(annPage.select(".list-group-item-action")[3].attr("href"))!!.groupValues[2],
+                            E3Type.NEW,
+                            attachItems
+                    )
+                    completionHandler(NewE3WebInterface.Status.SUCCESS, annItem)
+                } catch (e: Exception) {
+                    Crashlytics.log(Log.ERROR, "NewE3WebError", response)
+                    completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)
                 }
-                val attachItems = ArrayList<AttachItem>()
-                annPage.select(".attachments").forEach {
-                    attachItems.add(AttachItem(
-                            it.select("a").last().text(),
-                            "?",
-                            it.select("a").last().attr("href")
-                    ))
-                }
-                val annItem = AnnItem(
-                        bulletinId,
-                        annPage.select(".page-header-headings").text().replace("【.*】\\d*".toRegex(), "").replace(" .*".toRegex(), ""),
-                        caption,
-                        annPage.select(".content").html(),
-                        df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
-                        df.parse(annPage.select(".author").text().replace(", \\d+:\\d+.*".toRegex(), "")),
-                        Regex("(courseid|id)=([^&]*)").find(annPage.select(".list-group-item-action")[3].attr("href"))!!.groupValues[2],
-                        E3Type.NEW,
-                        attachItems
-                )
-                completionHandler(NewE3WebInterface.Status.SUCCESS, annItem)
             } else {
                 completionHandler(status, null)
             }

@@ -4,17 +4,17 @@
     android:id="@+id/course_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingBottom="15dp"
     android:paddingEnd="15dp"
     android:paddingStart="15dp"
-    android:background="@color/whiteBackground"
     android:paddingTop="15dp">
 
     <View
+        android:id="@+id/course_item_e3_bar"
         android:layout_width="3dp"
         android:layout_height="match_parent"
-        android:id="@+id/course_item_e3_bar"
         android:layout_marginStart="5dp"
         android:background="@color/old_e3" />
 
