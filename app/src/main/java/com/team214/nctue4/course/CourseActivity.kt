@@ -8,6 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.main.HomeAnnFragment
 import com.team214.nctue4.utility.BottomNavigationViewHelper
 import kotlinx.android.synthetic.main.activity_course.*
 
@@ -49,21 +50,27 @@ class CourseActivity : AppCompatActivity() {
         currentFragment = itemId
         val fragment = when (itemId) {
             R.id.course_nav_ann -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "CourseAnnFragment", CourseAnnFragment::class.java.simpleName)
                 CourseAnnFragment()
             }
             R.id.course_nav_doc -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "CourseDocListFragment", CourseDocListFragment::class.java.simpleName)
                 CourseDocListFragment()
             }
             R.id.course_nav_assignment -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "AssignFragment", AssignFragment::class.java.simpleName)
                 AssignFragment()
             }
             R.id.course_nav_score -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "ScoreFragment", ScoreFragment::class.java.simpleName)
                 ScoreFragment()
             }
             R.id.course_nav_members -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "MembersFragment", MembersFragment::class.java.simpleName)
                 MembersFragment()
             }
             else -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "CourseAnnFragment", CourseAnnFragment::class.java.simpleName)
                 CourseAnnFragment()
             }
         }

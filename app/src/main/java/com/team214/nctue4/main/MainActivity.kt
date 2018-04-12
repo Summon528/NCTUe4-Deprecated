@@ -20,6 +20,9 @@ import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.OldE3Connect
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import android.view.ViewGroup
+import android.widget.Button
+import com.crashlytics.android.Crashlytics
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -87,30 +90,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragment = when (id) {
             R.id.nav_home -> {
                 currentFragment = id
+                mFirebaseAnalytics!!.setCurrentScreen(this, "HomeFragment", HomeFragment::class.java.simpleName)
                 HomeFragment()
             }
             R.id.nav_ann -> {
                 currentFragment = id
+                mFirebaseAnalytics!!.setCurrentScreen(this, "HomeAnnFragment", HomeAnnFragment::class.java.simpleName)
                 HomeAnnFragment()
             }
             R.id.nav_bookmarked -> {
                 currentFragment = id
+                mFirebaseAnalytics!!.setCurrentScreen(this, "BookmarkedFragment", BookmarkedFragment::class.java.simpleName)
                 BookmarkedFragment()
             }
             R.id.nav_download -> {
                 currentFragment = id
+                mFirebaseAnalytics!!.setCurrentScreen(this, "DownloadFragment", DownloadFragment::class.java.simpleName)
                 DownloadFragment()
             }
             R.id.nav_timetable -> {
                 currentFragment = id
+                mFirebaseAnalytics!!.setCurrentScreen(this, "HomeFragment", HomeFragment::class.java.simpleName)
                 TimetableFragment()
             }
             R.id.nav_old_e3 -> {
                 currentFragment = id
+                mFirebaseAnalytics!!.setCurrentScreen(this, "OldE3Fragment", OldE3Fragment::class.java.simpleName)
                 OldE3Fragment()
             }
             R.id.nav_new_e3 -> {
                 currentFragment = id
+                mFirebaseAnalytics!!.setCurrentScreen(this, "NewE3Fragment", NewE3Fragment::class.java.simpleName)
                 NewE3Fragment()
             }
             R.id.nav_log_out -> {
@@ -140,10 +150,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 null
             }
             R.id.nav_about -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "LicenseDialog", LicenseDialog::class.java.simpleName)
                 LicenseDialog().show(supportFragmentManager, "TAG")
                 null
             }
             else -> {
+                mFirebaseAnalytics!!.setCurrentScreen(this, "HomeFragment", HomeFragment::class.java.simpleName)
                 currentFragment = R.id.nav_home
                 HomeFragment()
             }

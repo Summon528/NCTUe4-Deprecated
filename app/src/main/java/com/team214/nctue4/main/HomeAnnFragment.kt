@@ -78,6 +78,7 @@ class HomeAnnFragment : Fragment() {
     }
 
     private fun race() {
+        if (recyclerView == null || context == null) return
         if (oldE3get == AnnGet.FAIL && newE3get == AnnGet.FAIL) {
             error_request?.visibility = View.VISIBLE
             progress_bar?.visibility = View.GONE
@@ -88,8 +89,8 @@ class HomeAnnFragment : Fragment() {
             }
             return
         }
-        if (oldE3get == AnnGet.FAIL && newE3get == AnnGet.SUCCESS) Toast.makeText(context!!, getString(R.string.old_e3_ann_error), Toast.LENGTH_LONG).show()
-        if (newE3get == AnnGet.FAIL && oldE3get == AnnGet.SUCCESS) Toast.makeText(context!!, getString(R.string.new_e3_ann_error), Toast.LENGTH_LONG).show()
+        if (oldE3get == AnnGet.FAIL && newE3get == AnnGet.SUCCESS) Toast.makeText(context, getString(R.string.old_e3_ann_error), Toast.LENGTH_LONG).show()
+        if (newE3get == AnnGet.FAIL && oldE3get == AnnGet.SUCCESS) Toast.makeText(context, getString(R.string.new_e3_ann_error), Toast.LENGTH_LONG).show()
         if (oldE3get != AnnGet.START && newE3get != AnnGet.START) {
             annItems.clear()
             annItems.addAll(newE3AnnItems)
