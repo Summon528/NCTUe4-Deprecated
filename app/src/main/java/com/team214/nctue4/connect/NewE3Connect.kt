@@ -7,6 +7,7 @@ import com.crashlytics.android.Crashlytics
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
+import com.team214.nctue4.utility.logLong
 import com.team214.nctue4.utility.MemberType
 import kotlinx.android.parcel.Parcelize
 import okhttp3.Call
@@ -28,7 +29,6 @@ class NewE3Connect(private var studentId: String = "",
                    private var token: String = "") : NewE3Interface, Parcelable {
 
     companion object {
-        private val tag = NewE3Connect::class.java.simpleName
         private const val loginPath = "/login/token.php"
     }
 
@@ -93,7 +93,7 @@ class NewE3Connect(private var studentId: String = "",
                         completionHandler(NewE3Interface.Status.WRONG_CREDENTIALS, null)
                     }
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -112,7 +112,7 @@ class NewE3Connect(private var studentId: String = "",
                     userId = JSONObject(response).getString("userid")
                     completionHandler(NewE3Interface.Status.SUCCESS, userId)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -144,7 +144,7 @@ class NewE3Connect(private var studentId: String = "",
                             }
                     completionHandler(status, courseItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -189,13 +189,13 @@ class NewE3Connect(private var studentId: String = "",
                                 courseAnnItems.sortByDescending { it.beginDate }
                                 completionHandler(NewE3Interface.Status.SUCCESS, courseAnnItems)
                             } catch (e: Exception) {
-                                Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                                logLong(Log.ERROR, "NewE3Error", response!!, e)
                                 completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                             }
                         } else completionHandler(status, null)
                     }
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)
@@ -228,7 +228,7 @@ class NewE3Connect(private var studentId: String = "",
                     }
                     completionHandler(status, docGroupItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)
@@ -264,7 +264,7 @@ class NewE3Connect(private var studentId: String = "",
                     }
                     completionHandler(status, attachItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)
@@ -304,7 +304,7 @@ class NewE3Connect(private var studentId: String = "",
                     memberItems.sortBy { it.type }
                     completionHandler(status, memberItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)
@@ -340,7 +340,7 @@ class NewE3Connect(private var studentId: String = "",
                     }
                     completionHandler(status, scoreItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)
@@ -382,7 +382,7 @@ class NewE3Connect(private var studentId: String = "",
                     assignItems.sortByDescending { it.startDate }
                     completionHandler(status, assignItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)
@@ -415,7 +415,7 @@ class NewE3Connect(private var studentId: String = "",
                             }
                     completionHandler(status, attachItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3Error", response)
+                    logLong(Log.ERROR, "NewE3Error", response!!, e)
                     completionHandler(NewE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)

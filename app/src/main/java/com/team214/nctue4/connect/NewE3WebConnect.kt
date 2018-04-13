@@ -6,6 +6,7 @@ import com.crashlytics.android.Crashlytics
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.model.AttachItem
 import com.team214.nctue4.utility.E3Type
+import com.team214.nctue4.utility.logLong
 import kotlinx.android.parcel.Parcelize
 import okhttp3.*
 import org.jsoup.Jsoup
@@ -138,7 +139,7 @@ class NewE3WebConnect(private var studentId: String = "",
                             }
                     completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3WebError", response)
+                    logLong(Log.ERROR, "NewE3WebError", response!!, e)
                     completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -180,7 +181,7 @@ class NewE3WebConnect(private var studentId: String = "",
                     )
                     completionHandler(NewE3WebInterface.Status.SUCCESS, annItem)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "NewE3WebError", response)
+                    logLong(Log.ERROR, "NewE3WebError", response!!, e)
                     completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)
                 }
             } else {

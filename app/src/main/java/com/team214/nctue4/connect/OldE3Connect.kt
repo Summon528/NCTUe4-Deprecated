@@ -7,10 +7,7 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
-import com.team214.nctue4.utility.E3Type
-import com.team214.nctue4.utility.MemberType
-import com.team214.nctue4.utility.forceGetJsonArray
-import com.team214.nctue4.utility.htmlCleaner
+import com.team214.nctue4.utility.*
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import kotlinx.android.parcel.Parcelize
 import okhttp3.Call
@@ -77,8 +74,14 @@ class OldE3Connect(private var studentId: String = "",
                             }
                         } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                     } else {
-                        val xmlToJson = (XmlToJson.Builder(response.body().string()).build()).toJson()
-                        completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                        try {
+                            val xmlToJson = (XmlToJson.Builder(response.body().string()).build()).toJson()
+                            completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
+                        } catch (e: Exception) {
+                            logLong(Log.ERROR, "OldE3Error", response.toString(), e)
+                            completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
+                        }
+
                     }
                 }
             })
@@ -105,7 +108,7 @@ class OldE3Connect(private var studentId: String = "",
                         completionHandler(OldE3Interface.Status.WRONG_CREDENTIALS, null)
                     }
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    logLong(Log.ERROR, "OldE3Error", response.toString(), e)
                     completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -134,7 +137,7 @@ class OldE3Connect(private var studentId: String = "",
                             }
                     completionHandler(status, courseItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    logLong(Log.ERROR, "OldE3Error", response.toString(), e)
                     completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -184,7 +187,7 @@ class OldE3Connect(private var studentId: String = "",
                             }
                     completionHandler(status, annItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    logLong(Log.ERROR, "OldE3Error", response.toString(), e)
                     completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -236,7 +239,7 @@ class OldE3Connect(private var studentId: String = "",
                             }
                     completionHandler(status, annItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    logLong(Log.ERROR, "OldE3Error", response.toString(), e)
                     completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -292,7 +295,7 @@ class OldE3Connect(private var studentId: String = "",
                 docGroupItems = null
             }
         } catch (e: Exception) {
-            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            logLong(Log.ERROR, "OldE3Error", response.toString(), e)
             completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
@@ -319,7 +322,7 @@ class OldE3Connect(private var studentId: String = "",
                             }
                     completionHandler(status, attachItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    logLong(Log.ERROR, "OldE3Error", response.toString(), e)
                     completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else {
@@ -409,7 +412,7 @@ class OldE3Connect(private var studentId: String = "",
                 memberItems = null
             }
         } catch (e: Exception) {
-            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            logLong(Log.ERROR, "OldE3Error", response.toString(), e)
             completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
@@ -438,7 +441,7 @@ class OldE3Connect(private var studentId: String = "",
                     }
                     completionHandler(status, scoreItems)
                 } catch (e: Exception) {
-                    Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+                    logLong(Log.ERROR, "OldE3Error", response.toString(), e)
                     completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                 }
             } else completionHandler(status, null)
@@ -486,7 +489,7 @@ class OldE3Connect(private var studentId: String = "",
                 completionHandler(OldE3Interface.Status.SUCCESS, assignItems)
             }
         } catch (e: Exception) {
-            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            logLong(Log.ERROR, "OldE3Error", response.toString(), e)
             completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
@@ -548,7 +551,7 @@ class OldE3Connect(private var studentId: String = "",
             }
             if (assignDetailStatus.all { it }) completionHandler(OldE3Interface.Status.SUCCESS, assignDetailItem)
         } catch (e: Exception) {
-            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            logLong(Log.ERROR, "OldE3Error", response.toString(), e)
             completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
@@ -627,7 +630,7 @@ class OldE3Connect(private var studentId: String = "",
                 completionHandler(OldE3Interface.Status.SUCCESS, timeTableItemsResult)
             }
         } catch (e: Exception) {
-            Crashlytics.log(Log.ERROR, "OldE3Error", response.toString())
+            logLong(Log.ERROR, "OldE3Error", response.toString(), e)
             completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
         }
     }
