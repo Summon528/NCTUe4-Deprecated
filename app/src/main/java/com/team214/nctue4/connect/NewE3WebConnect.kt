@@ -55,7 +55,7 @@ class NewE3WebConnect(private var studentId: String = "",
                      completionHandler: (status: NewE3WebInterface.Status,
                                          response: String?) -> Unit) {
         if (cookieStore[HOST] == null && path != "/login/index.php?lang=en") {
-            getCookie { status, response ->
+            getCookie { status, _ ->
                 if (status == NewE3WebInterface.Status.SUCCESS) {
                     post(path, params, secondTry, completionHandler)
                 } else completionHandler(status, null)
