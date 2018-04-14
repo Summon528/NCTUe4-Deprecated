@@ -33,3 +33,4 @@ If you are a developer feel free to fork and submit a pull request.
 * [square/okhttp](https://github.com/square/okhttp)
 * [h6ah4i/android-advancedrecyclerview](https://github.com/h6ah4i/android-advancedrecyclerview)
 * [h6ah4i/android-materialshadowninepatch](https://github.com/h6ah4i/android-materialshadowninepatch)
+* [jhy/jsoup](https://github.com/jhy/jsoup)
