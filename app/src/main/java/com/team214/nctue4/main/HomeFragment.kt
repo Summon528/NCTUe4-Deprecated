@@ -31,6 +31,13 @@ class HomeFragment : Fragment() {
 
     }
 
+    private var fragment2: DownloadFragment? = null
+
+    override fun onStart() {
+        fragment2?.updateList(activity)
+        super.onStart()
+    }
+
     private fun loadFragments() {
         val fragmentManager = activity!!.supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -39,8 +46,8 @@ class HomeFragment : Fragment() {
         val fragment1 = HomeAnnFragment()
         fragment1.arguments = bundle
         transaction.replace(R.id.home_ann, fragment1)
-        val fragment2 = DownloadFragment()
-        fragment2.arguments = bundle
+        fragment2 = DownloadFragment()
+        fragment2!!.arguments = bundle
         transaction.replace(R.id.home_download, fragment2)
         val fragment3 = BookmarkedFragment()
         fragment3.arguments = bundle

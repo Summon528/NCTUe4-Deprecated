@@ -1,8 +1,6 @@
 package com.team214.nctue4.course
 
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -78,20 +76,6 @@ class AssignActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            0 -> {
-                if ((grantResults.isNotEmpty() &&
-                                grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    downloadFile(fileName, uri, this, this, assign_root, null, null)
-                }
-                return
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
@@ -121,12 +105,7 @@ class AssignActivity : AppCompatActivity() {
         assign_attach.adapter = AnnAttachmentAdapter(this, assignItem.attachItem) {
             uri = it.url
             fileName = it.name
-            downloadFile(fileName, uri, this, this, assign_root) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            0)
-                }
-            }
+            downloadFile(fileName, uri, this, this, assign_root)
 
         }
         ann_container?.visibility = View.VISIBLE

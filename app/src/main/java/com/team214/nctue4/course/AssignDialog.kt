@@ -1,11 +1,8 @@
 package com.team214.nctue4.course
 
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -87,33 +84,12 @@ class AssignDialog : DialogFragment() {
             assign_dialog_recycler_view?.adapter = DocDialogAdapter(context!!, assignFileItems) {
                 uri = it.url
                 fileName = it.name
-                downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.assign_root)) {
-                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            0)
-                }
-                if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    dismissAllowingStateLoss()
-                }
-
+                downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.assign_root))
+                dismissAllowingStateLoss()
             }
             progress_bar?.visibility = View.GONE
         }
     }
 
-
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            0 -> {
-                if ((grantResults.isNotEmpty() &&
-                                grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    downloadFile(fileName, uri, context!!, activity!!, activity!!.findViewById(R.id.assign_root), null, null)
-                    dismissAllowingStateLoss()
-                }
-                return
-            }
-        }
-    }
 }
 

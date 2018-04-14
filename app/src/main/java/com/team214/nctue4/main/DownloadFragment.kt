@@ -4,6 +4,7 @@ package com.team214.nctue4.main
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -36,10 +37,10 @@ class DownloadFragment : Fragment() {
         if (dir.exists()) {
             val fileList = dir.listFiles()
             if (fileList.isEmpty()) emptyRequest.visibility = View.VISIBLE
+            fileList.sortByDescending { it.lastModified() }
             if (arguments?.getBoolean("home") != null) {
                 files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })
             } else files.addAll(fileList.filter { it != null })
-            files.sortByDescending { it.lastModified() }
             download_recycler?.layoutManager = LinearLayoutManager(context)
             if (arguments?.getBoolean("home") != null)
                 download_recycler?.isNestedScrollingEnabled = false
@@ -64,8 +65,9 @@ class DownloadFragment : Fragment() {
         }
     }
 
-    private fun updateList() {
-        val path = activity!!.getExternalFilesDir(null)
+    fun updateList(homeActivity: FragmentActivity? = null) {
+        val path = if (homeActivity != null) homeActivity.getExternalFilesDir(null) else
+            activity!!.getExternalFilesDir(null)
         val dir = File(path, "Download")
         files.clear()
         val fileList = dir.listFiles()
@@ -73,10 +75,10 @@ class DownloadFragment : Fragment() {
             emptyRequest.visibility = View.VISIBLE
             download_recycler?.visibility = View.GONE
         } else {
+            fileList.sortByDescending { it.lastModified() }
             if (arguments?.getBoolean("home") != null) {
                 files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })
             } else files.addAll(fileList)
-            files.sortByDescending { it.lastModified() }
             download_recycler?.adapter?.notifyDataSetChanged()
         }
     }
