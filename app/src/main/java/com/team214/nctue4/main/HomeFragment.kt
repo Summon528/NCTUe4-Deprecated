@@ -22,19 +22,22 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        home_swipe_refresh?.setOnRefreshListener {
-            loadFragments()
-            val handler = Handler()
-            handler.postDelayed({ home_swipe_refresh?.isRefreshing = false }, 1000)
-        }
-        loadFragments()
 
     }
 
     private var fragment2: DownloadFragment? = null
 
     override fun onStart() {
-        fragment2?.updateList(activity)
+        if (fragment2 != null) {
+            fragment2?.updateList(activity)
+        } else {
+            home_swipe_refresh?.setOnRefreshListener {
+                loadFragments()
+                val handler = Handler()
+                handler.postDelayed({ home_swipe_refresh?.isRefreshing = false }, 1000)
+            }
+            loadFragments()
+        }
         super.onStart()
     }
 
@@ -56,7 +59,6 @@ class HomeFragment : Fragment() {
         home_more_ann?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_ann) }
         home_more_download?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_download) }
         home_more_course?.setOnClickListener { (activity!! as MainActivity).switchFragment(R.id.nav_bookmarked) }
-
     }
 
 }
