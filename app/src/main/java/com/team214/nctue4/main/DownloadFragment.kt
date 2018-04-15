@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,54 +32,49 @@ class DownloadFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         emptyRequest = if (arguments?.getBoolean("home") != null) empty_request_compact else empty_request
-        val path = activity!!.getExternalFilesDir(null)
-        val dir = File(path, "Download")
-        if (dir.exists()) {
-            val fileList = dir.listFiles()
-            if (fileList.isEmpty()) emptyRequest.visibility = View.VISIBLE
-            fileList.sortByDescending { it.lastModified() }
-            if (arguments?.getBoolean("home") != null) {
-                files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })
-            } else files.addAll(fileList.filter { it != null })
-            download_recycler?.layoutManager = LinearLayoutManager(context)
-            if (arguments?.getBoolean("home") != null)
-                download_recycler?.isNestedScrollingEnabled = false
-            download_recycler?.addItemDecoration(DividerItemDecoration(context,
-                    LinearLayoutManager.VERTICAL))
-            download_recycler?.adapter = DownloadAdapter(context!!, files,
-                    fun(it) {
-                        openFile(it.name, it, context!!, activity!!)
-                    },
-                    fun(it) {
-                        val dialog = DownloadDialog()
-                        dialog.setOnDismissListener(DialogInterface.OnDismissListener { updateList() })
-                        val bundle = Bundle()
-                        bundle.putSerializable("file", it)
-                        dialog.arguments = bundle
-                        dialog.show(fragmentManager, "TAG")
+        updateList()
 
-                    })
-
-        } else {
-            emptyRequest.visibility = View.VISIBLE
-        }
     }
 
     fun updateList(homeActivity: FragmentActivity? = null) {
         val path = if (homeActivity != null) homeActivity.getExternalFilesDir(null) else
             activity!!.getExternalFilesDir(null)
         val dir = File(path, "Download")
-        files.clear()
         val fileList = dir.listFiles()
-        if (fileList.isEmpty()) {
-            emptyRequest.visibility = View.VISIBLE
-            download_recycler?.visibility = View.GONE
-        } else {
+        files.clear()
+        if (dir.exists() && !fileList.isEmpty()) {
+            download_recycler.visibility = View.VISIBLE
+            emptyRequest.visibility = View.GONE
             fileList.sortByDescending { it.lastModified() }
             if (arguments?.getBoolean("home") != null) {
                 files.addAll(fileList.slice(0..minOf(4, fileList.size)).filter { it != null })
-            } else files.addAll(fileList)
-            download_recycler?.adapter?.notifyDataSetChanged()
+            } else files.addAll(fileList.filter { it != null })
+            if (download_recycler.adapter == null) {
+                download_recycler?.layoutManager = LinearLayoutManager(context)
+                if (arguments?.getBoolean("home") != null)
+                    download_recycler?.isNestedScrollingEnabled = false
+                download_recycler?.addItemDecoration(DividerItemDecoration(context,
+                        LinearLayoutManager.VERTICAL))
+                download_recycler?.adapter = DownloadAdapter(context!!, files,
+                        fun(it) {
+                            openFile(it.name, it, context!!, activity!!)
+                        },
+                        fun(it) {
+                            val dialog = DownloadDialog()
+                            dialog.setOnDismissListener(DialogInterface.OnDismissListener { updateList() })
+                            val bundle = Bundle()
+                            bundle.putSerializable("file", it)
+                            dialog.arguments = bundle
+                            dialog.show(fragmentManager, "TAG")
+
+                        })
+            } else {
+                download_recycler?.adapter?.notifyDataSetChanged()
+            }
+
+        } else {
+            download_recycler?.visibility = View.GONE
+            emptyRequest.visibility = View.VISIBLE
         }
     }
 
