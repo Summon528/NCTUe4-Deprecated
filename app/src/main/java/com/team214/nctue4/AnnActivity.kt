@@ -1,7 +1,9 @@
 package com.team214.nctue4
 
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -80,6 +82,20 @@ class AnnActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            0 -> {
+                if ((grantResults.isNotEmpty() &&
+                                grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    downloadFile(fileName, uri, this, this, ann_root, newE3WebService?.returnE3Cookie(), null)
+                }
+                return
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
@@ -117,7 +133,12 @@ class AnnActivity : AppCompatActivity() {
         announcement_attach.adapter = AnnAttachmentAdapter(this, annItem.attachItems) {
             uri = it.url
             fileName = it.name
-            downloadFile(fileName, uri, this, this, ann_root, newE3WebService?.returnE3Cookie())
+            downloadFile(fileName, uri, this, this, ann_root, newE3WebService?.returnE3Cookie()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                            0)
+                }
+            }
 
         }
         ann_container?.visibility = View.VISIBLE

@@ -1,12 +1,17 @@
 package com.team214.nctue4.utility
 
+import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.*
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -33,49 +38,56 @@ fun openFile(fileName: String, file: File, context: Context, activity: Activity)
 
 }
 
-fun downloadFile(fileName: String, url: String, context: Context, activity: Activity, view: View,
-                 e3WebCookie: MutableList<Cookie>? = null) {
-    val path = activity.getExternalFilesDir(null)
-    val dir = File(path, "Download")
-    if (!dir.exists()) dir.mkdirs()
-    val file = File(dir, fileName)
-    if (file.exists()) {
-        AlertDialog.Builder(context)
-                .setMessage(context.getString(R.string.detect_same_file))
-                .setPositiveButton(R.string.download_again, { _, _ ->
-                    file.delete()
-                    downloadFile(fileName, url, context, activity, view, e3WebCookie)
-                })
-                .setNegativeButton(R.string.open_existed, { _, _ ->
-                    openFile(fileName, file, context, activity)
-                })
-                .show()
+fun downloadFile(fileName: String, uri: String, context: Context, activity: Activity, view: View,
+                 e3WebCookie: MutableList<Cookie>? = null, requestPermissions: (() -> Unit?)?) {
+    Log.d("URI", uri)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+        requestPermissions?.invoke()
     } else {
-        val request = DownloadManager.Request(Uri.parse(url))
-        if (e3WebCookie != null) {
-            var cookieString = ""
-            e3WebCookie.forEach { cookieString += "${it.name()}=${it.value()};" }
-            request.addRequestHeader("Cookie", cookieString)
-        }
-        request.setTitle(fileName)
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        request.setDestinationUri(Uri.fromFile(file))
-        request.setVisibleInDownloadsUi(true)
-        Toast.makeText(context, R.string.download_start, Toast.LENGTH_SHORT).show()
-        manager.enqueue(request)
-        val onComplete = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                Snackbar.make(view, "$fileName ${context.getString(R.string.download_completed)}",
-                        Snackbar.LENGTH_LONG)
-                        .setAction(context.getString(R.string.open_file)) {
-                            openFile(fileName, file, context, activity)
-                        }
-                        .show()
-                activity.unregisterReceiver(this)
+        val path = activity.getExternalFilesDir(null)
+        val dir = File(path, "Download")
+        if (!dir.exists()) dir.mkdirs()
+        val file = File(dir, fileName)
+        if (file.exists()) {
+            AlertDialog.Builder(context)
+                    .setMessage(context.getString(R.string.detect_same_file))
+                    .setPositiveButton(R.string.download_again, { _, _ ->
+                        file.delete()
+                        downloadFile(fileName, uri, context, activity, view, e3WebCookie, requestPermissions)
+                    })
+                    .setNegativeButton(R.string.open_existed, { _, _ ->
+                        openFile(fileName, file, context, activity)
+                    })
+                    .show()
+        } else {
+            val request = DownloadManager.Request(Uri.parse(uri))
+            if (e3WebCookie != null) {
+                var cookieString = ""
+                e3WebCookie.forEach { cookieString += "${it.name()}=${it.value()};" }
+                request.addRequestHeader("Cookie", cookieString)
             }
+            request.setTitle(fileName)
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            request.setDestinationUri(Uri.fromFile(file))
+            request.setVisibleInDownloadsUi(true)
+            Toast.makeText(context, R.string.download_start, Toast.LENGTH_SHORT).show()
+            manager.enqueue(request)
+            val onComplete = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    Snackbar.make(view, "$fileName ${context.getString(R.string.download_completed)}",
+                            Snackbar.LENGTH_LONG)
+                            .setAction(context.getString(R.string.open_file)) {
+                                openFile(fileName, file, context, activity)
+                            }
+                            .show()
+                    activity.unregisterReceiver(this)
+                }
+            }
+            activity.registerReceiver(onComplete, IntentFilter(
+                    DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         }
-        activity.registerReceiver(onComplete, IntentFilter(
-                DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 }
