@@ -182,7 +182,7 @@ class MembersFragment : Fragment() {
         val fab = activity!!.findViewById<FloatingActionButton>(R.id.course_fab)
         if (selectCnt > 0) {
             if (fab.visibility != View.VISIBLE) {
-                fab.visibility = View.VISIBLE
+                fab.show()
                 fab.setImageDrawable(
                         ContextCompat.getDrawable(context!!, R.drawable.ic_email_black_24dp))
                 fab.setOnClickListener {
@@ -197,7 +197,7 @@ class MembersFragment : Fragment() {
                     startActivity(intent)
                 }
             }
-        } else fab.visibility = View.GONE
+        } else fab.hide()
 
     }
 }

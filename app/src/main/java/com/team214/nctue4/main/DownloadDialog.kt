@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
+import android.text.InputType
 import android.view.*
 import android.webkit.MimeTypeMap
 import android.widget.EditText
@@ -46,7 +47,7 @@ class DownloadDialog : BottomSheetDialogFragment() {
                     .setMessage(getString(R.string.confirm_delete, file.name))
                     .setPositiveButton(R.string.positive) { _, _ ->
                         file.delete()
-                        dismiss()
+                        dismissAllowingStateLoss()
                     }
                     .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
             deleteDialog.show()
@@ -56,13 +57,16 @@ class DownloadDialog : BottomSheetDialogFragment() {
             editDialogBuild.setTitle(R.string.rename)
             val editText = EditText(context)
             editText.setText(file.name)
+            editText.maxLines = 1
+            editText.inputType = InputType.TYPE_CLASS_TEXT
             editDialogBuild.setView(editText)
             editText.requestFocus()
             editText.setSelection(0, file.nameWithoutExtension.length)
             editDialogBuild.setPositiveButton(R.string.positive) { dialog, _ ->
                 file.renameTo(File(file.parentFile, editText.text.toString()))
                 dialog.cancel()
-            }.setNegativeButton(R.string.cancel) { _, _ -> dismiss() }
+                dismissAllowingStateLoss()
+            }.setNegativeButton(R.string.cancel) { _, _ -> dismissAllowingStateLoss() }
             val spacing = (20 * Resources.getSystem().displayMetrics.density).toInt()
             editDialogBuild.setView(editText, spacing, 0, spacing, 0)
             val editDialog = editDialogBuild.create()
@@ -78,7 +82,7 @@ class DownloadDialog : BottomSheetDialogFragment() {
             intent.putExtra(Intent.EXTRA_STREAM, fileUri)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context!!.startActivity(intent)
-            dismiss()
+            dismissAllowingStateLoss()
         }
     }
 
