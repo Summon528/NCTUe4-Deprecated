@@ -156,10 +156,10 @@ class NewE3WebConnect(private var studentId: String = "",
                     val annPage = Jsoup.parse(response)
                     val df = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.US)
                     val caption = if (annPage.select(".name").size > 0) {
-                        annPage.select(".name").text().substring(5)
+                        annPage.select(".name").text()
                     } else {
-                        annPage.select(".subject").text().substring(5)
-                    }
+                        annPage.select(".subject").text()
+                    }.removePrefix("&nbsp").trimStart()
                     val attachItems = ArrayList<AttachItem>()
                     annPage.select(".attachments").forEach {
                         attachItems.add(AttachItem(
