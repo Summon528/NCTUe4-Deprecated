@@ -1,5 +1,6 @@
 package com.team214.nctue4.main
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -89,8 +90,10 @@ class HomeAnnFragment : Fragment() {
             }
             return
         }
-        if (oldE3get == AnnGet.FAIL && newE3get == AnnGet.SUCCESS) Toast.makeText(context, getString(R.string.old_e3_ann_error), Toast.LENGTH_LONG).show()
-        if (newE3get == AnnGet.FAIL && oldE3get == AnnGet.SUCCESS) Toast.makeText(context, getString(R.string.new_e3_ann_error), Toast.LENGTH_LONG).show()
+        if (oldE3get == AnnGet.FAIL && newE3get == AnnGet.SUCCESS && !(context as Activity).isFinishing)
+            Toast.makeText(context, getString(R.string.old_e3_ann_error), Toast.LENGTH_LONG).show()
+        if (newE3get == AnnGet.FAIL && oldE3get == AnnGet.SUCCESS && !(context as Activity).isFinishing)
+            Toast.makeText(context, getString(R.string.new_e3_ann_error), Toast.LENGTH_LONG).show()
         if (oldE3get != AnnGet.START && newE3get != AnnGet.START) {
             annItems.clear()
             annItems.addAll(newE3AnnItems)

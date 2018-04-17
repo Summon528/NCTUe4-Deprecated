@@ -2,6 +2,7 @@ package com.team214.nctue4.course
 
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -80,7 +81,9 @@ class AssignDialog : DialogFragment() {
 
     private fun updateList(assignFileItems: ArrayList<AttachItem>) {
         if (assignFileItems.isEmpty()) {
-            Toast.makeText(context!!, getString(R.string.no_submitted_assign), Toast.LENGTH_SHORT).show()
+            if (!(context as Activity).isFinishing) {
+                Toast.makeText(context!!, getString(R.string.no_submitted_assign), Toast.LENGTH_SHORT).show()
+            }
             dismissAllowingStateLoss()
         } else {
             assign_dialog_recycler_view?.layoutManager = LinearLayoutManager(context)
