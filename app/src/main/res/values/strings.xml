@@ -40,7 +40,7 @@
     <string name="title_activity_course">CourseActivity</string>
     <string name="course_nav_ann">Ann</string>
     <string name="course_nav_doc">Doc</string>
-    <string name="course_nav_assignment">Assignment</string>
+    <string name="course_nav_assignment">Homework</string>
     <string name="course_nav_score">Score</string>
     <string name="course_nav_other">Others</string>
     <string name="course_nav_members">Members</string>
