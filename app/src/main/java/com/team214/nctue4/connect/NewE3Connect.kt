@@ -7,8 +7,8 @@ import com.crashlytics.android.Crashlytics
 import com.team214.nctue4.R
 import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
-import com.team214.nctue4.utility.logLong
 import com.team214.nctue4.utility.MemberType
+import com.team214.nctue4.utility.logLong
 import kotlinx.android.parcel.Parcelize
 import okhttp3.Call
 import okhttp3.Callback
@@ -284,12 +284,18 @@ class NewE3Connect(private var studentId: String = "",
                     val data = JSONArray(response)
                     (0 until data.length()).map { data.get(it) as JSONObject }
                             .forEach {
-                                val type = when (it.getJSONArray("roles").getJSONObject(0).getInt("roleid")) {
-                                    5 -> MemberType.STU
-                                    9 -> MemberType.TA
-                                    3 -> MemberType.TEA
-                                    else -> MemberType.STU
-                                }
+                                val roles = it.getJSONArray("roles")
+                                val type =
+                                //They don't provide role information sometimes, let's just assume it's student
+                                        if (roles.length() > 0) {
+                                            when (it.getJSONArray("roles").getJSONObject(0).getInt("roleid")) {
+                                                5 -> MemberType.STU
+                                                9 -> MemberType.TA
+                                                3 -> MemberType.TEA
+                                                else -> MemberType.STU
+                                            }
+                                        } else MemberType.STU
+
                                 memberItems.add(MemberItem(
                                         it.getString("fullname").split(" ").last(),
                                         it.getString("fullname").split(" ").first(),
