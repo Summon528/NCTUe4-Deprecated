@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,7 +79,9 @@ class HomeAnnFragment : Fragment() {
 
     private fun race() {
         if (recyclerView == null || context == null) return
-        if (oldE3get == AnnGet.FAIL && newE3get == AnnGet.FAIL) {
+        if (newE3get == AnnGet.NEW_E3_NOT_INIT && oldE3get != AnnGet.START && !(context as Activity).isFinishing)
+            Toast.makeText(context, getString(R.string.new_e3_not_init), Toast.LENGTH_LONG).show()
+        if (oldE3get == AnnGet.FAIL && (newE3get == AnnGet.FAIL || newE3get == AnnGet.NEW_E3_NOT_INIT)) {
             error_request?.visibility = View.VISIBLE
             progress_bar?.visibility = View.GONE
             dataStatus = DataStatus.INIT
@@ -160,8 +161,11 @@ class HomeAnnFragment : Fragment() {
                             activity!!.finish()
                         }
                     }
+                    NewE3WebInterface.Status.NOT_INIT -> {
+                        newE3get = AnnGet.NEW_E3_NOT_INIT
+                        race()
+                    }
                     else -> {
-                        Log.d("FAILILILILIL", "FAFAS")
                         newE3get = AnnGet.FAIL
                         race()
                     }

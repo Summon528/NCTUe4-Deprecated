@@ -4,7 +4,7 @@ import com.team214.nctue4.model.AnnItem
 
 interface NewE3WebInterface {
     enum class Status {
-        SUCCESS, SERVICE_ERROR, WRONG_CREDENTIALS
+        SUCCESS, SERVICE_ERROR, WRONG_CREDENTIALS, NOT_INIT
     }
 
     fun getCookie(completionHandler: (status: Status,

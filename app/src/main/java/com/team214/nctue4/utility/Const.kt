@@ -29,5 +29,6 @@ class AnnGet{
         const val START = 0
         const val FAIL = 1
         const val SUCCESS = 2
+        const val NEW_E3_NOT_INIT = 3
     }
 }

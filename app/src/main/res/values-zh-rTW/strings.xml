@@ -100,4 +100,5 @@
     <string name="wed">三</string>
     <string name="new_e3_ann_error">現在無法取得新e3公告\n下拉重試</string>
     <string name="old_e3_ann_error">現在無法取得舊e3公告\n下拉重試</string>
+    <string name="new_e3_not_init">你尚未啟用新e3系統，請至新e3網站啟用</string>
 </resources>

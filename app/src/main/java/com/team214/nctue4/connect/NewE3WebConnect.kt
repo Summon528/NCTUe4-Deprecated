@@ -110,34 +110,38 @@ class NewE3WebConnect(private var studentId: String = "",
         ) { status, response ->
             if (status == NewE3WebInterface.Status.SUCCESS) {
                 try {
-                    val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
-                    val annItems = ArrayList<AnnItem>()
-                    val df = SimpleDateFormat("d MMM, HH:mm", Locale.US)
-                    (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
-                            .forEach {
-                                if (it.select("b").text() != "System") {
-                                    val date = df.parse(it.select(".media div")[0].text())
-                                    val now = Calendar.getInstance()
-                                    val baseYear =
-                                            if (now.get(Calendar.MONTH) >= 7) now.get(Calendar.YEAR) + 1 - 1900
-                                            else now.get(Calendar.YEAR) - 1900
-                                    date.year = if (date.month >= 7) baseYear - 1
-                                    else baseYear
-                                    annItems.add(AnnItem(
-                                            it.select("a").attr("href").substring(25) + "&lang=en",
-                                            it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
-                                            it.select("h4").text(),
-                                            it.select("a").text(),
-                                            date,
-                                            date,
-                                            "",
-                                            E3Type.NEW,
-                                            ArrayList()
-                                    ))
-                                }
+                    if (response!!.contains("https://e3new.nctu.edu.tw/user/edit.php")) {
+                        completionHandler(NewE3WebInterface.Status.NOT_INIT, null)
+                    } else {
+                        val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
+                        val annItems = ArrayList<AnnItem>()
+                        val df = SimpleDateFormat("d MMM, HH:mm", Locale.US)
+                        (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
+                                .forEach {
+                                    if (it.select("b").text() != "System") {
+                                        val date = df.parse(it.select(".media div")[0].text())
+                                        val now = Calendar.getInstance()
+                                        val baseYear =
+                                                if (now.get(Calendar.MONTH) >= 7) now.get(Calendar.YEAR) + 1 - 1900
+                                                else now.get(Calendar.YEAR) - 1900
+                                        date.year = if (date.month >= 7) baseYear - 1
+                                        else baseYear
+                                        annItems.add(AnnItem(
+                                                it.select("a").attr("href").substring(25) + "&lang=en",
+                                                it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
+                                                it.select("h4").text(),
+                                                it.select("a").text(),
+                                                date,
+                                                date,
+                                                "",
+                                                E3Type.NEW,
+                                                ArrayList()
+                                        ))
+                                    }
 
-                            }
-                    completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
+                                }
+                        completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
+                    }
                 } catch (e: Exception) {
                     logLong(Log.ERROR, "NewE3WebError", response!!, e)
                     completionHandler(NewE3WebInterface.Status.SERVICE_ERROR, null)

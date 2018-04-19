@@ -110,7 +110,7 @@ class AssignActivity : AppCompatActivity() {
     private fun showAssign(assignItem: AssignItem) {
         error_request?.visibility = View.GONE
         ann_caption.text = assignItem.name
-        val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm", Locale.TAIWAN)
+        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.TAIWAN)
         assign_start_date.text = sdf.format(assignItem.startDate)
         assign_end_date.text = sdf.format(assignItem.endDate)
         ann_content_web_view.settings.defaultTextEncodingName = "utf-8"
