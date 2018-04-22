@@ -118,5 +118,5 @@
 
     <string name="new_e3_ann_error">Can\'t display new e3 announcements at the moment.\nPull to retry.</string>
     <string name="old_e3_ann_error">Can\'t display old e3 announcements at the moment.\nPull to retry.</string>
-    <string name="new_e3_not_init">You haven't activate new e3 yet, please go to new e3's website and activate.</string>
+    <string name="new_e3_not_init">You haven\'t activate new e3 yet, please go to new e3's website and activate.</string>
 </resources>
