@@ -110,7 +110,7 @@ class NewE3WebConnect(private var studentId: String = "",
         ) { status, response ->
             if (status == NewE3WebInterface.Status.SUCCESS) {
                 try {
-                    if (response!!.contains("https://e3new.nctu.edu.tw/user/edit.php")) {
+                    if (response!!.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/user/edit.php")) {
                         completionHandler(NewE3WebInterface.Status.NOT_INIT, null)
                     } else {
                         val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
