@@ -151,6 +151,7 @@ class AnnActivity : AppCompatActivity() {
         val annItem = bundle.getParcelable<AnnItem>("annItem")
         newE3WebService = bundle.getParcelable("newE3WebService")
         newE3Service = bundle.getParcelable("newE3Service")
+        newE3Service?.context = this
         oldE3Service = bundle.getParcelable("oldE3Service")
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE

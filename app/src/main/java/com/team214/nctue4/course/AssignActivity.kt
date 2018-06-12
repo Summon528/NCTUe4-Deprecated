@@ -141,6 +141,7 @@ class AssignActivity : AppCompatActivity() {
         val assignItem = bundle.getParcelable<AssignItem>("assignItem")
         assignId = assignItem.assignId
         newE3Service = bundle.getParcelable("newE3Service")
+        newE3Service?.context = this
         oldE3Service = bundle.getParcelable("oldE3Service")
         error_request?.visibility = View.GONE
         progress_bar?.visibility = View.VISIBLE

@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         oldE3Service = OldE3Connect(studentId, studentPassword)
         newE3WebService = NewE3WebConnect(studentId, studentPortalPassword, "")
         newE3Service = NewE3Connect(studentId, studentPortalPassword, newE3UserId, newE3Token)
+        newE3Service.context = this
         currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
             savedInstanceState.getInt("currentFragment") else -1
         if (savedInstanceState?.getInt("currentFragment") == null)

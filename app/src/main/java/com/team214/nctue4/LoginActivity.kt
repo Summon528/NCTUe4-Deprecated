@@ -112,6 +112,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             newE3Service = NewE3Connect(studentId, studentPortalPassword)
+            newE3Service.context = this
             newE3Service.getToken { status, response ->
                 when (status) {
                     NewE3Interface.Status.SUCCESS -> {

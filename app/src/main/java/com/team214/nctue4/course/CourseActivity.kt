@@ -90,6 +90,7 @@ class CourseActivity : AppCompatActivity() {
         val bundle = intent.extras
         oldE3Service = bundle.getParcelable("oldE3Service")
         newE3Service = bundle.getParcelable("newE3Service")
+        newE3Service?.context = this
 
         if (savedInstanceState?.getInt("currentFragment") == null)
             switchFragment(-1)

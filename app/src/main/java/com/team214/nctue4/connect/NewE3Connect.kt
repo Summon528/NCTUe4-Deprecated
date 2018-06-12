@@ -2,6 +2,7 @@ package com.team214.nctue4.connect
 
 import android.content.Context
 import android.os.Parcelable
+import android.preference.PreferenceManager
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.team214.nctue4.R
@@ -9,7 +10,9 @@ import com.team214.nctue4.model.*
 import com.team214.nctue4.utility.E3Type
 import com.team214.nctue4.utility.MemberType
 import com.team214.nctue4.utility.logLong
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody
@@ -28,10 +31,14 @@ class NewE3Connect(private var studentId: String = "",
                    private var userId: String = "",
                    private var token: String = "") : NewE3Interface, Parcelable {
 
+    @IgnoredOnParcel
+    var context: Context? = null
+
     companion object {
         private const val loginPath = "/login/token.php"
     }
 
+    @IgnoredOnParcel
     private val client = OkHttpClient().newBuilder().followRedirects(false)
             .followSslRedirects(false).build()
 
@@ -44,7 +51,7 @@ class NewE3Connect(private var studentId: String = "",
         if (token == "" && path != loginPath) {
             getToken { status, _ ->
                 if (status == NewE3Interface.Status.SUCCESS) {
-                    getUserId { status, response ->
+                    getUserId { status, _ ->
                         if (status == NewE3Interface.Status.SUCCESS)
                             post(path, params, secondTry, completionHandler)
                         else completionHandler(status, null)
@@ -70,6 +77,21 @@ class NewE3Connect(private var studentId: String = "",
 
                 override fun onResponse(call: Call, response: okhttp3.Response) {
                     val res = response.body().string()
+                    try {
+                        val resJson = JSONObject(res)
+                        if (resJson.has("errorcode") && resJson.getString("errorcode") == "invalidtoken") {
+                            getToken { status, resToken ->
+                                if (status == NewE3Interface.Status.SUCCESS) {
+                                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                                    prefs.edit().putString("newE3Token", token).apply()
+                                    token = resToken!!
+                                    post(path, params, secondTry, completionHandler)
+                                } else completionHandler(status, null)
+                            }
+                            return
+                        }
+                    } catch (e: JSONException) {
+                    }
                     completionHandler(NewE3Interface.Status.SUCCESS, res)
                 }
             })
