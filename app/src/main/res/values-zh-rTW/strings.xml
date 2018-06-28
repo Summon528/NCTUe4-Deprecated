@@ -101,4 +101,8 @@
     <string name="new_e3_ann_error">現在無法取得新e3公告\n下拉重試</string>
     <string name="old_e3_ann_error">現在無法取得舊e3公告\n下拉重試</string>
     <string name="new_e3_not_init">你尚未啟用新e3系統，請至新e3網站啟用</string>
+    <string name="login_help">登入幫助</string>
+    <string name="login_help_student_id">學號：就是你的學號（例如：0612345）</string>
+    <string name="login_help_old_e3">舊e3密碼：登入ecampus（如下圖）所使用的密碼。\n網址：https://dcpc.nctu.edu.tw\n如果沒有手動更改，則和選課系統相同。</string>
+    <string name="login_help_new_e3">單一入口密碼：登入單一入口（如下圖）時用的密碼。\n網址：https://portal.nctu.edu.tw</string>
 </resources>

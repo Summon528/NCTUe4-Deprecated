@@ -1,9 +1,12 @@
 package com.team214.nctue4
 
+import android.app.DialogFragment
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.TypedValue
 import android.view.View
@@ -17,8 +20,6 @@ import com.team214.nctue4.model.CourseDBHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
 import com.google.firebase.analytics.FirebaseAnalytics
-
-
 
 
 class LoginActivity : AppCompatActivity() {
@@ -38,7 +39,10 @@ class LoginActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme_NoActionBar)  //End Splash Screen
         super.onCreate(savedInstanceState)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        var studentId = prefs.getString("studentId", "")
+
         if (intent.getBooleanExtra("reLogin", false)) {
             val prefsEditor = prefs.edit()
             prefsEditor.remove("studentPassword")
@@ -53,8 +57,8 @@ class LoginActivity : AppCompatActivity() {
             val path = this.getExternalFilesDir(null)
             val dir = File(path, "Download")
             dir.deleteRecursively()
+            studentId = ""
         } else {
-            val studentId = prefs.getString("studentId", "")
             val studentPassword = prefs.getString("studentPassword", "")
             val studentPortalPassword = prefs.getString("studentPortalPassword", "")
             val versionCode = prefs.getInt("versionCode", -1)
@@ -67,7 +71,13 @@ class LoginActivity : AppCompatActivity() {
         }
         prefs.edit().putInt("versionCode", packageManager.getPackageInfo(packageName, 0).versionCode).apply()
         setContentView(R.layout.activity_login)
-        student_id.setText(prefs.getString("studentId", ""))
+
+        if (studentId != "") {
+            student_id.isEnabled = false
+            logout_button.visibility = View.VISIBLE
+            student_id.setText(studentId)
+        }
+
 
         //detect soft keyboard
         login_root.viewTreeObserver.addOnGlobalLayoutListener {
@@ -75,6 +85,26 @@ class LoginActivity : AppCompatActivity() {
             if (heightDiff > dpToPx(200f)) {
                 login_scroll_view.smoothScrollBy(0, heightDiff)
             }
+        }
+
+
+        login_help.paintFlags = login_help.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        login_help?.setOnClickListener {
+            LoginHelpFragment().show(supportFragmentManager, "TAG")
+        }
+
+        logout_button?.setOnClickListener {
+            AlertDialog.Builder(this)
+                    .setTitle(R.string.logout)
+                    .setMessage(R.string.logout_confirm)
+                    .setPositiveButton(R.string.positive) { _, _ ->
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.putExtra("logout", true)
+                        startActivity(intent)
+                        finish()
+                    }.setNegativeButton(R.string.cancel) { dialog, _ ->
+                        dialog.cancel()
+                    }.show()
         }
 
         login_button?.setOnClickListener {
