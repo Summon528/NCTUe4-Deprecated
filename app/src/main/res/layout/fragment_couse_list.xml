@@ -18,7 +18,7 @@
     <include layout="@layout/status_empty" />
 
     <include layout="@layout/status_error" />
-    
+
     <include layout="@layout/status_empty_compact" />
 
     <android.support.v7.widget.RecyclerView

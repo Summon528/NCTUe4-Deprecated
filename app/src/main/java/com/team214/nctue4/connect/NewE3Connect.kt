@@ -12,7 +12,6 @@ import com.team214.nctue4.utility.MemberType
 import com.team214.nctue4.utility.logLong
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody

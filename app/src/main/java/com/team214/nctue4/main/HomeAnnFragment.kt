@@ -75,6 +75,7 @@ class HomeAnnFragment : Fragment() {
         }
         progress_bar?.visibility = View.VISIBLE
         getData()
+
     }
 
     private fun race() {
@@ -84,6 +85,7 @@ class HomeAnnFragment : Fragment() {
         if (oldE3get == AnnGet.FAIL && (newE3get == AnnGet.FAIL || newE3get == AnnGet.NEW_E3_NOT_INIT)) {
             error_request?.visibility = View.VISIBLE
             progress_bar?.visibility = View.GONE
+            ann_swipe_refresh_layout?.visibility = View.GONE
             dataStatus = DataStatus.INIT
             error_request_retry?.setOnClickListener {
                 progress_bar?.visibility = View.VISIBLE
@@ -107,6 +109,7 @@ class HomeAnnFragment : Fragment() {
     }
 
     private fun getData() {
+        ann_swipe_refresh_layout?.visibility = View.VISIBLE
         error_request?.visibility = View.GONE
         error_wrong_credential?.visibility = View.GONE
         oldE3Service = (activity as MainActivity).oldE3Service

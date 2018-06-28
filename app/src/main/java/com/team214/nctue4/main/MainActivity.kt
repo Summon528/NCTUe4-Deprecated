@@ -20,9 +20,6 @@ import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.OldE3Connect
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import android.view.ViewGroup
-import android.widget.Button
-import com.crashlytics.android.Crashlytics
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -31,11 +28,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var oldE3Service: OldE3Connect
     lateinit var newE3WebService: NewE3WebConnect
     lateinit var newE3Service: NewE3Connect
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-        outState?.putInt("currentFragment", currentFragment)
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +43,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
 
+
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val studentId = prefs.getString("studentId", "")
         val studentPassword = prefs.getString("studentPassword", "")
@@ -64,10 +57,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         newE3WebService = NewE3WebConnect(studentId, studentPortalPassword, "")
         newE3Service = NewE3Connect(studentId, studentPortalPassword, newE3UserId, newE3Token)
         newE3Service.context = this
-        currentFragment = if (savedInstanceState?.getInt("currentFragment") != null)
-            savedInstanceState.getInt("currentFragment") else -1
-        if (savedInstanceState?.getInt("currentFragment") == null)
+        currentFragment =
+                if (savedInstanceState?.getInt("currentFragment") != null)
+                    savedInstanceState.getInt("currentFragment") else -1
+
+        if (savedInstanceState?.getInt("currentFragment") == null) {
+            currentFragment = when (intent?.getStringExtra("shortcut")) {
+                "nav_home" -> R.id.nav_home
+                "nav_ann" -> R.id.nav_ann
+                "nav_bookmarked" -> R.id.nav_bookmarked
+                "nav_download" -> R.id.nav_download
+                "nav_timetable" -> R.id.nav_timetable
+                else -> -1
+            }
             switchFragment(currentFragment)
+        }
 
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = studentEmail

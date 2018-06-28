@@ -12,7 +12,7 @@ class DocListAdapter(private val dataSet: ArrayList<DocGroupItem>,
                      private val itemClickListener: (DocGroupItem) -> Unit) :
         RecyclerView.Adapter<DocListAdapter.ViewHolder>() {
 
-    class ViewHolder(private  val view: View,
+    class ViewHolder(private val view: View,
                      private val itemClickListener: (DocGroupItem) -> Unit) : RecyclerView.ViewHolder(view) {
         fun bind(doc: DocGroupItem) {
             view.doc_group_display_name.text = doc.displayName

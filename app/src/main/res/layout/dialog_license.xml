@@ -38,14 +38,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_fox"
             android:paddingStart="3dp"
-            android:paddingEnd="8dp"/>
+            android:paddingEnd="8dp" />
 
         <TextView
             android:id="@+id/flat_icon_license"

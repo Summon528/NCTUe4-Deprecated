@@ -23,7 +23,7 @@
             android:text="作業一 bla"
             android:textColor="@color/blackText"
             android:textSize="18sp"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp" />
 
         <TextView
             android:id="@+id/score_score"

@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/e3" />
+            android:src="@drawable/e3_screenshot" />
 
         <TextView
             android:layout_width="match_parent"
@@ -57,6 +57,6 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/portal" />
+            android:src="@drawable/portal_screenshot" />
     </LinearLayout>
 </ScrollView>

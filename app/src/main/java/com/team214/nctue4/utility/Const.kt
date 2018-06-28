@@ -24,7 +24,7 @@ class MemberType {
     }
 }
 
-class AnnGet{
+class AnnGet {
     companion object {
         const val START = 0
         const val FAIL = 1

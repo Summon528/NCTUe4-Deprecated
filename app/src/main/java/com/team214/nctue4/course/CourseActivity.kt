@@ -8,7 +8,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.OldE3Connect
-import com.team214.nctue4.main.HomeAnnFragment
 import com.team214.nctue4.utility.BottomNavigationViewHelper
 import kotlinx.android.synthetic.main.activity_course.*
 

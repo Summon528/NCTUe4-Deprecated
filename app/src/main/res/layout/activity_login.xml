@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/logout"
                     android:visibility="gone"
-                    android:id="@+id/logout_button"/>
+                    android:id="@+id/logout_button" />
 
             </LinearLayout>
         </LinearLayout>

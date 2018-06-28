@@ -1,6 +1,5 @@
 package com.team214.nctue4
 
-import android.app.DialogFragment
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
@@ -11,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3Interface
 import com.team214.nctue4.connect.OldE3Connect
@@ -19,7 +19,6 @@ import com.team214.nctue4.main.MainActivity
 import com.team214.nctue4.model.CourseDBHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.File
-import com.google.firebase.analytics.FirebaseAnalytics
 
 
 class LoginActivity : AppCompatActivity() {

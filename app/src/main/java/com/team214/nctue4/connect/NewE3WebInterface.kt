@@ -14,7 +14,8 @@ interface NewE3WebInterface {
                                    response: ArrayList<AnnItem>?) -> Unit)
 
     fun getAnnDetail(bulletinId: String,
-                              completionHandler: (status: Status,
-                                                  response: AnnItem?) -> Unit)
+                     completionHandler: (status: Status,
+                                         response: AnnItem?) -> Unit)
+
     fun cancelPendingRequests()
 }

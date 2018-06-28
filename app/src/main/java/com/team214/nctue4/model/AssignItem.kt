@@ -1,6 +1,5 @@
 package com.team214.nctue4.model
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.*

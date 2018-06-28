@@ -29,7 +29,7 @@ class MembersAdapter(val context: Context, private val dataSet: ArrayList<Member
                     when (member.type) {
                         MemberType.TEA -> ContextCompat.getColor(context, R.color.md_orange_700)
                         MemberType.TA -> ContextCompat.getColor(context, R.color.md_green_700)
-                        MemberType.AUDIT -> ContextCompat.getColor(context,R.color.md_indigo_700)
+                        MemberType.AUDIT -> ContextCompat.getColor(context, R.color.md_indigo_700)
                         else -> ContextCompat.getColor(context, R.color.md_blue_700)
                     }
             )
