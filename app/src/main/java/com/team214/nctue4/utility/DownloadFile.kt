@@ -53,13 +53,13 @@ fun downloadFile(fileName: String, uri: String, context: Context, activity: Acti
         if (file.exists()) {
             AlertDialog.Builder(context)
                     .setMessage(context.getString(R.string.detect_same_file))
-                    .setPositiveButton(R.string.download_again, { _, _ ->
+                    .setPositiveButton(R.string.download_again) { _, _ ->
                         file.delete()
                         downloadFile(fileName, uri, context, activity, view, e3WebCookie, requestPermissions)
-                    })
-                    .setNegativeButton(R.string.open_existed, { _, _ ->
+                    }
+                    .setNegativeButton(R.string.open_existed) { _, _ ->
                         openFile(fileName, file, context, activity)
-                    })
+                    }
                     .show()
         } else {
             val request = DownloadManager.Request(Uri.parse(uri))
