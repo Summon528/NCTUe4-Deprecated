@@ -255,7 +255,7 @@ class OldE3Connect(private var studentId: String = "",
                                     completionHandler: (status: OldE3Interface.Status,
                                                         response: ArrayList<DocGroupItem>?) -> Unit) {
         docGroupItems = ArrayList()
-        getMaterialDocListStatus = Array(2, { false })
+        getMaterialDocListStatus = Array(2) { false }
         for (i in 0..1) {
             post("/GetMaterialDocList", hashMapOf(
                     "courseId" to courseId,
@@ -430,7 +430,7 @@ class OldE3Connect(private var studentId: String = "",
                             "Score", "AdjustToScoreForAll", "Absence", "AdjustToScore", "Attendance", "FinalScore")
                     val scoreItems = ArrayList<ScoreItem>()
                     types.forEach {
-                        if (data.has(it)) {
+                        if (data.has(it) && data.get(it) is JSONObject ) {
                             val scoreData = data.getJSONObject(it).forceGetJsonArray("ScoreItemData")
                             (0 until scoreData.length()).map { scoreData.get(it) as JSONObject }
                                     .forEach {
