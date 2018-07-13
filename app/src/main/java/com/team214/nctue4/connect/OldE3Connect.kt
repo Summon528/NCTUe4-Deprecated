@@ -51,7 +51,7 @@ class OldE3Connect(private var studentId: String = "",
                 }
             }
         } else {
-            val url = "http://e3.nctu.edu.tw/mService/Service.asmx$path"
+            val url = "http://140.113.8.133/mService/Service.asmx$path"
             Crashlytics.log(Log.DEBUG, "OldE3URL", url)
             val formBodyBuilder = FormBody.Builder()
             params.forEach { entry -> formBodyBuilder.add(entry.key, entry.value) }
@@ -67,7 +67,7 @@ class OldE3Connect(private var studentId: String = "",
                 }
 
                 override fun onResponse(call: Call, response: okhttp3.Response) {
-                    if (response.code() == 500) { // the server explode if out login ticket expired
+                    if (response.code() == 500) { // the server explode if our login ticket expired
                         if (!secondTry && path != loginPath) {
                             getLoginTicket { _, _ ->
                                 post(path, params, true, completionHandler)
