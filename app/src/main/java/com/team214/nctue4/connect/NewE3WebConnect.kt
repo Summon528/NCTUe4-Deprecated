@@ -121,11 +121,14 @@ class NewE3WebConnect(private var studentId: String = "",
                                     if (it.select("b").text() != "System") {
                                         val date = df.parse(it.select(".media div")[0].text())
                                         val now = Calendar.getInstance()
-                                        val baseYear =
-                                                if (now.get(Calendar.MONTH) >= 7) now.get(Calendar.YEAR) + 1 - 1900
-                                                else now.get(Calendar.YEAR) - 1900
-                                        date.year = if (date.month >= 7) baseYear - 1
-                                        else baseYear
+                                        val nowMonth = now.get(Calendar.MONTH)
+                                        val nowYear = now.get(Calendar.YEAR) - 1900
+                                        // 嘗試猜公告的年份為何
+                                        date.year =
+                                                if (nowMonth >= 9 && date.month <= 2) nowYear + 1
+                                                else if (nowMonth <= 2 && date.month >= 9) nowYear - 1
+                                                else nowYear
+
                                         annItems.add(AnnItem(
                                                 it.select("a").attr("href").substring(25) + "&lang=en",
                                                 it.select("b").text().substring(10).replace(" .*".toRegex(), ""),

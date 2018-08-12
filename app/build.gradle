@@ -10,8 +10,8 @@ android {
         applicationId "com.team214.nctue4"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 46
-        versionName "1.1.1"
+        versionCode 47
+        versionName "1.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
