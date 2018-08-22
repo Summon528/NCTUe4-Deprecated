@@ -51,7 +51,7 @@ class OldE3Connect(private var studentId: String = "",
                 }
             }
         } else {
-            val url = "http://140.113.8.133/mService/Service.asmx$path"
+            val url = "http://140.113.8.80/mService/Service.asmx$path"
             Crashlytics.log(Log.DEBUG, "OldE3URL", url)
             val formBodyBuilder = FormBody.Builder()
             params.forEach { entry -> formBodyBuilder.add(entry.key, entry.value) }

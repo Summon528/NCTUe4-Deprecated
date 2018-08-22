@@ -128,6 +128,7 @@ class TimetableFragment : Fragment() {
         }
     }
 
+    //  Really Really terrible implementation
     private fun updateView() {
         height = timetable.height / 16
         minHeight = height
