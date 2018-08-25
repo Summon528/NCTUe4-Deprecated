@@ -130,7 +130,12 @@ class NewE3Connect(private var studentId: String = "",
         )) { status, response ->
             if (status == NewE3Interface.Status.SUCCESS) {
                 try {
-                    userId = JSONObject(response).getString("userid")
+                    val jsonObject = JSONObject(response)
+                    userId = jsonObject.getString("userid")
+                    val name = jsonObject.getString("firstname")
+
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                    prefs.edit().putString("studentName", name).apply()
                     completionHandler(NewE3Interface.Status.SUCCESS, userId)
                 } catch (e: Exception) {
                     logLong(Log.ERROR, "NewE3Error", response!!, e)

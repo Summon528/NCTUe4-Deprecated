@@ -10,7 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
-import com.team214.nctue4.connect.OldE3Interface
+import com.team214.nctue4.connect.NewE3Interface
 import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.CourseDBHelper
 import com.team214.nctue4.model.CourseItem
@@ -69,7 +69,7 @@ class NewE3Fragment : Fragment() {
         newE3Service.getCourseList { status, response ->
             activity?.runOnUiThread {
                 when (status) {
-                    OldE3Interface.Status.SUCCESS -> {
+                    NewE3Interface.Status.SUCCESS -> {
                         courseDBHelper.refreshCourses(response!!, E3Type.NEW)
                         if (course_list_recycler_view.adapter == null) {
                             courseItems = response
@@ -110,7 +110,7 @@ class NewE3Fragment : Fragment() {
                     course.toggleBookmark()
                     view.course_star.setColorFilter(ContextCompat.getColor(context!!, R.color.new_e3))
                 }
-            }, {
+            }) {
                 val intent = Intent()
                 intent.setClass(activity, CourseActivity::class.java)
                 intent.putExtra("newE3Service", newE3Service)
@@ -118,7 +118,7 @@ class NewE3Fragment : Fragment() {
                 intent.putExtra("courseName", it.courseName)
                 intent.putExtra("e3Type", E3Type.NEW)
                 startActivity(intent)
-            })
+            }
 
         }
     }

@@ -1,22 +1,22 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
     android:exported="true">
 
-    <shortcut
-        android:enabled="true"
-        android:icon="@drawable/shortcut_timetable"
-        android:shortcutId="compose1"
-        android:shortcutLongLabel="@string/timetable"
-        android:shortcutShortLabel="@string/timetable">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetClass="com.team214.nctue4.main.MainActivity"
-            android:targetPackage="com.team214.nctue4">
-            <extra
-                android:name="shortcut"
-                android:value="nav_timetable" />
-        </intent>
-        <categories android:name="android.shortcut.conversation" />
-    </shortcut>
+    <!--<shortcut-->
+        <!--android:enabled="true"-->
+        <!--android:icon="@drawable/shortcut_timetable"-->
+        <!--android:shortcutId="compose1"-->
+        <!--android:shortcutLongLabel="@string/timetable"-->
+        <!--android:shortcutShortLabel="@string/timetable">-->
+        <!--<intent-->
+            <!--android:action="android.intent.action.VIEW"-->
+            <!--android:targetClass="com.team214.nctue4.main.MainActivity"-->
+            <!--android:targetPackage="com.team214.nctue4">-->
+            <!--<extra-->
+                <!--android:name="shortcut"-->
+                <!--android:value="nav_timetable" />-->
+        <!--</intent>-->
+        <!--<categories android:name="android.shortcut.conversation" />-->
+    <!--</shortcut>-->
 
     <shortcut
         android:enabled="true"

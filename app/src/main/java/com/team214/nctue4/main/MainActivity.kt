@@ -9,6 +9,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -67,14 +68,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 "nav_ann" -> R.id.nav_ann
                 "nav_bookmarked" -> R.id.nav_bookmarked
                 "nav_download" -> R.id.nav_download
-                "nav_timetable" -> R.id.nav_timetable
+//                "nav_timetable" -> R.id.nav_timetable
                 else -> -1
             }
             switchFragment(currentFragment)
         }
 
         nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_name).text = studentName
-        nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = studentEmail
+        nav_view.getHeaderView(0).findViewById<TextView>(R.id.student_email).text = studentId
     }
 
 
@@ -113,16 +114,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mFirebaseAnalytics!!.setCurrentScreen(this, "DownloadFragment", DownloadFragment::class.java.simpleName)
                 DownloadFragment()
             }
-            R.id.nav_timetable -> {
-                currentFragment = id
-                mFirebaseAnalytics!!.setCurrentScreen(this, "HomeFragment", HomeFragment::class.java.simpleName)
-                TimetableFragment()
-            }
-            R.id.nav_old_e3 -> {
-                currentFragment = id
-                mFirebaseAnalytics!!.setCurrentScreen(this, "OldE3Fragment", OldE3Fragment::class.java.simpleName)
-                OldE3Fragment()
-            }
+//            R.id.nav_timetable -> {
+//                currentFragment = id
+//                mFirebaseAnalytics!!.setCurrentScreen(this, "HomeFragment", HomeFragment::class.java.simpleName)
+//                TimetableFragment()
+//            }
+//            R.id.nav_old_e3 -> {
+//                currentFragment = id
+//                mFirebaseAnalytics!!.setCurrentScreen(this, "OldE3Fragment", OldE3Fragment::class.java.simpleName)
+//                OldE3Fragment()
+//            }
             R.id.nav_new_e3 -> {
                 currentFragment = id
                 mFirebaseAnalytics!!.setCurrentScreen(this, "NewE3Fragment", NewE3Fragment::class.java.simpleName)
