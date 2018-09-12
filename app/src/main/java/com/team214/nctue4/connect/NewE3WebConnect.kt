@@ -106,20 +106,22 @@ class NewE3WebConnect(private var studentId: String = "",
     }
 
     override fun getAnn(completionHandler: (status: NewE3WebInterface.Status, response: ArrayList<AnnItem>?) -> Unit) {
-        post("/my/index.php?lang=en", HashMap()
+        post("/theme/dcpc/news/index.php?lang=en", HashMap()
         ) { status, response ->
             if (status == NewE3WebInterface.Status.SUCCESS) {
                 try {
                     if (response!!.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/user/edit.php")) {
                         completionHandler(NewE3WebInterface.Status.NOT_INIT, null)
                     } else {
-                        val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
+                        val annPage = Jsoup.parse(response).select(".NewsRow")
                         val annItems = ArrayList<AnnItem>()
                         val df = SimpleDateFormat("d MMM, HH:mm", Locale.US)
                         (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
                                 .forEach {
-                                    if (it.select("b").text() != "System") {
-                                        val date = df.parse(it.select(".media div")[0].text())
+                                    val a = it.select(".NewsPages")
+                                    if (it.select(".NewsPages").size != 0) return@forEach
+                                    if (it.select(".colL-10").text() != "System") {
+                                        val date = df.parse(it.select(".colR-10")[0].text())
                                         val now = Calendar.getInstance()
                                         val nowMonth = now.get(Calendar.MONTH)
                                         val nowYear = now.get(Calendar.YEAR) - 1900
@@ -130,10 +132,12 @@ class NewE3WebConnect(private var studentId: String = "",
                                                 else nowYear
 
                                         annItems.add(AnnItem(
-                                                it.select("a").attr("href").substring(25) + "&lang=en",
-                                                it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
-                                                it.select("h4").text(),
-                                                it.select("a").text(),
+                                                it.select("div").attr("onclick")
+                                                        .removePrefix("location.href='https://e3new.nctu.edu.tw").removeSuffix("';") + "&lang=en",
+                                                it.select(".colL-10").text().replace("^\\d* ".toRegex(), "")
+                                                        .replace(" [\\w.]*\$".toRegex(), ""),
+                                                it.select(".colL-19").text(),
+                                                "",
                                                 date,
                                                 date,
                                                 "",
@@ -143,6 +147,7 @@ class NewE3WebConnect(private var studentId: String = "",
                                     }
 
                                 }
+
                         completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
                     }
                 } catch (e: Exception) {
