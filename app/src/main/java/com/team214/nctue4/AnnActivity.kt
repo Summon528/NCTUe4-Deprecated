@@ -22,6 +22,7 @@ import com.team214.nctue4.connect.OldE3Connect
 import com.team214.nctue4.course.CourseActivity
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.DataStatus
+import com.team214.nctue4.utility.E3Type
 import com.team214.nctue4.utility.downloadFile
 import kotlinx.android.synthetic.main.activity_ann.*
 import kotlinx.android.synthetic.main.status_error.*
@@ -65,7 +66,7 @@ class AnnActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_goto_course -> {
-                if (courseId != null && courseName != null && e3Type != null) {
+                if (courseId != null && courseName != null && e3Type == E3Type.NEW) {
                     val intent = Intent()
                     intent.setClass(this, CourseActivity::class.java)
                     intent.putExtra("newE3Service", newE3Service)
@@ -74,6 +75,8 @@ class AnnActivity : AppCompatActivity() {
                     intent.putExtra("courseName", courseName)
                     intent.putExtra("e3Type", e3Type!!)
                     startActivity(intent)
+                } else if (e3Type == E3Type.OLD) {
+                    Toast.makeText(this, R.string.old_e3_broken, Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this, R.string.wait, Toast.LENGTH_SHORT).show()
                 }

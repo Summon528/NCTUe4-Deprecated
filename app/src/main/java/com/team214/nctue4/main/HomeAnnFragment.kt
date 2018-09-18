@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,8 @@ import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3WebConnect
 import com.team214.nctue4.connect.NewE3WebInterface
-import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.connect.OldE3WebConnect
+import com.team214.nctue4.connect.OldE3WebInterface
 import com.team214.nctue4.model.AnnItem
 import com.team214.nctue4.utility.AnnGet
 import com.team214.nctue4.utility.DataStatus
@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.status_wrong_credential.*
 
 
 class HomeAnnFragment : Fragment() {
-    private lateinit var oldE3Service: OldE3Connect
+    private lateinit var oldE3WebService: OldE3WebConnect
     private lateinit var newE3WebService: NewE3WebConnect
     private var dataStatus = DataStatus.INIT
     private var oldE3get = AnnGet.START
@@ -43,7 +43,7 @@ class HomeAnnFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         if (dataStatus == DataStatus.INIT) dataStatus = DataStatus.STOPPED
-//        oldE3Service.cancelPendingRequests()
+        oldE3WebService.cancelPendingRequests()
         newE3WebService.cancelPendingRequests()
     }
 
@@ -112,36 +112,34 @@ class HomeAnnFragment : Fragment() {
         ann_swipe_refresh_layout?.visibility = View.VISIBLE
         error_request?.visibility = View.GONE
         error_wrong_credential?.visibility = View.GONE
-        oldE3Service = (activity as MainActivity).oldE3Service
-//        oldE3Service.getAnnouncementListLogin(
-//                if (arguments?.getBoolean("home") != null) 5 else 100) { status, response ->
-//            activity?.runOnUiThread {
-//                when (status) {
-//                    OldE3Interface.Status.SUCCESS -> {
-//                        oldE3AnnItems = response!!
-//                        oldE3get = AnnGet.SUCCESS
-//                        race()
-//                    }
-//                    OldE3Interface.Status.WRONG_CREDENTIALS -> {
-//                        error_wrong_credential?.visibility = View.VISIBLE
-//                        progress_bar?.visibility = View.GONE
-//                        dataStatus = DataStatus.FINISHED
-//                        login_again_button?.setOnClickListener {
-//                            val intent = Intent()
-//                            intent.setClass(context, LoginActivity::class.java)
-//                            intent.putExtra("reLogin", true)
-//                            startActivity(intent)
-//                            activity!!.finish()
-//                        }
-//                    }
-//                    else -> {
-//                        oldE3get = AnnGet.FAIL
-//                        race()
-//                    }
-//                }
-//            }
-//        }
-        oldE3get = AnnGet.SUCCESS
+        oldE3WebService = (activity as MainActivity).oldE3WebService
+        oldE3WebService.getAnn { status, response ->
+            activity?.runOnUiThread {
+                when (status) {
+                    OldE3WebInterface.Status.SUCCESS -> {
+                        oldE3AnnItems = response!!
+                        oldE3get = AnnGet.SUCCESS
+                        race()
+                    }
+                    OldE3WebInterface.Status.WRONG_CREDENTIALS -> {
+                        error_wrong_credential?.visibility = View.VISIBLE
+                        progress_bar?.visibility = View.GONE
+                        dataStatus = DataStatus.FINISHED
+                        login_again_button?.setOnClickListener {
+                            val intent = Intent()
+                            intent.setClass(context, LoginActivity::class.java)
+                            intent.putExtra("reLogin", true)
+                            startActivity(intent)
+                            activity!!.finish()
+                        }
+                    }
+                    else -> {
+                        oldE3get = AnnGet.FAIL
+                        race()
+                    }
+                }
+            }
+        }
 
         newE3WebService = (activity as MainActivity).newE3WebService
 
@@ -199,7 +197,7 @@ class HomeAnnFragment : Fragment() {
                     intent.putExtra("fromHome", true)
                     if (it.e3Type == E3Type.OLD) {
                         intent.putExtra("annItem", it)
-                        intent.putExtra("oldE3Service", oldE3Service)
+                        intent.putExtra("oldE3WebService", oldE3WebService)
                     } else {
                         intent.putExtra("newE3WebService", newE3WebService)
                         intent.putExtra("newE3Service", (activity as MainActivity).newE3Service)

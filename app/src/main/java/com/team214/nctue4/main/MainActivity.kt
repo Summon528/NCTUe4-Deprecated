@@ -9,7 +9,6 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -18,7 +17,7 @@ import com.team214.nctue4.LoginActivity
 import com.team214.nctue4.R
 import com.team214.nctue4.connect.NewE3Connect
 import com.team214.nctue4.connect.NewE3WebConnect
-import com.team214.nctue4.connect.OldE3Connect
+import com.team214.nctue4.connect.OldE3WebConnect
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -26,7 +25,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var currentFragment = -1
-    lateinit var oldE3Service: OldE3Connect
+    lateinit var oldE3WebService: OldE3WebConnect
     lateinit var newE3WebService: NewE3WebConnect
     lateinit var newE3Service: NewE3Connect
 
@@ -54,7 +53,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val newE3Token = prefs.getString("newE3Token", "")
         val newE3UserId = prefs.getString("newE3UserId", "")
 
-        oldE3Service = OldE3Connect(studentId, studentPassword)
+        oldE3WebService = OldE3WebConnect(studentId, studentPassword)
         newE3WebService = NewE3WebConnect(studentId, studentPortalPassword, "")
         newE3Service = NewE3Connect(studentId, studentPortalPassword, newE3UserId, newE3Token)
         newE3Service.context = this

@@ -54,7 +54,7 @@ class NewE3WebConnect(private var studentId: String = "",
                      secondTry: Boolean = false,
                      completionHandler: (status: NewE3WebInterface.Status,
                                          response: String?) -> Unit) {
-        if (cookieStore[HOST] == null && path != "/login/index.php?lang=en") {
+        if (cookieStore[HOST] == null && path != loginPath) {
             getCookie { status, _ ->
                 if (status == NewE3WebInterface.Status.SUCCESS) {
                     post(path, params, secondTry, completionHandler)
@@ -118,7 +118,6 @@ class NewE3WebConnect(private var studentId: String = "",
                         val df = SimpleDateFormat("d MMM, HH:mm", Locale.US)
                         (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
                                 .forEach {
-                                    val a = it.select(".NewsPages")
                                     if (it.select(".NewsPages").size != 0) return@forEach
                                     if (it.select(".colL-10").text() != "System") {
                                         val date = df.parse(it.select(".colR-10")[0].text())
@@ -130,12 +129,10 @@ class NewE3WebConnect(private var studentId: String = "",
                                                 if (nowMonth >= 9 && date.month <= 2) nowYear + 1
                                                 else if (nowMonth <= 2 && date.month >= 9) nowYear - 1
                                                 else nowYear
-
                                         annItems.add(AnnItem(
                                                 it.select("div").attr("onclick")
                                                         .removePrefix("location.href='https://e3new.nctu.edu.tw").removeSuffix("';") + "&lang=en",
-                                                it.select(".colL-10").text().replace("^\\d* ".toRegex(), "")
-                                                        .replace(" [\\w.]*\$".toRegex(), ""),
+                                                it.select(".colL-10").attr("title").split("\\xa0".toRegex())[1].split(" ")[0],
                                                 it.select(".colL-19").text(),
                                                 "",
                                                 date,

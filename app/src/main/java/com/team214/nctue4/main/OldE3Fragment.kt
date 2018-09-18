@@ -55,7 +55,7 @@ class OldE3Fragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        oldE3Service = (activity as MainActivity).oldE3Service
+//        oldE3Service = (activity as MainActivity).oldE3Service
         courseItems = courseDBHelper.readCourses(E3Type.OLD)
         if (courseItems.isEmpty()) getData()
         else updateList()

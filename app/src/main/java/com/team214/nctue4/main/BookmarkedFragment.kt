@@ -82,7 +82,7 @@ class BookmarkedFragment : Fragment() {
                 intent.putExtra("courseId", it.courseId)
                 intent.putExtra("courseName", it.courseName)
                 intent.putExtra("e3Type", it.e3Type)
-                intent.putExtra("oldE3Service", (activity as MainActivity).oldE3Service)
+                intent.putExtra("oldE3WebService", (activity as MainActivity).oldE3WebService)
                 intent.putExtra("newE3Service", (activity as MainActivity).newE3Service)
                 startActivity(intent)
             }, courseDBHelper)
