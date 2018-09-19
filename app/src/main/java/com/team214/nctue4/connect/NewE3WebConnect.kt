@@ -44,8 +44,9 @@ class NewE3WebConnect(private var studentId: String = "",
                     }).build()
 
     private var cookieStore: HashMap<String, MutableList<Cookie>> = if (newE3Cookie != "") {
-        hashMapOf(HOST to mutableListOf(Cookie.parse(HttpUrl.parse("https://e3new.nctu.edu.tw/"),
-                "MoodleSession=$newE3Cookie")))
+        hashMapOf(HOST to mutableListOf(
+                Cookie.parse(HttpUrl.parse("https://e3new.nctu.edu.tw/")!!,
+                "MoodleSession=$newE3Cookie")!!))
     } else {
         hashMapOf()
     }
@@ -54,7 +55,7 @@ class NewE3WebConnect(private var studentId: String = "",
                      secondTry: Boolean = false,
                      completionHandler: (status: NewE3WebInterface.Status,
                                          response: String?) -> Unit) {
-        if (cookieStore[HOST] == null && path != "/login/index.php?lang=en") {
+        if (cookieStore[HOST] == null && path != loginPath) {
             getCookie { status, _ ->
                 if (status == NewE3WebInterface.Status.SUCCESS) {
                     post(path, params, secondTry, completionHandler)
@@ -77,7 +78,7 @@ class NewE3WebConnect(private var studentId: String = "",
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    val res = response.body().string()
+                    val res = response.body()!!.string()
                     if (res.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">Continue</a>") ||
                             res.contains("本頁面會自動重新導向。如果什麼都沒發生，請點選下面的\"繼續\"連結。<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">繼續")) {
                         if (!secondTry && path != "/login/index.php?lang=en") {
@@ -106,20 +107,21 @@ class NewE3WebConnect(private var studentId: String = "",
     }
 
     override fun getAnn(completionHandler: (status: NewE3WebInterface.Status, response: ArrayList<AnnItem>?) -> Unit) {
-        post("/my/index.php?lang=en", HashMap()
+        post("/theme/dcpc/news/index.php?lang=en", HashMap()
         ) { status, response ->
             if (status == NewE3WebInterface.Status.SUCCESS) {
                 try {
                     if (response!!.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/user/edit.php")) {
                         completionHandler(NewE3WebInterface.Status.NOT_INIT, null)
                     } else {
-                        val annPage = Jsoup.parse(response).select("#pc-for-in-progress")[0].select(" .course-info-container .hidden-xs-down")
+                        val annPage = Jsoup.parse(response).select(".NewsRow")
                         val annItems = ArrayList<AnnItem>()
                         val df = SimpleDateFormat("d MMM, HH:mm", Locale.US)
                         (0 until annPage.size).map { annPage[it] as org.jsoup.nodes.Element }
                                 .forEach {
-                                    if (it.select("b").text() != "System") {
-                                        val date = df.parse(it.select(".media div")[0].text())
+                                    if (it.select(".NewsPages").size != 0) return@forEach
+                                    if (it.select(".colL-10").text() != "System") {
+                                        val date = df.parse(it.select(".colR-10")[0].text())
                                         val now = Calendar.getInstance()
                                         val nowMonth = now.get(Calendar.MONTH)
                                         val nowYear = now.get(Calendar.YEAR) - 1900
@@ -128,12 +130,12 @@ class NewE3WebConnect(private var studentId: String = "",
                                                 if (nowMonth >= 9 && date.month <= 2) nowYear + 1
                                                 else if (nowMonth <= 2 && date.month >= 9) nowYear - 1
                                                 else nowYear
-
                                         annItems.add(AnnItem(
-                                                it.select("a").attr("href").substring(25) + "&lang=en",
-                                                it.select("b").text().substring(10).replace(" .*".toRegex(), ""),
-                                                it.select("h4").text(),
-                                                it.select("a").text(),
+                                                it.select("div").attr("onclick")
+                                                        .removePrefix("location.href='https://e3new.nctu.edu.tw").removeSuffix("';") + "&lang=en",
+                                                it.select(".colL-10").attr("title").split("\\xa0".toRegex())[1].split(" ")[0],
+                                                it.select(".colL-19").text(),
+                                                "",
                                                 date,
                                                 date,
                                                 "",
@@ -143,6 +145,7 @@ class NewE3WebConnect(private var studentId: String = "",
                                     }
 
                                 }
+
                         completionHandler(NewE3WebInterface.Status.SUCCESS, annItems)
                     }
                 } catch (e: Exception) {

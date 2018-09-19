@@ -75,7 +75,7 @@ class NewE3Connect(private var studentId: String = "",
                 }
 
                 override fun onResponse(call: Call, response: okhttp3.Response) {
-                    val res = response.body().string()
+                    val res = response.body()!!.string()
                     try {
                         val resJson = JSONObject(res)
                         if (resJson.has("errorcode") && resJson.getString("errorcode") == "invalidtoken") {
@@ -130,7 +130,12 @@ class NewE3Connect(private var studentId: String = "",
         )) { status, response ->
             if (status == NewE3Interface.Status.SUCCESS) {
                 try {
-                    userId = JSONObject(response).getString("userid")
+                    val jsonObject = JSONObject(response)
+                    userId = jsonObject.getString("userid")
+                    val name = jsonObject.getString("firstname")
+
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                    prefs.edit().putString("studentName", name).apply()
                     completionHandler(NewE3Interface.Status.SUCCESS, userId)
                 } catch (e: Exception) {
                     logLong(Log.ERROR, "NewE3Error", response!!, e)
@@ -156,11 +161,24 @@ class NewE3Connect(private var studentId: String = "",
                             .forEach {
                                 if (it.getLong("enddate") > System.currentTimeMillis() / 1000) {
                                     val split = it.getString("fullname").split(".")
-                                    courseItems.add(CourseItem(split[1],
-                                            split[2].replace(" .*".toRegex(), ""),
-                                            it.getString("shortname"),
-                                            it.getString("id"),
-                                            E3Type.NEW))
+                                    val courseName: String
+                                    val courseNo: String
+                                    if (split.size >= 3) {
+                                        courseNo = split[1]
+                                        courseName = split[2]
+                                    } else {
+                                        courseNo = ""
+                                        courseName = split[0]
+                                    }
+                                    courseItems.add(
+                                            CourseItem(
+                                                    courseNo,
+                                                    courseName,
+                                                    it.getString("shortname"),
+                                                    it.getString("id"),
+                                                    E3Type.NEW
+                                            )
+                                    )
                                 }
                             }
                     completionHandler(status, courseItems)

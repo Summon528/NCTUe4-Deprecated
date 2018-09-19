@@ -123,7 +123,7 @@
 
 
     <string name="login_help_student_id">Student ID: Your Student ID (Ex: 0612345)</string>
-    <string name="login_help_old_e3">Old E3 password: The password you use when logging in ecampus (as figure below)\nURL: https://dcpc.nctu.edu.tw\nIf you never change it manually, the password should be same as NCTU Course Registration System.</string>
+    <string name="login_help_old_e3">Old E3 password: The password you use when logging in ecampus (as figure below)\nURL: https://dcpc.nctu.edu.tw\nIf you never change it manually, the password should be same as NCTU Course Registration System　(The default password for Course System is the last 6 digits of your National ID or "123456").</string>
     <string name="login_help_new_e3">Portal password: The password you use when logging in NCTU Portal (as figure below)\nURL: https://portal.nctu.edu.tw</string>
 
 </resources>
