@@ -41,7 +41,7 @@ class OldE3WebConnect(private var studentId: String = "",
         val call = client.newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                val ele = Jsoup.parse(response.body().string())
+                val ele = Jsoup.parse(response.body()!!.string())
                 cookieStore.clear()
                 val formBody = FormBody.Builder()
                         .add("__EVENTTARGET", "")

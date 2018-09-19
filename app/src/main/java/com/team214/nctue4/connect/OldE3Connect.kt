@@ -75,7 +75,7 @@ class OldE3Connect(private var studentId: String = "",
                         } else completionHandler(OldE3Interface.Status.SERVICE_ERROR, null)
                     } else {
                         try {
-                            val xmlToJson = (XmlToJson.Builder(response.body().string()).build()).toJson()
+                            val xmlToJson = (XmlToJson.Builder(response.body()!!.string()).build()).toJson()
                             completionHandler(OldE3Interface.Status.SUCCESS, xmlToJson)
                         } catch (e: Exception) {
                             logLong(Log.ERROR, "OldE3Error", response.toString(), e)

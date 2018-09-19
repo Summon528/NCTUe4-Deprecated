@@ -44,8 +44,8 @@ class NewE3WebConnect(private var studentId: String = "",
                     }).build()
 
     private var cookieStore: HashMap<String, MutableList<Cookie>> = if (newE3Cookie != "") {
-        hashMapOf(HOST to mutableListOf(Cookie.parse(HttpUrl.parse("https://e3new.nctu.edu.tw/"),
-                "MoodleSession=$newE3Cookie")))
+        hashMapOf(HOST to mutableListOf(Cookie.parse(HttpUrl.parse("https://e3new.nctu.edu.tw/")!!,
+                "MoodleSession=$newE3Cookie")!!))
     } else {
         hashMapOf()
     }
@@ -77,7 +77,7 @@ class NewE3WebConnect(private var studentId: String = "",
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    val res = response.body().string()
+                    val res = response.body()!!.string()
                     if (res.contains("This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">Continue</a>") ||
                             res.contains("本頁面會自動重新導向。如果什麼都沒發生，請點選下面的\"繼續\"連結。<br /><a href=\"https://e3new.nctu.edu.tw/login/index.php\">繼續")) {
                         if (!secondTry && path != "/login/index.php?lang=en") {

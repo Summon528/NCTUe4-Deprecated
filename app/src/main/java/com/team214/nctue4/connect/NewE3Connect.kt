@@ -75,7 +75,7 @@ class NewE3Connect(private var studentId: String = "",
                 }
 
                 override fun onResponse(call: Call, response: okhttp3.Response) {
-                    val res = response.body().string()
+                    val res = response.body()!!.string()
                     try {
                         val resJson = JSONObject(res)
                         if (resJson.has("errorcode") && resJson.getString("errorcode") == "invalidtoken") {
