@@ -161,11 +161,24 @@ class NewE3Connect(private var studentId: String = "",
                             .forEach {
                                 if (it.getLong("enddate") > System.currentTimeMillis() / 1000) {
                                     val split = it.getString("fullname").split(".")
-                                    courseItems.add(CourseItem(split[1],
-                                            split[2].replace(" .*".toRegex(), ""),
-                                            it.getString("shortname"),
-                                            it.getString("id"),
-                                            E3Type.NEW))
+                                    val courseName: String
+                                    val courseNo: String
+                                    if (split.size >= 3) {
+                                        courseNo = split[1]
+                                        courseName = split[2]
+                                    } else {
+                                        courseNo = ""
+                                        courseName = split[0]
+                                    }
+                                    courseItems.add(
+                                            CourseItem(
+                                                    courseNo,
+                                                    courseName,
+                                                    it.getString("shortname"),
+                                                    it.getString("id"),
+                                                    E3Type.NEW
+                                            )
+                                    )
                                 }
                             }
                     completionHandler(status, courseItems)
